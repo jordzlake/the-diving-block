@@ -5,10 +5,11 @@
   --pink: #ff82c3;
   --dark: #515151;
   --darker: #0a0a0a;
-  --g-mobile-padding: 3em;
+  --g-mobile-padding: 2em;
   --g-padding: 10em;
   --header-height: 5.2em;
   --g-section-padding: 5em;
+  --g-mobile-section-padding: 3em;
 }
 
 /* Chrome, Edge, and Safari */

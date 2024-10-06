@@ -1,6 +1,6 @@
 .categories-container {
   width: 100%;
-  padding: var(--g-section-padding) var(--g-mobile-padding);
+  padding: var(--g-mobile-section-padding) var(--g-mobile-padding);
 }
 
 .categories-content {
@@ -8,7 +8,7 @@
   width: 100%;
   grid-template-columns: 1fr; /* Two columns */
   gap: 2em; /* Space between grid items */
-  height: 60em;
+  height: 50em;
 }
 .category-image {
   transition: all 0.3s ease-in-out;
