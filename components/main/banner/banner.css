@@ -1,0 +1,129 @@
+.banner-container {
+  width: 100%;
+  height: 32em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-background-image {
+  display: none;
+}
+
+.banner-background-image-mobile {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000000a6;
+}
+
+.banner-background-image-mobile img {
+  object-fit: cover;
+  object-position: top;
+  mix-blend-mode: darken;
+}
+
+.banner-content {
+  width: 100%;
+}
+
+.banner-content h1 {
+  color: white;
+  font-size: 3.2em;
+  font-weight: 700;
+}
+
+.banner-content p {
+  color: white;
+  font-size: larger;
+  font-weight: 400;
+  margin-top: 0.6em;
+  margin-bottom: 0.8em;
+}
+
+.banner-button {
+  padding: 1em 1.4em;
+  border-radius: 50px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #fb8200;
+  color: var(--white);
+  transition: all 0.3s ease-in-out;
+}
+
+.banner-button:hover {
+  background-color: var(--white);
+  color: #fb8200;
+  cursor: pointer;
+}
+
+@media (min-width: 650px) {
+  .banner-container {
+    height: 28em;
+  }
+  .banner-content p {
+    width: 60%;
+  }
+}
+
+@media (min-width: 980px) {
+  .banner-container {
+    height: 40em;
+  }
+
+  .banner-content h1 {
+    text-shadow: 8px 4px 15px rgb(255 255 255 / 100%);
+  }
+
+  .banner-background-image {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .banner-background-image img {
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .banner-background-image-mobile {
+    display: none;
+  }
+
+  .banner-content h1 {
+    color: var(--blue);
+    font-size: 3.8em;
+    font-weight: 700;
+  }
+
+  .banner-content p {
+    color: var(--dark);
+    font-size: larger;
+    font-weight: 400;
+    margin-top: 0.4em;
+    margin-bottom: 0.8em;
+    width: 60%;
+  }
+}
+
+.fade-in-below {
+  animation: fadeInFromBelow 1.2s ease forwards; /* Animation duration and easing */
+}
+
+@keyframes fadeInFromBelow {
+  0% {
+    /* Start above the original position */
+    opacity: 0; /* Start fully transparent */
+  }
+  30% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    transform: translateY(0); /* End at the original position */
+    opacity: 1; /* End fully opaque */
+  }
+}

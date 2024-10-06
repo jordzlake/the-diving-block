@@ -1,0 +1,110 @@
+.categories-container {
+  width: 100%;
+  padding: var(--g-section-padding) var(--g-mobile-padding);
+}
+
+.categories-content {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr; /* Two columns */
+  gap: 2em; /* Space between grid items */
+  height: 60em;
+}
+.category-image {
+  transition: all 0.3s ease-in-out;
+}
+
+.category-image:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+  box-shadow: #c0c0c0 6px 7px 12px;
+}
+
+.category-image-1-container,
+.category-image-2-container,
+.category-image-3-container {
+  height: 100%;
+}
+
+.category-image-1-container:after,
+.category-image-2-container:after,
+.category-image-3-container:after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-image: radial-gradient(
+    circle farthest-side at left bottom,
+    hsl(0, 0%, 100%) 30%,
+    hsla(0, 0%, 0%, 0) 100%
+  );
+}
+
+.category-image-text-container {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  z-index: 5;
+  padding: 3em;
+}
+
+.category-image-text {
+  text-transform: uppercase;
+  font-size: 4em;
+  font-weight: bolder;
+}
+
+.category-image-subtext {
+  text-transform: capitalize;
+  font-size: x-large;
+  font-weight: 300;
+}
+
+.category-image-1-container img {
+  object-position: top;
+}
+
+.category-image-1-container img,
+.category-image-2-container img,
+.category-image-3-container img {
+  object-fit: cover;
+}
+
+@media (min-width: 980px) {
+  .categories-container {
+    padding: var(--g-section-padding) var(--g-padding);
+  }
+  .categories-content {
+    grid-template-columns: 0.7fr 1fr; /* Two columns */
+    gap: 2em; /* Space between grid items */
+    height: 38em;
+  }
+
+  .category-image-1-container {
+    grid-column: 1; /* Place category 1 in the first column */
+    grid-row: span 2; /* Span two rows */
+    height: 100%;
+  }
+
+  .category-image-2-container,
+  .category-image-3-container {
+    grid-column: 2; /* Place categories 2 and 3 in the second column */
+    height: 100%;
+  }
+
+  .category-image-2-container {
+    margin-bottom: 10px; /* Optional: Add space between categories 2 and 3 */
+  }
+
+  .category-image-1-container img {
+    object-position: top;
+  }
+
+  .category-image-1-container img,
+  .category-image-2-container img,
+  .category-image-3-container img {
+    object-fit: cover;
+  }
+}
