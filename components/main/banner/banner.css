@@ -32,6 +32,7 @@
   color: white;
   font-size: 3.2em;
   font-weight: 700;
+  z-index: 4;
 }
 
 .banner-content p {
@@ -40,6 +41,7 @@
   font-weight: 400;
   margin-top: 0.6em;
   margin-bottom: 0.8em;
+  z-index: 4;
 }
 
 .banner-button {
@@ -51,6 +53,7 @@
   background-color: #fb8200;
   color: var(--white);
   transition: all 0.3s ease-in-out;
+  z-index: 4;
 }
 
 .banner-button:hover {
@@ -106,6 +109,20 @@
     margin-top: 0.4em;
     margin-bottom: 0.8em;
     width: 60%;
+  }
+
+  .banner-background-image::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 85%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    z-index: 1;
+    display: block;
+    position: absolute;
   }
 }
 
