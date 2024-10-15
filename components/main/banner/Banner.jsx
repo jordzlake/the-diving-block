@@ -1,4 +1,6 @@
 import { BannerImages } from "@/lib/tempImages";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import "@/components/main/banner/banner.css";
 
@@ -17,7 +19,9 @@ const Banner = () => {
           was established in 2018 with the purpose of providing a local supply
           of swimwear
         </p>
-        <button className="banner-button">MORE ABOUT US</button>
+        <button className="banner-button">
+          MORE ABOUT US <FontAwesomeIcon icon={faCaretRight} />
+        </button>
       </div>
     </section>
   );

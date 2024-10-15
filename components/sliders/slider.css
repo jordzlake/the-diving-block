@@ -1,0 +1,13 @@
+.slider-indiv {
+  padding: 25px 0;
+}
+
+.slider-wrapper {
+  cursor: grab;
+}
+
+.card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
