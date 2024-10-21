@@ -5,6 +5,7 @@ import Banner from "@/components/main/banner/Banner";
 import Categories from "@/components/main/categories/Categories";
 import { clothes, swimwear } from "@/lib/tempclothes";
 import ProductSection from "@/components/main/productSection/ProductSection";
+import SubCategories from "@/components/main/subcategories/SubCategories";
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
           content={swimwear}
           buttonText="View Shop"
         />
+        <SubCategories/>
       </main>
     </div>
   );
