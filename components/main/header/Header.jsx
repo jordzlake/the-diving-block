@@ -103,7 +103,7 @@ const Header = () => {
   };
 
   return (
-    <>
+    <header>
       <nav className="nav-container">
         <div className="container nav-content-container">
           <ul className="nav-links-container">
@@ -129,7 +129,12 @@ const Header = () => {
             </div>
             {NavLinksUser.map((navLink) => (
               <li key={navLink.name} className="nav-link mobile-hide">
-                <Link href={navLink.link} className="nav-link-text">
+                <Link
+                  href={navLink.link}
+                  className={`nav-link-text ${
+                    currentPath === navLink.link ? "active" : ""
+                  }`}
+                >
                   {navLink.name}
                 </Link>
               </li>
@@ -183,7 +188,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </>
+    </header>
   );
 };
 

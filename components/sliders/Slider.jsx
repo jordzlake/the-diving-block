@@ -16,7 +16,7 @@ const Slider = ({ objects }) => {
     {
       loop: true,
       defaultAnimation: {
-        duration: 1000,
+        duration: 10000,
       },
       slides: { origin: "center", perView: 1 },
       created() {

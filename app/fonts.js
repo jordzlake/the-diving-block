@@ -10,5 +10,5 @@ export const rubik = Rubik({
   subsets: ["latin"],
   variable: "--font-rubik",
   display: "swap",
-  weights: ["400", "700"],
+  weights: ["200", "300", "400", "500", "600", "700", "800"],
 });

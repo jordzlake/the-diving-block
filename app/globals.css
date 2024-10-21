@@ -50,11 +50,11 @@ a {
 }
 
 h1 {
-  font-family: var(--font-rubik);
+  font-family: var(--font-montserrat);
 }
 
 h2 {
-  font-family: var(--font-rubik);
+  font-family: var(--font-montserrat);
 }
 
 h3 {
@@ -68,11 +68,11 @@ table,
 label,
 textarea,
 div {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-rubik);
 }
 
 button {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-rubik);
 }
 
 .link:hover {

@@ -10,7 +10,7 @@ const sliderOptions = [
       if (mouseOver) return;
       timeout = setTimeout(() => {
         slider.next();
-      }, 3000);
+      }, 1000);
     }
     slider.on("created", () => {
       slider.container.addEventListener("mouseover", () => {

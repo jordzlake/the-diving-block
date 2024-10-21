@@ -1,0 +1,168 @@
+.subcategories-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.subcategories-first,
+.subcategories-second {
+  width: 100%;
+}
+
+.subcategories-first-container,
+.subcategories-second-container,
+.subcategories-third-container {
+  width: 100%;
+  height: 20em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.subcategories-first-image-container,
+.subcategories-second-image-container,
+.subcategories-third-image-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.subcategories-first-image-container img,
+.subcategories-second-image-container img,
+.subcategories-third-image-container img {
+  object-fit: cover;
+  object-position: top;
+}
+
+.subcategories-first-image-container::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0) 10%, rgb(0, 0, 0) 110%);
+  display: block;
+  position: absolute;
+}
+
+.subcategories-second-image-container::after,
+.subcategories-third-image-container::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    270deg,
+    rgba(255, 255, 255, 0) 10%,
+    rgb(255, 255, 255) 75%
+  );
+  display: block;
+  position: absolute;
+}
+
+.subcategories-first-container-content,
+.subcategories-second-container-content,
+.subcategories-third-container-content {
+  width: 100%;
+  padding: 0 var(--g-mobile-padding);
+}
+
+.subcategories-first-container-content .subcat-content-first,
+.subcategories-second-container-content .subcat-content-first,
+.subcategories-third-container-content .subcat-content-first {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--orange);
+  margin-bottom: 0.2em;
+  font-weight: 400;
+  font-size: large;
+  line-height: 0.9em;
+}
+
+.subcat-content-second {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 3em;
+  font-weight: 800;
+}
+
+.subcat-content-third {
+  text-transform: uppercase;
+}
+.subcat-content-third svg {
+  font-size: x-small;
+  vertical-align: middle;
+}
+.subcategories-first-container-content .subcat-content-third,
+.subcategories-first-container-content .subcat-content-second {
+  color: var(--white);
+}
+
+.subcategories-first-container img,
+.subcategories-second-container img,
+.subcategories-third-container img {
+  transition: all 0.3s ease-in-out;
+}
+.subcategories-first-container .subcat-content-second,
+.subcategories-second-container .subcat-content-second,
+.subcategories-third-container .subcat-content-second {
+  transition: all 0.4s ease-in-out;
+}
+
+.subcategories-first-container:hover img,
+.subcategories-second-container:hover img,
+.subcategories-third-container:hover img {
+  transform: scale(1.1);
+}
+.subcategories-first-container:hover .subcat-content-second,
+.subcategories-second-container:hover .subcat-content-second,
+.subcategories-third-container:hover .subcat-content-second {
+  transform: scale(1.05);
+}
+
+.subcategories-first-container:hover,
+.subcategories-second-container:hover,
+.subcategories-third-container:hover {
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .subcategories-first-container,
+  .subcategories-second-container,
+  .subcategories-third-container {
+    height: 28em;
+  }
+  .subcategories-first-container:hover .subcat-content-second,
+  .subcategories-second-container:hover .subcat-content-second,
+  .subcategories-third-container:hover .subcat-content-second {
+    transform: scale(1.02);
+  }
+}
+
+@media (min-width: 980px) {
+  .subcategories-first-container {
+    height: 24em;
+  }
+
+  .subcategories-second-container,
+  .subcategories-third-container {
+    height: 32em;
+  }
+  .subcategories-second {
+    display: flex;
+    flex-direction: row;
+  }
+  .subcategories-first-container-content,
+  .subcategories-second-container-content,
+  .subcategories-third-container-content {
+    width: 100%;
+    padding: 0 var(--g-padding);
+  }
+  .subcategories-second-container-content,
+  .subcategories-third-container-content {
+    width: 100%;
+    padding: 0 var(--g-padding) 4em;
+  }
+  .subcategories-second-container,
+  .subcategories-third-container {
+    justify-content: flex-end;
+  }
+}

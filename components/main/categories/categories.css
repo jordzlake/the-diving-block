@@ -57,7 +57,7 @@
 }
 
 .category-image-subtext {
-  text-transform: capitalize;
+  text-transform: uppercase;
   font-size: x-large;
   font-weight: 300;
 }
@@ -70,6 +70,11 @@
 .category-image-2-container img,
 .category-image-3-container img {
   object-fit: cover;
+}
+
+.chev {
+  font-size: x-small;
+  vertical-align: middle;
 }
 
 @media (min-width: 980px) {
