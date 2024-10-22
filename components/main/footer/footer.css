@@ -82,6 +82,9 @@
     grid-template-columns: 1fr 1fr;
     width: 80%;
   }
+}
+
+@media (min-width: 660px) {
   .footer-container {
     padding: 5em var(--g-padding) 2em;
   }

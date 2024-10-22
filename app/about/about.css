@@ -1,0 +1,118 @@
+.about-banner-content-container {
+  width: 100%;
+  background-image: url(/images/about.jpg);
+  background-size: cover;
+  padding: 0 var(--g-mobile-padding);
+  display: flex;
+  flex-direction: column;
+  height: 12em;
+  background-position: right;
+  justify-content: center;
+}
+
+.about-banner-content-subtitle {
+  font-family: var(--font-montserrat);
+  color: var(--orange);
+  letter-spacing: 2px;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: medium;
+}
+
+.about-banner-content-title {
+  font-family: var(--font-rubik);
+  color: var(--white);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 3em;
+}
+
+.about-content-container {
+  width: 100%;
+  padding: 0 var(--g-mobile-padding);
+  display: flex;
+  flex-direction: column;
+}
+
+.about-third-content-container {
+  padding: 0 var(--g-mobile-padding);
+}
+
+.about-content-container {
+  margin: var(--g-mobile-section-padding) 0;
+}
+
+.about-first-content-container-heading {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+.about-first-content-links-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.8em;
+}
+
+.about-first-content-links-container a {
+  padding: 0.8em 0;
+  color: var(--darker);
+}
+
+.about-second-content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-second-content-image-container {
+  width: 15em;
+  height: 18em;
+}
+
+.about-third-content-container {
+  padding-bottom: 3em;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+@media (min-width: 480px) {
+  .about-second-content-image-container {
+    width: 25em;
+    height: 29em;
+  }
+}
+
+@media (min-width: 1100px) {
+  .about-content-container {
+    display: flex;
+    flex-direction: row;
+    padding: 0 var(--g-padding);
+  }
+
+  .about-banner-content-container {
+    padding: 0 var(--g-padding);
+  }
+
+  .about-second-content-container {
+    width: 50%;
+  }
+
+  .about-second-content-image-container {
+    width: 27em;
+    height: 31em;
+  }
+
+  .about-banner-content-container {
+    height: 25em;
+  }
+
+  .about-third-content-container {
+    padding: 0 var(--g-padding) 2em;
+  }
+
+  .about-content-container {
+    margin: var(--g-section-padding) 0;
+  }
+}
