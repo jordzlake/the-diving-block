@@ -5,8 +5,11 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import StoreCard from "@/components/cards/store-card/Storecard";
+import { Loading } from "@/components/controls/loading/Loading";
+import { useRouter } from "next/navigation";
 
 const ProductSection = ({ title, subtitle, content, buttonText }) => {
+  const router = useRouter();
   return (
     <section className="product-section-container container">
       <div className="product-section-first">
@@ -20,22 +23,38 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
             <div className="product-section-divider-right" />
           </div>
         </div>
-        {content.length > 0 && (
+        {content.length > 0 ? (
           <div className="product-section-grid">
-            {content.slice(0, 6).map((image, i) => (
-              <StoreCard
-                key={image.id}
-                url={image.urls.raw}
-                desc={
-                  !image.alt_description ? image.alt_description : image.slug
-                }
-                cost="2000.00"
-              />
-            ))}
+            {content
+              .slice(6, 12)
+              .map(
+                (product, i) =>
+                  product.images[0] && (
+                    <StoreCard
+                      key={product.id}
+                      id={product.id}
+                      url={product.images[0] ? product.images[0].src : ""}
+                      name={product.name ? product.name : product.slug}
+                      cost={product.price}
+                    />
+                  )
+              )}
           </div>
+        ) : (
+          <Loading />
         )}
-        <div className="product-section-button-container">
-          <button className="product-section-button">
+        <div
+          className="product-section-button-container"
+          onClick={() => {
+            router.push("/shop");
+          }}
+        >
+          <button
+            className="product-section-button"
+            onClick={() => {
+              router.push("/shop");
+            }}
+          >
             {buttonText} <FontAwesomeIcon icon={faCaretRight} />
           </button>
         </div>

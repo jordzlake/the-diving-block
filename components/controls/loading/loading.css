@@ -1,0 +1,8 @@
+.loading-container {
+  width: 100%;
+  min-height: 500px;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

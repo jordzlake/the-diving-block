@@ -3,12 +3,19 @@ import { tempSubCategoryImages } from "@/lib/tempCategoryImages";
 import "@/components/main/subcategories/subcategories.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/navigation";
 
 const SubCategories = () => {
+  const router = useRouter();
   return (
     <section className="subcategories-container section">
       <div className="subcategories-first">
-        <div className="subcategories-first-container">
+        <div
+          className="subcategories-first-container"
+          onClick={() => {
+            router.push("/shop?t=onsale");
+          }}
+        >
           <div className="subcategories-first-image-container">
             <Image src={tempSubCategoryImages[0].url} fill alt="topimage" />
           </div>
@@ -23,7 +30,12 @@ const SubCategories = () => {
       </div>
       <div className="subcategories-second">
         <div className="subcategories-second-container">
-          <div className="subcategories-second-image-container">
+          <div
+            className="subcategories-second-image-container"
+            onClick={() => {
+              router.push("/shop?t=swimgear");
+            }}
+          >
             <Image
               src={tempSubCategoryImages[1].url}
               fill
@@ -39,7 +51,12 @@ const SubCategories = () => {
           </div>
         </div>
         <div className="subcategories-third-container">
-          <div className="subcategories-third-image-container">
+          <div
+            className="subcategories-third-image-container"
+            onClick={() => {
+              router.push("/shop?t=beachcasual");
+            }}
+          >
             <Image
               src={tempSubCategoryImages[2].url}
               fill

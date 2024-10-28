@@ -46,23 +46,27 @@ const Slider = ({ objects }) => {
   return (
     <div className="slider-container">
       <div ref={sliderRef} className="keen-slider slider-wrapper">
-        {objects.map((object, i) => (
-          <div
-            key={i}
-            className={`keen-slider__slide ${"number-slide" + i} slider-indiv`}
-          >
-            <div className="card-wrapper">
-              <StoreCard
-                key={object.id}
-                url={object.urls.raw}
-                desc={
-                  !object.alt_description ? object.alt_description : object.slug
-                }
-                cost="2000.00"
-              />
-            </div>
-          </div>
-        ))}
+        {objects.map(
+          (object, i) =>
+            object.images[0] && (
+              <div
+                key={i}
+                className={`keen-slider__slide ${
+                  "number-slide" + i
+                } slider-indiv`}
+              >
+                <div className="card-wrapper">
+                  <StoreCard
+                    key={object.id}
+                    id={object.id}
+                    url={object.images[0] ? object.images[0].src : ""}
+                    name={object.name ? object.name : object.slug}
+                    cost={object.price}
+                  />
+                </div>
+              </div>
+            )
+        )}
         {loaded && instanceRef.current && (
           <>
             <SliderHandle

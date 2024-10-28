@@ -4,12 +4,20 @@ import { tempCategoryImages } from "@/lib/tempCategoryImages";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Categories = () => {
+  const router = useRouter();
+
   return (
     <section className="categories-container">
       <div className="categories-content">
-        <div className="category-image-1-container category-image">
+        <div
+          className="category-image-1-container category-image"
+          onClick={() => {
+            router.push("/shop?t=ladies");
+          }}
+        >
           <Image src={tempCategoryImages[0].url} fill alt="category1" />
           <div className="category-image-text-container">
             <p className="category-image-text">Ladies</p>
@@ -21,7 +29,12 @@ const Categories = () => {
             </p>
           </div>
         </div>
-        <div className="category-image-2-container category-image">
+        <div
+          className="category-image-2-container category-image"
+          onClick={() => {
+            router.push("/shop?t=men");
+          }}
+        >
           <Image src={tempCategoryImages[1].url} fill alt="category2" />
           <div className="category-image-text-container">
             <p className="category-image-text">Men</p>
@@ -33,7 +46,12 @@ const Categories = () => {
             </p>
           </div>
         </div>
-        <div className="category-image-3-container category-image">
+        <div
+          className="category-image-3-container category-image"
+          onClick={() => {
+            router.push("/shop?t=kids");
+          }}
+        >
           <Image src={tempCategoryImages[2].url} fill alt="category3" />
           <div className="category-image-text-container">
             <p className="category-image-text">Kids</p>

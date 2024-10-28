@@ -6,8 +6,11 @@ import { faStar, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import StoreCard from "@/components/cards/store-card/Storecard";
 import Slider from "@/components/sliders/Slider";
+import { Loading } from "@/components/controls/loading/Loading";
+import { useRouter } from "next/navigation";
 
 const Section = ({ title, subtitle, linebreak, content, buttonText }) => {
+  const router = useRouter();
   return (
     <section className="section-container container">
       <div className="section-info">
@@ -22,18 +25,27 @@ const Section = ({ title, subtitle, linebreak, content, buttonText }) => {
             <div className="section-starRight-border" />
           </div>
         )}
-        {content.length != 0 && (
+        {content.length > 0 ? (
           <div className="section-slider">
             <Slider objects={content} />
           </div>
+        ) : (
+          <Loading />
         )}
-        {content.length != 0 && (
+        {content.length > 0 ? (
           <div className="section-slider">
             <Slider objects={content} />
           </div>
+        ) : (
+          <Loading />
         )}
         <div className="section-button-container">
-          <button className="section-button">
+          <button
+            className="section-button"
+            onClick={() => {
+              router.push("/shop");
+            }}
+          >
             {buttonText} <FontAwesomeIcon icon={faCaretRight} />
           </button>
         </div>

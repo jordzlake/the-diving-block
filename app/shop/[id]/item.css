@@ -1,0 +1,121 @@
+.item-container {
+  margin: 2em 0;
+}
+
+.item-breadcrumb-container {
+  font-weight: bold;
+  font-family: var(--font-rubik);
+  margin-bottom: 2em;
+}
+
+.item-breadcrumb-container a {
+  color: var(--orange);
+  font-size: small;
+}
+
+.item-breadcrumb-separator {
+  width: 2px;
+
+  border-right: 1px solid var(--grey);
+  margin: 0 1em;
+}
+
+.item-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  margin-bottom: 2em;
+}
+.item-image-container {
+  width: 100%;
+  height: 22em;
+}
+
+.item-image-container img {
+  object-fit: contain;
+}
+
+.item-content-title {
+  font-weight: bold;
+  font-family: var(--font-rubik);
+  color: var(--darker);
+  text-transform: capitalize;
+  margin-bottom: 1em;
+}
+.item-content-cost {
+  font-weight: bold;
+  font-family: var(--font-rubik);
+  color: var(--orange);
+  text-transform: capitalize;
+  margin-bottom: 1em;
+  font-size: larger;
+}
+.item-content-separator {
+  height: 1px;
+  width: 100%;
+  border-bottom: 1px solid var(--grey);
+  margin-bottom: 2em;
+}
+
+.item-colors-text,
+.item-sizes,
+.item-quantity-text {
+  font-size: medium;
+  display: block;
+  margin: 1em 0;
+}
+
+.item-colors {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  width: 50%;
+  margin-bottom: 1em;
+}
+
+.item-color,
+.item-sizes-select,
+.item-quantity-container input {
+  padding: 0.3em;
+  border: 1px solid var(--grey);
+  background-color: var(--white);
+  color: var(--darker);
+  font-weight: 500;
+  font-size: medium;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.item-add-btn {
+  font-family: var(--font-rubik);
+  font-size: medium;
+  padding: 0.6em 1em;
+  font-weight: 500;
+  background-color: var(--orange);
+  color: var(--white);
+  border: 1px solid transparent;
+  margin: 1em 0;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.item-add-btn:hover {
+  background-color: var(--white);
+  color: var(--orange);
+  border: 1px solid var(--orange);
+}
+
+@media (min-width: 480px) {
+  .item-information-container {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1100px) {
+  .item-information-container {
+    flex-direction: row;
+  }
+  .item-content-container {
+    flex-basis: 33%;
+  }
+}
