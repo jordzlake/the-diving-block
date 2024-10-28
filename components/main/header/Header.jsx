@@ -170,6 +170,7 @@ const Header = () => {
                 <Link
                   href={navLink.link}
                   className="subnav-mobile-menu-link-text"
+                  onClick={handleMobileMenuClick}
                 >
                   {navLink.name}
                 </Link>
@@ -179,6 +180,7 @@ const Header = () => {
                       key={`${navLink.name}${navSubLink.name}`}
                       href={navSubLink.link}
                       className="subnav-mobile-menu-link-text sublink"
+                      onClick={handleMobileMenuClick}
                     >
                       {navSubLink.name}
                     </Link>
