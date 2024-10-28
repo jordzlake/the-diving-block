@@ -10,13 +10,14 @@ import Image from "next/image";
 import "@/components/main/header/header.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const Header = () => {
   const currentPath = usePathname();
+  const searchParams = useSearchParams();
   const [isAnimating, setIsAnimating] = useState(false);
   const [Velocity, setVelocity] = useState(null); // State to hold the Velocity function
-
+  const [curPath, setCurPath] = useState("");
   useEffect(() => {
     const loadVelocity = async () => {
       const velocity = (await import("velocity-animate")).default; // Dynamically import Velocity
@@ -103,8 +104,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log("Page changed:", currentPath);
-  }, [currentPath]);
+    setCurPath(`${currentPath + searchParams}`);
+  }, [currentPath, searchParams]);
 
   return (
     <header>
@@ -148,8 +149,8 @@ const Header = () => {
           )}
         </div>
       </nav>
-      {currentPath && (
-        <div key={currentPath} className="subnav container">
+      {curPath && (
+        <div key={curPath} className="subnav container">
           <ul className="subnav-links">
             {NavLinksMain.map((navLink) => (
               <li key={navLink.name} className="subnav-link mobile-hide">
