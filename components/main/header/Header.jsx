@@ -17,7 +17,7 @@ const Header = () => {
   const searchParams = useSearchParams();
   const [isAnimating, setIsAnimating] = useState(false);
   const [Velocity, setVelocity] = useState(null); // State to hold the Velocity function
-  const [curPath, setCurPath] = useState("");
+  const [curPath, setCurPath] = useState(" ");
   useEffect(() => {
     const loadVelocity = async () => {
       const velocity = (await import("velocity-animate")).default; // Dynamically import Velocity
