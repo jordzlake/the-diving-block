@@ -42,3 +42,5 @@ export const Lightbox = forwardRef((props, ref) => {
     </>
   );
 });
+
+Lightbox.displayName = "LightBox";
