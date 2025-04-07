@@ -6,6 +6,7 @@ import Footer from "@/components/main/footer/Footer";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import ToastProvider from "@/components/toast/ToastProvider";
+import { Suspense } from "react";
 config.autoAddCss = false;
 
 export default function RootLayout({ children }) {
@@ -13,9 +14,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${montserrat.variable} ${rubik.variable}`}>
         <CartProvider>
-          <Header />
+          <Suspense>
+            <Header />
+          </Suspense>
           <ToastProvider>{children}</ToastProvider>
-          <Footer />
+          <Suspense>
+            <Footer />
+          </Suspense>
         </CartProvider>
       </body>
     </html>

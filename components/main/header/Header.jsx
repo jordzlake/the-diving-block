@@ -112,98 +112,96 @@ const Header = () => {
   }, [currentPath, searchParams]);
 
   return (
-    <Suspense>
-      <header>
-        <nav className="nav-container">
-          <div className="container nav-content-container">
-            {Velocity && (
-              <ul className="nav-links-container">
-                {NavLinks.map((navLink) => (
-                  <li key={navLink.name} className="nav-link mobile-hide">
-                    <Link
-                      href={navLink.link}
-                      className={`nav-link-text ${
-                        currentPath === navLink.link ? "active" : ""
-                      }`}
-                    >
-                      {navLink.name}
-                    </Link>
-                  </li>
-                ))}
-                <div className="nav-logo-container">
-                  <Image
-                    src="/images/logo.png"
-                    alt="diving block logo"
-                    className="nav-logo"
-                    fill
-                  />
-                </div>
-                {NavLinksUser.map((navLink) => (
-                  <li key={navLink.name} className="nav-link mobile-hide">
-                    <Link
-                      href={navLink.link}
-                      className={`nav-link-text ${
-                        currentPath === navLink.link ? "active" : ""
-                      }`}
-                    >
-                      {navLink.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </nav>
-        {curPath && (
-          <div key={curPath} className="subnav container">
-            <ul className="subnav-links">
-              {NavLinksMain.map((navLink) => (
-                <li key={navLink.name} className="subnav-link mobile-hide">
-                  <Link href={navLink.link} className="subnav-link-text">
+    <header>
+      <nav className="nav-container">
+        <div className="container nav-content-container">
+          {Velocity && (
+            <ul className="nav-links-container">
+              {NavLinks.map((navLink) => (
+                <li key={navLink.name} className="nav-link mobile-hide">
+                  <Link
+                    href={navLink.link}
+                    className={`nav-link-text ${
+                      currentPath === navLink.link ? "active" : ""
+                    }`}
+                  >
+                    {navLink.name}
+                  </Link>
+                </li>
+              ))}
+              <div className="nav-logo-container">
+                <Image
+                  src="/images/logo.png"
+                  alt="diving block logo"
+                  className="nav-logo"
+                  fill
+                />
+              </div>
+              {NavLinksUser.map((navLink) => (
+                <li key={navLink.name} className="nav-link mobile-hide">
+                  <Link
+                    href={navLink.link}
+                    className={`nav-link-text ${
+                      currentPath === navLink.link ? "active" : ""
+                    }`}
+                  >
                     {navLink.name}
                   </Link>
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+      </nav>
+      {curPath && (
+        <div key={curPath} className="subnav container">
+          <ul className="subnav-links">
+            {NavLinksMain.map((navLink) => (
+              <li key={navLink.name} className="subnav-link mobile-hide">
+                <Link href={navLink.link} className="subnav-link-text">
+                  {navLink.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-            <div
-              onClick={handleMobileMenuClick}
-              className="McButton mobile-show"
-              data="hamburger-menu"
-            >
-              <b></b>
-              <b></b>
-              <b></b>
-            </div>
+          <div
+            onClick={handleMobileMenuClick}
+            className="McButton mobile-show"
+            data="hamburger-menu"
+          >
+            <b></b>
+            <b></b>
+            <b></b>
+          </div>
 
-            <div style={{ display: "none" }} className="subnav-dropdown">
-              <div className="subnav-mobile-menu-links">
-                {NavLinksMobileMain.map((navLink) => (
-                  <div className="subnav-link-container" key={navLink.name}>
-                    <Link
-                      href={navLink.link}
-                      className="subnav-mobile-menu-link-text"
-                    >
-                      {navLink.name}
-                    </Link>
-                    {navLink.sublinks &&
-                      navLink.sublinks.map((navSubLink) => (
-                        <Link
-                          key={`${navLink.name}${navSubLink.name}`}
-                          href={navSubLink.link}
-                          className="subnav-mobile-menu-link-text sublink"
-                        >
-                          {navSubLink.name}
-                        </Link>
-                      ))}
-                  </div>
-                ))}
-              </div>
+          <div style={{ display: "none" }} className="subnav-dropdown">
+            <div className="subnav-mobile-menu-links">
+              {NavLinksMobileMain.map((navLink) => (
+                <div className="subnav-link-container" key={navLink.name}>
+                  <Link
+                    href={navLink.link}
+                    className="subnav-mobile-menu-link-text"
+                  >
+                    {navLink.name}
+                  </Link>
+                  {navLink.sublinks &&
+                    navLink.sublinks.map((navSubLink) => (
+                      <Link
+                        key={`${navLink.name}${navSubLink.name}`}
+                        href={navSubLink.link}
+                        className="subnav-mobile-menu-link-text sublink"
+                      >
+                        {navSubLink.name}
+                      </Link>
+                    ))}
+                </div>
+              ))}
             </div>
           </div>
-        )}
-      </header>
-    </Suspense>
+        </div>
+      )}
+    </header>
   );
 };
 
