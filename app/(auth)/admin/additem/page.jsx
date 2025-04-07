@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 const AddItem = () => {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
