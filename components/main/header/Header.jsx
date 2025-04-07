@@ -13,6 +13,8 @@ import { useState, useEffect, useContext, Suspense } from "react";
 import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { usePathname, useSearchParams } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 const Header = () => {
   const currentPath = usePathname();
   const searchParams = useSearchParams();
