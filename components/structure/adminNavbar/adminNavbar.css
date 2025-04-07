@@ -1,0 +1,105 @@
+.m-admin-nav-container {
+  overflow: visible;
+  width: 100%;
+  padding: 1em var(--g-padding);
+  text-align: center;
+}
+
+.m-admin-nav-button {
+  width: 100%;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 1em;
+  padding: 0.2em 2em;
+  border: none;
+  cursor: pointer;
+}
+
+.m-admin-nav-turn {
+  color: var(white);
+  font-family: var(--font-lato);
+}
+
+.m-admin-nav-turn svg {
+  transform: rotate(0deg);
+  transition: transform 0.1s ease-in;
+}
+
+.m-admin-menu-opened .m-admin-nav-turn svg {
+  transform: rotate(90deg);
+}
+
+.m-admin-navbar-links {
+  list-style: none;
+  position: absolute;
+  top: 3em;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  background-color: var(--orange);
+}
+
+.m-admin-navbar-links li {
+  padding: 0.5em 0;
+  cursor: pointer;
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.m-admin-navbar-links li:hover {
+  background-color: var(--orange);
+}
+.m-admin-navbar-links li:hover a {
+  color: var(--white);
+}
+
+.m-admin-navbar-links li a {
+  color: var(--white);
+}
+
+.m-admin-navbar-links li a::before {
+  content: "";
+  position: absolute;
+  bottom: 0em;
+  width: 0%;
+  height: 0.08em;
+  background-color: var(--white);
+  transition: width 0.15s linear;
+}
+
+.m-admin-navbar-links li a.active::before,
+.m-admin-navbar-links li a:hover::before {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .admin-navbar-links {
+    background-color: var(--dark-gray);
+    padding: 2em 2em 2em 1em;
+    height: 100%;
+    min-height: 80vh;
+    list-style: none;
+    border-right: 1px solid var(--light-gray);
+  }
+  .admin-navbar-links li a {
+    color: var(--dark);
+  }
+  .admin-navbar-links li {
+    cursor: pointer;
+    padding: 0.5em 0;
+  }
+  .admin-navbar-links li a::before {
+    content: "";
+    position: absolute;
+    bottom: 0em;
+    width: 0%;
+    height: 0.08em;
+    background-color: var(--dark);
+    transition: width 0.15s linear;
+  }
+
+  .admin-navbar-links li a.active::before,
+  .admin-navbar-links li a:hover::before {
+    width: 100%;
+  }
+}

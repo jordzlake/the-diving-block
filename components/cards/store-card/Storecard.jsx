@@ -1,21 +1,28 @@
 import "@/components/cards/store-card/storecard.css";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { CldImage } from "next-cloudinary";
 
-const StoreCard = ({ url, name, cost, id }) => {
+const StoreCard = ({ url, title, cost, id, image, discount, handleClick }) => {
   const router = useRouter();
   return (
     <div
       className="image-card"
       onClick={() => {
-        router.push(`/shop/` + id);
+        handleClick ? handleClick() : url && router.push(url);
       }}
     >
       <div className="image-container">
-        <Image src={url} alt="" fill />
+        <CldImage
+          src={`${image ? image : "404_toij8l"}`}
+          fill
+          alt={title}
+          defaultImage="404_toij8l.png"
+        />
       </div>
-      <h3 className="image-title">{name}</h3>
+      <h3 className="image-title">{title}</h3>
       <p className="image-desc">${cost}</p>
+      {/* {<p className="image-discount">${discount}</p>} */}
     </div>
   );
 };

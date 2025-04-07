@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { tempSubCategoryImages } from "@/lib/tempCategoryImages";
 import "@/components/main/subcategories/subcategories.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
+import { FaChevronRight } from "react-icons/fa6";
 
 const SubCategories = () => {
   const router = useRouter();
@@ -23,7 +22,7 @@ const SubCategories = () => {
             <h2 className="subcat-content-first">Best Sellers</h2>
             <p className="subcat-content-second">Super Sales</p>
             <p className="subcat-content-third">
-              Shop <FontAwesomeIcon icon={faChevronRight} />
+              Shop <FaChevronRight />
             </p>
           </div>
         </div>
@@ -46,7 +45,7 @@ const SubCategories = () => {
             <h2 className="subcat-content-first">Gear Up With</h2>
             <p className="subcat-content-second">Swim Gear</p>
             <p className="subcat-content-third">
-              Shop <FontAwesomeIcon icon={faChevronRight} />
+              Shop <FaChevronRight />
             </p>
           </div>
         </div>
@@ -67,7 +66,7 @@ const SubCategories = () => {
             <h2 className="subcat-content-first">Just Add Water</h2>
             <p className="subcat-content-second">Beach Casual</p>
             <p className="subcat-content-third">
-              Shop <FontAwesomeIcon icon={faChevronRight} />
+              Shop <FaChevronRight />
             </p>
           </div>
         </div>

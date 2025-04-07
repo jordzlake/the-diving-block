@@ -9,7 +9,8 @@ import {
 import Image from "next/image";
 import "@/components/main/header/header.css";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const Header = () => {
@@ -18,12 +19,13 @@ const Header = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [Velocity, setVelocity] = useState(null); // State to hold the Velocity function
   const [curPath, setCurPath] = useState(" ");
+  const { cart, setCart } = useContext(CartContext);
+
   useEffect(() => {
-    const loadVelocity = async () => {
+    (async () => {
       const velocity = (await import("velocity-animate")).default; // Dynamically import Velocity
       setVelocity(() => velocity);
-    };
-    loadVelocity(); // Load Velocity when the component mounts
+    })();
   }, []);
 
   const handleMobileMenuClick = (e) => {

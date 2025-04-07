@@ -1,12 +1,10 @@
 import "@/components/main/productSection/productSection.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProductImages } from "@/lib/tempImages";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import StoreCard from "@/components/cards/store-card/Storecard";
 import { Loading } from "@/components/controls/loading/Loading";
 import { useRouter } from "next/navigation";
+import { FaCaretRight, FaHeart } from "react-icons/fa6";
 
 const ProductSection = ({ title, subtitle, content, buttonText }) => {
   const router = useRouter();
@@ -18,27 +16,25 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
           <div className="product-section-divider-container">
             <div className="product-section-divider-left" />
             <div className="product-section-icon-container">
-              <FontAwesomeIcon className="section-star-icon" icon={faHeart} />
+              <FaHeart />
             </div>
             <div className="product-section-divider-right" />
           </div>
         </div>
         {content.length > 0 ? (
           <div className="product-section-grid">
-            {content
-              .slice(6, 12)
-              .map(
-                (product, i) =>
-                  product.images[0] && (
-                    <StoreCard
-                      key={product.id}
-                      id={product.id}
-                      url={product.images[0] ? product.images[0].src : ""}
-                      name={product.name ? product.name : product.slug}
-                      cost={product.price}
-                    />
-                  )
-              )}
+            {content.slice(6, 12).map((product, i) => (
+              <StoreCard
+                key={product._id}
+                id={product._id}
+                image={product.image}
+                title={product.title}
+                cost={product.cost}
+                discount={product.discount}
+                category={product.category}
+                handleClick={() => router.push(`/shop/${product._id}`)}
+              />
+            ))}
           </div>
         ) : (
           <Loading />
@@ -55,7 +51,7 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
               router.push("/shop");
             }}
           >
-            {buttonText} <FontAwesomeIcon icon={faCaretRight} />
+            {buttonText} <FaCaretRight />
           </button>
         </div>
       </div>

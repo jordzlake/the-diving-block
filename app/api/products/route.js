@@ -1,27 +1,62 @@
-import WooCommerce from "@/lib/woocommerce-settings";
+import { Product } from "@/lib/models";
+import { connectToDb } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { productSchema } from "@/lib/schema";
+
+export const dynamic = "force-dynamic";
 
 export const GET = async () => {
   try {
-    try {
-      const products = await new Promise((resolve, reject) => {
-        WooCommerce.get("products?per_page=20&page=3", (err, res) => {
-          if (err) {
-            return reject(err);
-          }
-          try {
-            const parsedData = JSON.parse(res.body); // Parse the JSON string to an object
-            resolve(parsedData);
-          } catch (parseError) {
-            reject("Failed to parse response data.");
-          }
-        });
-      });
-      return NextResponse.json(products);
-    } catch (err) {
-      return NextResponse.json(err);
-    }
+    connectToDb();
+    const products = await Product.find();
+    return NextResponse.json(products);
   } catch (err) {
-    throw new Error(err);
+    return NextResponse.json({ error: err });
+  }
+};
+
+export const POST = async (req, res) => {
+  const { product } = await req.json();
+  product.cost = parseFloat(product.cost);
+  product.quantity = parseFloat(product.quantity);
+
+  try {
+    await connectToDb();
+
+    const validationResult = productSchema.safeParse(product);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map(
+        (issue) =>
+          `${issue.path}: 
+               ${issue.message}`
+      );
+      return NextResponse.json({ errors });
+    }
+
+    const newProduct = new Product({
+      title: product.title,
+      spec: product.spec,
+      cost: product.cost,
+      description: product.description,
+      category: product.category,
+      subCategory: product.subCategory,
+      quantity: product.quantity,
+      image: product.image,
+      galleryImages: product.galleryImages,
+      weight: product.weight,
+      dimensions: product.dimensions,
+      colors: product.colors,
+      sizes: product.sizes,
+      brand: product.brand,
+      notes: product.notes,
+      tags: product.tags,
+    });
+
+    await newProduct.save();
+    return NextResponse.json({ success: newProduct });
+  } catch (err) {
+    throw err;
+    return NextResponse.json({ error: [err.message] });
   }
 };

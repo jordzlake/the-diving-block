@@ -4,7 +4,7 @@
   flex-direction: column;
   text-align: start;
   height: 24em;
-  max-width: 16em;
+  width: 7em;
   transition: transform 0.2s ease-in-out;
   overflow: hidden;
   white-space: nowrap;
@@ -42,6 +42,7 @@
 @media (min-width: 650px) {
   .image-card {
     height: 24em;
+    width: 16em;
   }
 
   .image-container {

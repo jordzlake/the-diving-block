@@ -1,9 +1,8 @@
 import { BannerImages } from "@/lib/tempImages";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import "@/components/main/banner/banner.css";
+import { FaCaretRight } from "react-icons/fa6";
 
 const Banner = () => {
   const router = useRouter();
@@ -28,7 +27,7 @@ const Banner = () => {
           of swimwear
         </p>
         <button className="banner-button" onClick={handler}>
-          MORE ABOUT US <FontAwesomeIcon icon={faCaretRight} />
+          MORE ABOUT US <FaCaretRight />
         </button>
       </div>
     </section>

@@ -1,0 +1,31 @@
+.errors-container {
+  margin: 3em 0;
+  width: 100%;
+  padding: 2em;
+  background-color: rgb(255, 210, 210);
+  color: rgb(177, 34, 29);
+  border-color: 1px solid rgb(177, 34, 29);
+  border-radius: 15px;
+}
+
+.errors-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  list-style: inside;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  background-color: rgb(255, 210, 210);
+}
+.errors-text {
+  font-family: var(--font-montserrat);
+  font-weight: 500;
+  font-size: 1em;
+  margin-bottom: 0.8em;
+}
+.error-text {
+  font-family: var(--font-rubik);
+  font-size: 0.9em;
+}

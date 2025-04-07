@@ -1,8 +1,7 @@
 import Image from "next/image";
 import "@/app/about/about.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faBriefcase } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { FaBriefcase, FaPenToSquare } from "react-icons/fa6";
 
 const About = () => {
   return (
@@ -28,11 +27,11 @@ const About = () => {
             </p>
             <div className="about-first-content-links-container">
               <Link href="https://newsday.co.tt/2018/02/15/andersons-swimming-passion-creating-waves/">
-                <FontAwesomeIcon icon={faPenToSquare} />
+                <FaPenToSquare />
                 &nbsp;&nbsp;&nbsp; Newsday Article
               </Link>
               <Link href="https://www.facebook.com/littlenemostt/">
-                <FontAwesomeIcon icon={faBriefcase} />
+                <FaBriefcase />
                 &nbsp;&nbsp;&nbsp; Little Nemos Swim School
               </Link>
             </div>

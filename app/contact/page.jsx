@@ -1,13 +1,13 @@
 import "@/app/contact/contact.css";
 import Link from "next/link";
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
-  faFacebook,
-  faInstagram,
-  faWhatsapp,
-} from "@fortawesome/free-brands-svg-icons";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+  FaArrowRight,
+  FaFacebook,
+  FaInstagram,
+  FaWhatsapp,
+} from "react-icons/fa6";
 
 const Contact = () => {
   return (
@@ -28,7 +28,7 @@ const Contact = () => {
               <input name="email" type="email" placeholder="Email Address" />
               <textarea name="Message" placeholder="Message" id="" />
               <button>
-                Submit <FontAwesomeIcon icon={faArrowRight} />
+                Submit <FaArrowRight />
               </button>
             </form>
           </div>
@@ -47,9 +47,7 @@ const Contact = () => {
                   className="contact-content-grid-link"
                   href="https://www.facebook.com/thedivingblock/"
                 >
-                  <span className="contact-content-brand-logo">
-                    <FontAwesomeIcon icon={faFacebook} />
-                  </span>
+                  <FaFacebook />
                   &nbsp;&nbsp;&nbsp; Facebook
                 </Link>
               </li>
@@ -58,9 +56,7 @@ const Contact = () => {
                   className="contact-content-grid-link"
                   href="https://www.instagram.com/thedivingblock/"
                 >
-                  <span className="contact-content-brand-logo">
-                    <FontAwesomeIcon icon={faInstagram} />
-                  </span>
+                  <FaInstagram />
                   &nbsp;&nbsp;&nbsp; Instagram
                 </Link>
               </li>
@@ -69,9 +65,7 @@ const Contact = () => {
                   className="contact-content-grid-link"
                   href="https://api.whatsapp.com/send/?phone=18683143157&text&app_absent=0"
                 >
-                  <span className="contact-content-brand-logo">
-                    <FontAwesomeIcon icon={faWhatsapp} />
-                  </span>
+                  <FaWhatsapp />
                   &nbsp;&nbsp;&nbsp; Whatsapp
                 </Link>
               </li>

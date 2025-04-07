@@ -8,15 +8,17 @@ import StoreCard from "../cards/store-card/Storecard";
 import sliderOptions from "@/components/sliders/sliderOptions";
 import { useState } from "react";
 import SliderHandle from "./sliderHandles/sliderHandle";
+import { useRouter } from "next/navigation";
 
 const Slider = ({ objects }) => {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider(
     {
       loop: true,
       defaultAnimation: {
-        duration: 10000,
+        duration: 5000,
       },
       slides: { origin: "center", perView: 1 },
       created() {
@@ -46,27 +48,25 @@ const Slider = ({ objects }) => {
   return (
     <div className="slider-container">
       <div ref={sliderRef} className="keen-slider slider-wrapper">
-        {objects.map(
-          (object, i) =>
-            object.images[0] && (
-              <div
-                key={i}
-                className={`keen-slider__slide ${
-                  "number-slide" + i
-                } slider-indiv`}
-              >
-                <div className="card-wrapper">
-                  <StoreCard
-                    key={object.id}
-                    id={object.id}
-                    url={object.images[0] ? object.images[0].src : ""}
-                    name={object.name ? object.name : object.slug}
-                    cost={object.price}
-                  />
-                </div>
-              </div>
-            )
-        )}
+        {objects.map((object, i) => (
+          <div
+            key={i}
+            className={`keen-slider__slide ${"number-slide" + i} slider-indiv`}
+          >
+            <div className="card-wrapper">
+              <StoreCard
+                key={object._id}
+                id={object._id}
+                image={object.image}
+                title={object.title}
+                cost={object.cost}
+                discount={object.discount}
+                category={object.category}
+                handleClick={() => router.push(`/shop/${object._id}`)}
+              />
+            </div>
+          </div>
+        ))}
         {loaded && instanceRef.current && (
           <>
             <SliderHandle

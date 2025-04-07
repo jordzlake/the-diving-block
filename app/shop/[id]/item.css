@@ -86,6 +86,13 @@
   cursor: pointer;
 }
 
+.item-color-selected,
+.item-size-select {
+  background-color: var(--darker);
+  color: var(--white);
+  border: 1px solid var(--darker);
+}
+
 .item-add-btn {
   font-family: var(--font-rubik);
   font-size: medium;

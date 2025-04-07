@@ -7,6 +7,7 @@ import {
   faInstagram,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
+import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -72,9 +73,7 @@ const Footer = () => {
                   className="footer-content-grid-link"
                   href="https://www.facebook.com/thedivingblock/"
                 >
-                  <span className="footer-content-brand-logo">
-                    <FontAwesomeIcon icon={faFacebook} />
-                  </span>
+                  <FaFacebook />
                   &nbsp;&nbsp;&nbsp; Facebook
                 </Link>
               </li>
@@ -83,9 +82,7 @@ const Footer = () => {
                   className="footer-content-grid-link"
                   href="https://www.instagram.com/thedivingblock/"
                 >
-                  <span className="footer-content-brand-logo">
-                    <FontAwesomeIcon icon={faInstagram} />
-                  </span>
+                  <FaInstagram />
                   &nbsp;&nbsp;&nbsp; Instagram
                 </Link>
               </li>
@@ -94,9 +91,7 @@ const Footer = () => {
                   className="footer-content-grid-link"
                   href="https://api.whatsapp.com/send/?phone=18683143157&text&app_absent=0"
                 >
-                  <span className="footer-content-brand-logo">
-                    <FontAwesomeIcon icon={faWhatsapp} />
-                  </span>
+                  <FaWhatsapp />
                   &nbsp;&nbsp;&nbsp; Whatsapp
                 </Link>
               </li>

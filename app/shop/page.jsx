@@ -2,19 +2,12 @@
 
 import "@/app/shop/shop.css";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faShoppingCart,
-  faSpinner,
-  faGlobe,
-  faShop,
-  faCaretDown,
-} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Loading } from "@/components/controls/loading/Loading";
 import StoreCard from "@/components/cards/store-card/Storecard";
 import { Collapse } from "antd";
-import { getProducts } from "@/lib/data";
+import { getProducts } from "@/lib/productActions";
+import { FaCartShopping, FaGlobe, FaSpinner } from "react-icons/fa6";
 
 const items = [
   {
@@ -202,21 +195,21 @@ const Shop = () => {
           <div className="shop-banner-inner-content-container">
             <div className="shop-banner-header sbh-first">
               <p className="h-text">
-                <FontAwesomeIcon icon={faShoppingCart} />
+                <FaCartShopping />
                 &nbsp;&nbsp;&nbsp;Delivery Available
               </p>
               <p className="p-text">Anywhere in Trinidad and Tobago</p>
             </div>
             <div className="shop-banner-header sbh-second">
               <p className="h-text">
-                <FontAwesomeIcon icon={faSpinner} />
+                <FaSpinner />
                 &nbsp;&nbsp;&nbsp;Exchanges must be
               </p>
               <p className="p-text">Done within 14 days of puchcase</p>
             </div>
             <div className="shop-banner-header sbh-third">
               <p className="h-text">
-                <FontAwesomeIcon icon={faGlobe} />
+                <FaGlobe />
                 &nbsp;&nbsp;&nbsp;Shipping via dhl for
               </p>
               <p className="p-text">international customers</p>
@@ -236,18 +229,18 @@ const Shop = () => {
             <div className="shop-store-items-container">
               {!loading ? (
                 <div className="shop-store-container">
-                  {products.map(
-                    (product) =>
-                      product.images[0] && (
-                        <StoreCard
-                          id={product.id}
-                          key={product.id}
-                          url={product.images[0].src}
-                          name={product.name ? product.name : product.slug}
-                          cost={product.price}
-                        />
-                      )
-                  )}
+                  {products.map((product) => (
+                    <StoreCard
+                      key={product._id}
+                      id={product._id}
+                      image={product.image}
+                      title={product.title}
+                      cost={product.cost}
+                      discount={product.discount}
+                      category={product.category}
+                      handleClick={() => router.push(`/shop/${product._id}`)}
+                    />
+                  ))}
                 </div>
               ) : (
                 <div>

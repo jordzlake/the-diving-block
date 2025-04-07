@@ -1,10 +1,9 @@
 import Link from "next/link";
 import "@/components/main/categories/categories.css";
 import { tempCategoryImages } from "@/lib/tempCategoryImages";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { FaChevronRight } from "react-icons/fa6";
 
 const Categories = () => {
   const router = useRouter();
@@ -24,7 +23,7 @@ const Categories = () => {
             <p className="category-image-subtext">
               Shop{" "}
               <span className="chev">
-                <FontAwesomeIcon icon={faChevronRight} />
+                <FaChevronRight />
               </span>
             </p>
           </div>
@@ -41,7 +40,7 @@ const Categories = () => {
             <p className="category-image-subtext">
               Shop{" "}
               <span className="chev">
-                <FontAwesomeIcon icon={faChevronRight} />
+                <FaChevronRight />
               </span>
             </p>
           </div>
@@ -58,7 +57,7 @@ const Categories = () => {
             <p className="category-image-subtext">
               Shop{" "}
               <span className="chev">
-                <FontAwesomeIcon icon={faChevronRight} />
+                <FaChevronRight />
               </span>
             </p>
           </div>

@@ -1,6 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import "@/components/sliders/sliderHandles/sliderHandle.css";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 const SliderHandle = ({ disable, onClick, left }) => {
   const disabled = disable ? " arrow--disabled" : "";
 
@@ -10,7 +9,7 @@ const SliderHandle = ({ disable, onClick, left }) => {
       className={`arrow ${left ? "arrow--left" : "arrow--right"} ${disabled}`}
     >
       <div className={`handle-icon-container ${disabled}`}>
-        <FontAwesomeIcon icon={left ? faArrowLeft : faArrowRight} />
+        {left ? <FaArrowLeft /> : <FaArrowRight />}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import Categories from "@/components/main/categories/Categories";
 import { clothes, swimwear, kids } from "@/lib/tempclothes";
 import ProductSection from "@/components/main/productSection/ProductSection";
 import SubCategories from "@/components/main/subcategories/SubCategories";
-import { getProducts } from "@/lib/data";
+import { getProducts } from "@/lib/productActions";
 import { useEffect, useState } from "react";
 
 export default function Home() {

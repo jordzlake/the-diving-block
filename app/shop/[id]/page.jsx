@@ -1,20 +1,30 @@
 "use client";
 import { Loading } from "@/components/controls/loading/Loading";
 import Slider from "@/components/sliders/Slider";
-import { getProduct, getProducts } from "@/lib/data";
+import { getProduct, getProducts } from "@/lib/productActions";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import "@/app/shop/[id]/item.css";
+import { useParams, useRouter } from "next/navigation";
+import { CldImage } from "next-cloudinary";
 
-const Item = ({ params }) => {
-  const { id } = params;
+const Item = () => {
+  const { id } = useParams();
+
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
-  window.scrollTo(0, 0);
+  const [selectedAttributeColor, setSelectedAttributeColor] = useState("");
+  const [selectedAttributeSize, setSelectedAttributeSize] = useState("");
+  const { cart, setCart } = useContext(CartContext);
 
   useEffect(() => {
+    if (typeof window) {
+      window.scrollTo(0, 0);
+    }
     (async () => {
       try {
         const res = await getProducts();
@@ -22,11 +32,13 @@ const Item = ({ params }) => {
         setProducts(res);
         setProduct(resProduct);
         setLoading(false);
+        console.log(resProduct);
       } catch (err) {
         setLoading(false);
       }
     })();
   }, []);
+
   return (
     <main>
       <section className="item-container container">
@@ -42,47 +54,71 @@ const Item = ({ params }) => {
             <div className="item-display-container">
               <div className="item-information-container">
                 <div className="item-image-container">
-                  <Image src={product.images[0].src} fill alt="" />
+                  <CldImage
+                    src={`${product.image ? product.image : "404_toij8l"}`}
+                    fill
+                    alt={product.title}
+                    defaultImage="404_toij8l.png"
+                  />
                 </div>
                 <div className="item-content-container">
-                  <h1 className="item-content-title">{product.name}</h1>
+                  <h1 className="item-content-title">{product.title}</h1>
                   <div className="item-content-separator" />
-                  <div className="item-content-cost">$ {product.price}</div>
-                  <form action="submit">
-                    {product.attributes &&
-                      product.attributes.some((obj) => obj.id === 2) && (
-                        <div className="item-colors-container">
-                          <span className="item-colors-text">Colors:</span>
-                          <div className="item-colors">
-                            {product.attributes
-                              .find((obj) => obj.id === 2)
-                              ?.options.map((color) => (
-                                <div key={color} className="item-color">
-                                  {color}
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-                    {product.attributes &&
-                      product.attributes.some((obj) => obj.id === 1) && (
-                        <div className="item-sizes-container">
-                          <span className="item-sizes">Sizes:</span>
-                          <select
-                            className="item-sizes-select"
-                            name="size"
-                            id="size"
+                  <div className="item-content-cost">
+                    ${Number(product.cost).toFixed(2)}
+                  </div>
+                  <form>
+                    <div className="item-colors-container">
+                      <span className="item-colors-text">Colors:</span>
+                      <div className="item-colors">
+                        {product.colors.map((color, i) => (
+                          <div
+                            onClick={() =>
+                              setSelectedAttributeColor(color.name)
+                            }
+                            key={i}
+                            className={`item-color  ${
+                              selectedAttributeColor &&
+                              selectedAttributeColor == color.name
+                                ? "item-color-selected"
+                                : ""
+                            }
+                          `}
                           >
-                            {product.attributes
-                              .find((obj) => obj.id === 1)
-                              ?.options.map((size) => (
-                                <option key={size} value={size}>
-                                  {size}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      )}
+                            {color.name}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="item-sizes-container">
+                      <span className="item-sizes">Sizes:</span>
+                      <select
+                        className="item-sizes-select"
+                        name="size"
+                        id="size"
+                      >
+                        {product.sizes.map((size, i) => (
+                          <option
+                            key={i}
+                            name="size"
+                            onClick={(e) =>
+                              setSelectedAttributeSize(e.target.value)
+                            }
+                            value={size}
+                            className={`item-color ${
+                              selectedAttributeSize &&
+                              selectedAttributeSize == size
+                                ? "item-size-selected"
+                                : ""
+                            }`}
+                          >
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
                     <div className="item-quantity-container">
                       <label htmlFor="quantity" className="item-quantity-text">
                         Select Quantity:
@@ -91,6 +127,7 @@ const Item = ({ params }) => {
                         type="number"
                         defaultValue={1}
                         name="quantity"
+                        max={product.quantity}
                         min={1}
                       />
                     </div>
