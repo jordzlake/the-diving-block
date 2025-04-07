@@ -14,6 +14,8 @@ import ErrorContainer from "@/components/controls/errors/ErrorContainer";
 import { FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Loading } from "@/components/controls/loading/Loading";
 
+export const dynamic = "force-dynamic";
+
 const Settings = () => {
   const [settingsData, setSettingsData] = useState({
     categories: [],
