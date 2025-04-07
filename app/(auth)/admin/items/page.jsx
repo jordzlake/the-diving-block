@@ -16,7 +16,6 @@ import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
 import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
 import { toast } from "react-toastify";
 import { deleteProduct } from "@/lib/productActions";
-import { useSearchParams } from "next/navigation";
 import { Loading } from "@/components/controls/loading/Loading";
 import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { getSettings } from "@/lib/settingActions";
@@ -25,7 +24,6 @@ export const dynamic = "force-dynamic";
 
 const Items = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
