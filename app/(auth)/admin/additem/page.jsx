@@ -18,7 +18,6 @@ import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
 import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
 import { getSettings } from "@/lib/settingActions";
 import { deleteCloudinaryItems } from "@/lib/cloudinary";
-import { useParams } from "next/navigation";
 import { Lightbox } from "@/components/controls/lightbox/Lightbox";
 import FormInput from "@/components/controls/form/input/FormInput";
 import FormRow from "@/components/controls/form/row/FormRow";
@@ -26,6 +25,7 @@ import { toast } from "react-toastify";
 import { productSchema } from "@/lib/schema";
 import { useRouter } from "next/navigation";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
+import { Suspense } from "react";
 
 const AddItem = () => {
   const router = useRouter();
@@ -191,413 +191,420 @@ const AddItem = () => {
   };
 
   return (
-    <main className="admin-items admin-section">
-      <ScrollToTop />
-      <AdminNavbar />
-      <div className="admin-container">
-        {!loading ? (
-          <div className="admin-item-content">
-            <div className="admin-item-title">Adding a New Product</div>
+    <Suspense>
+      <main className="admin-items admin-section">
+        <ScrollToTop />
+        <AdminNavbar />
+        <div className="admin-container">
+          {!loading ? (
+            <div className="admin-item-content">
+              <div className="admin-item-title">Adding a New Product</div>
 
-            {/* General Information Section */}
-            <form className="admin-item-form" onSubmit={handleSubmit}>
-              <FormRow>
-                <FormInput
-                  label="Product Name"
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required={true}
-                  validationSchema={productSchema.shape.title}
-                />
-                <FormInput
-                  label="Product Cost"
-                  type="number"
-                  name="cost"
-                  value={formData.cost}
-                  onChange={handleChange}
-                  required={true}
-                  validationSchema={productSchema.shape.cost}
-                />
-              </FormRow>
+              {/* General Information Section */}
+              <form className="admin-item-form" onSubmit={handleSubmit}>
+                <FormRow>
+                  <FormInput
+                    label="Product Name"
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    required={true}
+                    validationSchema={productSchema.shape.title}
+                  />
+                  <FormInput
+                    label="Product Cost"
+                    type="number"
+                    name="cost"
+                    value={formData.cost}
+                    onChange={handleChange}
+                    required={true}
+                    validationSchema={productSchema.shape.cost}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Special Text for Promotion:"
-                  type="text"
-                  name="spec"
-                  value={formData.spec}
-                  onChange={handleChange}
-                  required={false}
-                  validationSchema={productSchema.shape.specialText}
-                />
-                <FormInput
-                  label="Amount in Stock"
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  required={true}
-                  validationSchema={productSchema.shape.quantity}
-                />
-              </FormRow>
+                <FormRow>
+                  <FormInput
+                    label="Special Text for Promotion:"
+                    type="text"
+                    name="spec"
+                    value={formData.spec}
+                    onChange={handleChange}
+                    required={false}
+                    validationSchema={productSchema.shape.specialText}
+                  />
+                  <FormInput
+                    label="Amount in Stock"
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    required={true}
+                    validationSchema={productSchema.shape.quantity}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Product Description"
-                  type="textarea"
-                  name="description"
-                  rows={3}
-                  value={formData.description}
-                  onChange={handleChange}
-                  required={true}
-                  validationSchema={productSchema.shape.description}
-                />
-              </FormRow>
+                <FormRow>
+                  <FormInput
+                    label="Product Description"
+                    type="textarea"
+                    name="description"
+                    rows={3}
+                    value={formData.description}
+                    onChange={handleChange}
+                    required={true}
+                    validationSchema={productSchema.shape.description}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Select the Product Category"
-                  type="dropdown"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleCategoryChange}
-                  options={categories || []}
-                  required={true}
-                />
+                <FormRow>
+                  <FormInput
+                    label="Select the Product Category"
+                    type="dropdown"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleCategoryChange}
+                    options={categories || []}
+                    required={true}
+                  />
 
-                <FormInput
-                  label="Select the Product Sub-Category"
-                  type="dropdown"
-                  name="subCategory"
-                  value={formData.subCategory}
-                  onChange={handleChange}
-                  options={subCategories || []}
-                  defaultOption={"None"}
-                  required={true}
-                />
-              </FormRow>
+                  <FormInput
+                    label="Select the Product Sub-Category"
+                    type="dropdown"
+                    name="subCategory"
+                    value={formData.subCategory}
+                    onChange={handleChange}
+                    options={subCategories || []}
+                    defaultOption={"None"}
+                    required={true}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Select the Sizes of the Product"
-                  type="checkbox"
-                  name="sizes"
-                  value={formData.sizes}
-                  onChange={handleCheckboxChange}
-                  checkedOptions={formData.sizes || []}
-                  options={sizes}
-                  required={false}
-                />
-                <FormInput
-                  label="Brand associated with Product"
-                  type="text"
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleChange}
-                  required={false}
-                />
-              </FormRow>
-              <FormRow>
-                <FormInput
-                  label="Enter the Dimensions of the Product"
-                  type="text"
-                  name="dimensions"
-                  value={formData.dimensions}
-                  onChange={handleChange}
-                  required={false}
-                />
-                <FormInput
-                  label="Enter the Weight of the Product"
-                  type="text"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  required={false}
-                />
-              </FormRow>
+                <FormRow>
+                  <FormInput
+                    label="Select the Sizes of the Product"
+                    type="checkbox"
+                    name="sizes"
+                    value={formData.sizes}
+                    onChange={handleCheckboxChange}
+                    checkedOptions={formData.sizes || []}
+                    options={sizes}
+                    required={false}
+                  />
+                  <FormInput
+                    label="Brand associated with Product"
+                    type="text"
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                    required={false}
+                  />
+                </FormRow>
+                <FormRow>
+                  <FormInput
+                    label="Enter the Dimensions of the Product"
+                    type="text"
+                    name="dimensions"
+                    value={formData.dimensions}
+                    onChange={handleChange}
+                    required={false}
+                  />
+                  <FormInput
+                    label="Enter the Weight of the Product"
+                    type="text"
+                    name="weight"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    required={false}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Tags"
-                  description={
-                    "Please enter the tags for the product to help with searching. Separate each with a comma."
-                  }
-                  type="text"
-                  name="tags"
-                  value={formData.tags}
-                  onChange={handleChange}
-                  required={false}
-                />
-              </FormRow>
+                <FormRow>
+                  <FormInput
+                    label="Tags"
+                    description={
+                      "Please enter the tags for the product to help with searching. Separate each with a comma."
+                    }
+                    type="text"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleChange}
+                    required={false}
+                  />
+                </FormRow>
 
-              <FormRow>
-                <FormInput
-                  label="Additional Notes:"
-                  type="textarea"
-                  name="notes"
-                  rows={3}
-                  value={formData.notes}
-                  onChange={handleChange}
-                  required={false}
-                />
-              </FormRow>
-
-              <div className="admin-item-form-row">
-                <div className="admin-item-form-group">
-                  <label className="admin-item-label">Colors:</label>
-
-                  <div className="admin-item-color-input">
-                    <input
-                      type="text"
-                      value={colorName}
-                      onChange={(e) => setColorName(e.target.value)}
-                      placeholder="Color Name"
-                      className="admin-item-input"
-                    />
-                    <input
-                      type="color"
-                      value={colorInput}
-                      onChange={(e) => setColorInput(e.target.value)}
-                      className="admin-item-color-picker"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddColor}
-                      className="remove-color-button"
-                    >
-                      <FaPlus />
-                    </button>
-                  </div>
-
-                  {/* Display added colors */}
-                  <div className="admin-item-color-list">
-                    {formData.colors.map((color, index) => (
-                      <div
-                        key={index}
-                        className="admin-item-color-item"
-                        style={{
-                          backgroundColor: color.hexcode,
-                          padding: "10px",
-                          borderRadius: "5px",
-                          color: "#fff",
-                        }}
-                      >
-                        <p className="admin-item-color-text">
-                          {color.name} ({color.hexcode})
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveColor(index)}
-                          className="remove-color-button"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="admin-item-form-section">
-                <div className="admin-item-form-title">Image Upload</div>
-                <div className="admin-item-form-row">
-                  <div className="admin-item-form-image-group">
-                    <div className="admin-item-image-controls">
-                      <label className="admin-item-label">Main Image:</label>
-                      <CldUploadWidget
-                        uploadPreset="your-upload-preset"
-                        onSuccess={(result, { widget }) => {
-                          const img = result.info.public_id;
-                          setUpload(img);
-                          widget.close();
-                        }}
-                      >
-                        {({ open }) => {
-                          function handleMainOnClick() {
-                            open();
-                          }
-                          return (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                !formData.image
-                                  ? handleMainOnClick()
-                                  : toast.error("Delete the Main Image First!");
-                              }}
-                              className="admin-item-upload-button"
-                            >
-                              Upload Main Image <FaUpload />
-                            </button>
-                          );
-                        }}
-                      </CldUploadWidget>
-                    </div>
-                    {formData.image ? (
-                      <div className="admin-item-image">
-                        <CldImage
-                          src={formData.image}
-                          fill
-                          alt="Product Image"
-                          className="admin-item-image-preview"
-                          defaultImage="404_toij8l.png"
-                        />
-
-                        <div
-                          className="admin-image-controls"
-                          onClick={() =>
-                            lightboxRef.current?.openLightbox(formData.image)
-                          }
-                        >
-                          <div className="admin-image-controls-shelf">
-                            <div
-                              className={`admin-image-control admin-image-control-trash`}
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                await handleImageDelete(formData.image);
-                              }}
-                            >
-                              <FaTrashCan />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="admin-item-image">
-                        No Image Found <FaImagePortrait />
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <FormRow>
+                  <FormInput
+                    label="Additional Notes:"
+                    type="textarea"
+                    name="notes"
+                    rows={3}
+                    value={formData.notes}
+                    onChange={handleChange}
+                    required={false}
+                  />
+                </FormRow>
 
                 <div className="admin-item-form-row">
                   <div className="admin-item-form-group">
-                    <div className="admin-items-image-controls">
-                      <label className="admin-item-label">
-                        Gallery Images (Max 3):
-                      </label>
-                      <CldUploadWidget
-                        uploadPreset="your-upload-preset"
-                        onSuccess={(result, { widget }) => {
-                          const img = result.info.public_id;
-                          if (uploadGallery.length < 3)
-                            setUploadGallery([...galleryRef.current, img]);
+                    <label className="admin-item-label">Colors:</label>
 
-                          console.log(uploadGallery);
-                          widget.close();
-                        }}
-                        multiple={false}
+                    <div className="admin-item-color-input">
+                      <input
+                        type="text"
+                        value={colorName}
+                        onChange={(e) => setColorName(e.target.value)}
+                        placeholder="Color Name"
+                        className="admin-item-input"
+                      />
+                      <input
+                        type="color"
+                        value={colorInput}
+                        onChange={(e) => setColorInput(e.target.value)}
+                        className="admin-item-color-picker"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddColor}
+                        className="remove-color-button"
                       >
-                        {({ open }) => {
-                          function handleGalleryOnClick() {
-                            open();
-                          }
-                          return (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                galleryRef.current = [
-                                  ...formData.galleryImages,
-                                ];
-                                formData.galleryImages.length < 3
-                                  ? handleGalleryOnClick()
-                                  : toast.error(
-                                      "This product has 3 Gallery Images. Please delete one to upload."
-                                    );
-                              }}
-                              className="admin-item-upload-button"
-                            >
-                              Upload Gallery Images <FaUpload />
-                            </button>
-                          );
-                        }}
-                      </CldUploadWidget>
+                        <FaPlus />
+                      </button>
                     </div>
-                    <div className="gallery-preview">
-                      {formData.galleryImages.length > 0 ? (
-                        formData.galleryImages.map((img, index) => (
-                          <div key={index} className="admin-item-image">
-                            <CldImage
-                              src={img}
-                              fill
-                              alt={`Gallery Image ${index + 1}`}
-                              className="admin-item-image-preview"
-                              defaultImage="404_toij8l.png"
-                              onClick={() =>
-                                lightboxRef.current?.openLightbox(img)
-                              }
-                            />
-                            <div
-                              className="admin-image-controls"
-                              onClick={() =>
-                                lightboxRef.current?.openLightbox(img)
-                              }
-                            >
-                              <div className="admin-image-controls-shelf">
-                                <div
-                                  className={`admin-image-control ${
-                                    index == 0 && "inactive"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    index != 0 &&
-                                      handleGalleryImageShift("left", index);
-                                  }}
-                                >
-                                  <FaArrowLeft />
-                                </div>
-                                <div
-                                  className={`admin-image-control ${
-                                    index ==
-                                      formData.galleryImages.length - 1 &&
-                                    "inactive"
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    index !=
-                                      formData.galleryImages.length - 1 &&
-                                      handleGalleryImageShift("right", index);
-                                  }}
-                                >
-                                  <FaArrowRight />
-                                </div>
-                                <div
-                                  className={`admin-image-control admin-image-control-trash`}
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    await handleGalleryImageDelete(img, index);
-                                  }}
-                                >
-                                  <FaTrashCan />
-                                </div>
+
+                    {/* Display added colors */}
+                    <div className="admin-item-color-list">
+                      {formData.colors.map((color, index) => (
+                        <div
+                          key={index}
+                          className="admin-item-color-item"
+                          style={{
+                            backgroundColor: color.hexcode,
+                            padding: "10px",
+                            borderRadius: "5px",
+                            color: "#fff",
+                          }}
+                        >
+                          <p className="admin-item-color-text">
+                            {color.name} ({color.hexcode})
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveColor(index)}
+                            className="remove-color-button"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="admin-item-form-section">
+                  <div className="admin-item-form-title">Image Upload</div>
+                  <div className="admin-item-form-row">
+                    <div className="admin-item-form-image-group">
+                      <div className="admin-item-image-controls">
+                        <label className="admin-item-label">Main Image:</label>
+                        <CldUploadWidget
+                          uploadPreset="your-upload-preset"
+                          onSuccess={(result, { widget }) => {
+                            const img = result.info.public_id;
+                            setUpload(img);
+                            widget.close();
+                          }}
+                        >
+                          {({ open }) => {
+                            function handleMainOnClick() {
+                              open();
+                            }
+                            return (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  !formData.image
+                                    ? handleMainOnClick()
+                                    : toast.error(
+                                        "Delete the Main Image First!"
+                                      );
+                                }}
+                                className="admin-item-upload-button"
+                              >
+                                Upload Main Image <FaUpload />
+                              </button>
+                            );
+                          }}
+                        </CldUploadWidget>
+                      </div>
+                      {formData.image ? (
+                        <div className="admin-item-image">
+                          <CldImage
+                            src={formData.image}
+                            fill
+                            alt="Product Image"
+                            className="admin-item-image-preview"
+                            defaultImage="404_toij8l.png"
+                          />
+
+                          <div
+                            className="admin-image-controls"
+                            onClick={() =>
+                              lightboxRef.current?.openLightbox(formData.image)
+                            }
+                          >
+                            <div className="admin-image-controls-shelf">
+                              <div
+                                className={`admin-image-control admin-image-control-trash`}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  await handleImageDelete(formData.image);
+                                }}
+                              >
+                                <FaTrashCan />
                               </div>
                             </div>
                           </div>
-                        ))
+                        </div>
                       ) : (
                         <div className="admin-item-image">
-                          No Images Found <FaImagePortrait />
+                          No Image Found <FaImagePortrait />
                         </div>
                       )}
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <button type="submit" className="admin-item-complete-button">
-                Save Changes
-              </button>
-            </form>
-            <ErrorContainer errors={errors} />
-          </div>
-        ) : (
-          <Loading />
-        )}
-        {<Lightbox ref={lightboxRef} />}
-      </div>
-    </main>
+                  <div className="admin-item-form-row">
+                    <div className="admin-item-form-group">
+                      <div className="admin-items-image-controls">
+                        <label className="admin-item-label">
+                          Gallery Images (Max 3):
+                        </label>
+                        <CldUploadWidget
+                          uploadPreset="your-upload-preset"
+                          onSuccess={(result, { widget }) => {
+                            const img = result.info.public_id;
+                            if (uploadGallery.length < 3)
+                              setUploadGallery([...galleryRef.current, img]);
+
+                            console.log(uploadGallery);
+                            widget.close();
+                          }}
+                          multiple={false}
+                        >
+                          {({ open }) => {
+                            function handleGalleryOnClick() {
+                              open();
+                            }
+                            return (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  galleryRef.current = [
+                                    ...formData.galleryImages,
+                                  ];
+                                  formData.galleryImages.length < 3
+                                    ? handleGalleryOnClick()
+                                    : toast.error(
+                                        "This product has 3 Gallery Images. Please delete one to upload."
+                                      );
+                                }}
+                                className="admin-item-upload-button"
+                              >
+                                Upload Gallery Images <FaUpload />
+                              </button>
+                            );
+                          }}
+                        </CldUploadWidget>
+                      </div>
+                      <div className="gallery-preview">
+                        {formData.galleryImages.length > 0 ? (
+                          formData.galleryImages.map((img, index) => (
+                            <div key={index} className="admin-item-image">
+                              <CldImage
+                                src={img}
+                                fill
+                                alt={`Gallery Image ${index + 1}`}
+                                className="admin-item-image-preview"
+                                defaultImage="404_toij8l.png"
+                                onClick={() =>
+                                  lightboxRef.current?.openLightbox(img)
+                                }
+                              />
+                              <div
+                                className="admin-image-controls"
+                                onClick={() =>
+                                  lightboxRef.current?.openLightbox(img)
+                                }
+                              >
+                                <div className="admin-image-controls-shelf">
+                                  <div
+                                    className={`admin-image-control ${
+                                      index == 0 && "inactive"
+                                    }`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      index != 0 &&
+                                        handleGalleryImageShift("left", index);
+                                    }}
+                                  >
+                                    <FaArrowLeft />
+                                  </div>
+                                  <div
+                                    className={`admin-image-control ${
+                                      index ==
+                                        formData.galleryImages.length - 1 &&
+                                      "inactive"
+                                    }`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      index !=
+                                        formData.galleryImages.length - 1 &&
+                                        handleGalleryImageShift("right", index);
+                                    }}
+                                  >
+                                    <FaArrowRight />
+                                  </div>
+                                  <div
+                                    className={`admin-image-control admin-image-control-trash`}
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      await handleGalleryImageDelete(
+                                        img,
+                                        index
+                                      );
+                                    }}
+                                  >
+                                    <FaTrashCan />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="admin-item-image">
+                            No Images Found <FaImagePortrait />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" className="admin-item-complete-button">
+                  Save Changes
+                </button>
+              </form>
+              <ErrorContainer errors={errors} />
+            </div>
+          ) : (
+            <Loading />
+          )}
+          {<Lightbox ref={lightboxRef} />}
+        </div>
+      </main>
+    </Suspense>
   );
 };
 
