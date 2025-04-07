@@ -1,6 +1,6 @@
 "use client";
 import "./home.css";
-import dynamic from "next/dynamic";
+
 import Section from "@/components/main/section/Section";
 import Banner from "@/components/main/banner/Banner";
 import Categories from "@/components/main/categories/Categories";
