@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import { productSchema } from "@/lib/schema";
 import { useRouter } from "next/navigation";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
+export const dynamic = "force-dynamic";
 
 const Item = () => {
   const { id } = useParams();

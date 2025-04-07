@@ -4,6 +4,8 @@ import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
 import { useRouter } from "next/navigation";
 import "./admin.css";
 
+export const dynamic = "force-dynamic";
+
 const Admin = () => {
   const router = useRouter();
 

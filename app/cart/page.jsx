@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { Loading } from "@/components/controls/loading/Loading";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
 
 const Cart = () => {
   const { cart, setCart } = useContext(CartContext);

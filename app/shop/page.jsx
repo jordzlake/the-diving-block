@@ -8,6 +8,7 @@ import StoreCard from "@/components/cards/store-card/Storecard";
 import { Collapse } from "antd";
 import { getProducts } from "@/lib/productActions";
 import { FaCartShopping, FaGlobe, FaSpinner } from "react-icons/fa6";
+export const dynamic = "force-dynamic";
 
 const items = [
   {

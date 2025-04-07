@@ -9,6 +9,7 @@ import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import "@/app/shop/[id]/item.css";
 import { useParams, useRouter } from "next/navigation";
 import { CldImage } from "next-cloudinary";
+export const dynamic = "force-dynamic";
 
 const Item = () => {
   const { id } = useParams();

@@ -10,6 +10,7 @@ import SubCategories from "@/components/main/subcategories/SubCategories";
 import { getProducts } from "@/lib/productActions";
 import { useEffect, useState } from "react";
 
+export const dynamic = "force-dynamic";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
