@@ -12,7 +12,7 @@ const Cart = () => {
 
   return (
     <main>
-      <section className="container">
+      {/* <section className="container">
         {cart.length > 0 ? (
           <div className="cart-container">
             <div className="cart-wrapper">
@@ -120,7 +120,7 @@ const Cart = () => {
             </div>
           </div>
         )}
-      </section>
+      </section> */}
     </main>
   );
 };
