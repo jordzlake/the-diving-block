@@ -12,10 +12,14 @@ import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { usePathname, useSearchParams } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { handleSignOut } from "@/lib/actions/authActions";
 
 export const dynamic = "force-dynamic";
 
 const Header = () => {
+  const { data: session } = useSession();
+  console.log("Session", session);
   const currentPath = usePathname();
   const searchParams = useSearchParams();
   const [isAnimating, setIsAnimating] = useState(false);
@@ -109,7 +113,7 @@ const Header = () => {
 
   useEffect(() => {
     setCurPath(`${currentPath + searchParams}`);
-  }, [currentPath, searchParams]);
+  }, [currentPath, searchParams, session]);
 
   return (
     <header>
@@ -149,6 +153,53 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+              {!session ? (
+                <>
+                  <li className="nav-link mobile-hide">
+                    <Link
+                      href={"/login"}
+                      className={`nav-link-text ${
+                        currentPath === "/login" ? "active" : ""
+                      }`}
+                    >
+                      LOG IN
+                    </Link>
+                  </li>
+                  <li className="nav-link mobile-hide">
+                    <Link
+                      href={"/register"}
+                      className={`nav-link-text ${
+                        currentPath === "/register" ? "active" : ""
+                      }`}
+                    >
+                      REGISTER
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-link mobile-hide">
+                    <Link
+                      href={"/"}
+                      className={`nav-link-text ${
+                        currentPath === "/profile" ? "active" : ""
+                      }`}
+                    >
+                      PROFILE
+                    </Link>
+                  </li>
+                  <li className="nav-link mobile-hide">
+                    <div
+                      className={`nav-link-text ${
+                        currentPath === "/profile" ? "active" : ""
+                      }`}
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                    >
+                      SIGN OUT
+                    </div>
+                  </li>
+                </>
+              )}
             </ul>
           )}
         </div>
@@ -177,6 +228,43 @@ const Header = () => {
 
           <div style={{ display: "none" }} className="subnav-dropdown">
             <div className="subnav-mobile-menu-links">
+              {!session ? (
+                <>
+                  <div className="subnav-link-container">
+                    <Link
+                      href={"/login"}
+                      className={"subnav-mobile-menu-link-text"}
+                    >
+                      LOG IN
+                    </Link>
+                  </div>
+                  <div className="subnav-link-container">
+                    <Link
+                      href={"/register"}
+                      className={"subnav-mobile-menu-link-text"}
+                    >
+                      REGISTER
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="subnav-link-container">
+                    <Link href={"/"} className={"subnav-mobile-menu-link-text"}>
+                      PROFILE
+                    </Link>
+                  </div>
+                  <div className="subnav-link-container">
+                    <div
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className={"subnav-mobile-menu-link-text"}
+                    >
+                      SIGN OUT
+                    </div>
+                  </div>
+                </>
+              )}
+
               {NavLinksMobileMain.map((navLink) => (
                 <div className="subnav-link-container" key={navLink.name}>
                   <Link

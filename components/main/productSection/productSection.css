@@ -47,8 +47,10 @@
 .product-section-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1.8em;
+
+  justify-items: center;
 }
 
 .product-section-second {
@@ -125,6 +127,11 @@
 @media (min-width: 380px) {
   .product-section-title {
     font-size: 3em;
+  }
+}
+@media (min-width: 580px) {
+  .product-section-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

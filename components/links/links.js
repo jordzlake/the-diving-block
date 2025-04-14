@@ -32,11 +32,6 @@ export const NavLinksUser = [
     name: "CART",
     link: "/cart",
   },
-
-  {
-    name: "",
-    link: "",
-  },
 ];
 
 export const NavLinksMain = [

@@ -22,6 +22,7 @@ export async function GET() {
           city: user.city,
           phone: user.phone,
           street: user.street,
+          isAdmin: user.isAdmin ? true : false,
         };
       })
     );

@@ -32,6 +32,7 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
                 cost={product.cost}
                 discount={product.discount}
                 category={product.category}
+                small
                 handleClick={() => router.push(`/shop/${product._id}`)}
               />
             ))}

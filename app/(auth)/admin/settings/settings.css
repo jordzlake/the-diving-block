@@ -16,10 +16,18 @@
   gap: 1.5em;
 }
 
+.admin-settings-pair {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
 .admin-settings-group {
   border: 1px solid var(--gray);
   padding: 15px;
   border-radius: 0.4em;
+  overflow: scroll;
 }
 
 .admin-settings-label {
@@ -45,6 +53,7 @@
   margin-left: 1em;
   padding-left: 1em;
   border-left: 1px solid var(--light-gray);
+  width: 100%;
 }
 
 .admin-settings-sub-item {
@@ -60,7 +69,7 @@
   margin-top: 1em;
   display: flex;
   gap: 1em;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .admin-settings-add-button,
@@ -121,40 +130,4 @@
 .admin-settings-save-button:hover {
   background-color: var(--light-pink);
   color: var(--pink);
-}
-
-/* Responsive adjustments (mimicking the items.css) */
-@media (min-width: 768px) {
-  .admin-settings-form {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .admin-settings-group {
-    width: calc(50% - 1em); /* Two groups per row */
-  }
-
-  .admin-settings-item,
-  .admin-settings-sub-item,
-  .admin-settings-array-item {
-    width: 100%;
-  }
-
-  .admin-settings-add-item,
-  .admin-settings-add-subcategory {
-    width: 100%;
-  }
-
-  .admin-settings-form > .admin-settings-group:last-child,
-  .admin-settings-form > .admin-settings-group:nth-last-child(2) {
-    width: 100%; /* Ensure last row takes full width if needed */
-  }
-}
-
-@media (min-width: 1200px) {
-  .admin-settings-group {
-    width: calc(33% - 1em); /* Three groups per row on larger screens */
-  }
 }

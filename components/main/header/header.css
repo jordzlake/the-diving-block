@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1em;
+  gap: 0.5em;
 }
 
 .nav-logo-container {
@@ -43,6 +43,7 @@
 
 .nav-links-container li {
   width: 73px;
+  text-align: center;
 }
 
 .subnav {
@@ -64,6 +65,14 @@
   color: var(--white);
   font-family: var(--font-rubik);
   text-decoration: none;
+}
+
+.nav-link-text {
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
 }
 
 /* Hamburger Menu */

@@ -3,11 +3,21 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CldImage } from "next-cloudinary";
 
-const StoreCard = ({ url, title, cost, id, image, discount, handleClick }) => {
+const StoreCard = ({
+  url,
+  title,
+  cost,
+  id,
+  image,
+  discount,
+  handleClick,
+  small,
+}) => {
   const router = useRouter();
   return (
     <div
       className="image-card"
+      style={small && { width: "8em" }}
       onClick={() => {
         handleClick ? handleClick() : url && router.push(url);
       }}
