@@ -1,0 +1,119 @@
+.my-orders-cont {
+  width: 100%;
+  min-height: 80vh;
+  margin-bottom: 2em;
+  padding: 3em var(--g-padding);
+  text-align: center;
+}
+
+.my-orders-container {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.my-orders-filter-tabs {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+.my-orders-title {
+  width: 100%;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 1em;
+}
+
+.filter {
+  padding: 0.3em 0.3em;
+  width: 100%;
+  border: 1px solid var(--white);
+  background-color: var(--white);
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.filter:hover {
+  background-color: var(--dark);
+  color: var(--white);
+}
+
+.filter.active {
+  background-color: var(--orange);
+  border: 1px solid var(--white);
+  color: var(--white);
+  font-weight: bold;
+}
+
+.my-orders-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  background-color: var(--dark);
+  min-height: 50vh;
+  padding: 1em;
+}
+
+.my-order-container {
+  padding: 1em;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--white);
+  transition: all 0.3s ease-in-out;
+  background-color: var(--darker);
+  cursor: pointer;
+}
+
+.my-order-container:hover {
+  transform: scale(1.01);
+  border: 1px solid var(--orange);
+}
+
+.my-order-top-info {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--white);
+  justify-content: space-between;
+}
+
+.my-order-bottom-info {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em 0;
+  justify-content: space-between;
+}
+
+.my-order-new {
+  color: var(--orange);
+  font-weight: bold;
+  font-family: var(--font-lato);
+  text-align: right;
+}
+
+.my-order-name {
+  font-size: 1.3em;
+  font-weight: bold;
+  text-align: left;
+}
+.my-order-items-left {
+  text-align: left;
+}
+
+.my-order-items-right {
+  text-align: right;
+}
+
+@media (min-width: 640px) {
+  .filter {
+    width: unset;
+    padding: 0.3em 1.2em;
+  }
+  .my-orders-cont {
+    text-align: left;
+  }
+}

@@ -19,16 +19,6 @@ export const NavLinks = [
 
 export const NavLinksUser = [
   {
-    name: "PROFILE",
-    link: "/profile",
-  },
-
-  {
-    name: "TRACKING",
-    link: "/profile/track",
-  },
-
-  {
     name: "CART",
     link: "/cart",
   },

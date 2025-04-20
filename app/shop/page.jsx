@@ -8,6 +8,7 @@ import StoreCard from "@/components/cards/store-card/Storecard";
 import { Collapse } from "antd";
 import { getProducts } from "@/lib/productActions";
 import { FaCartShopping, FaGlobe, FaSpinner } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 const items = [
@@ -171,6 +172,7 @@ const items = [
 ];
 
 const Shop = () => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 

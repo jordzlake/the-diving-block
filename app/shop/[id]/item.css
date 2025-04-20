@@ -26,9 +26,40 @@
   gap: 3em;
   margin-bottom: 2em;
 }
+.item-display-container {
+  width: 100%;
+}
+
+.item-images-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .item-image-container {
   width: 100%;
   height: 22em;
+}
+
+.item-image-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0.4em;
+  gap: 0.4em;
+  margin: auto;
+  width: min-content;
+  margin-top: 2em;
+}
+
+.item-gallery-image-container {
+  width: 6em;
+  height: 6em;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.active.item-gallery-image-container {
+  border-color: var(--orange);
 }
 
 .item-image-container img {
@@ -40,7 +71,6 @@
   font-family: var(--font-rubik);
   color: var(--darker);
   text-transform: capitalize;
-  margin-bottom: 1em;
 }
 .item-content-cost {
   font-weight: bold;
@@ -68,29 +98,37 @@
 .item-colors {
   display: flex;
   flex-direction: row;
-  gap: 1em;
-  width: 50%;
+  gap: 1.3em;
+  width: 100%;
   margin-bottom: 1em;
 }
 
 .item-color,
 .item-sizes-select,
 .item-quantity-container input {
-  padding: 0.3em;
-  border: 1px solid var(--grey);
-  background-color: var(--white);
+  padding: 0.7em;
+  border: 1px solid var(--gray);
+  background-color: #fff;
   color: var(--darker);
   font-weight: 500;
   font-size: medium;
   border-radius: 2px;
   cursor: pointer;
+  transition: background-color 0.2s linear;
 }
 
 .item-color-selected,
 .item-size-select {
   background-color: var(--darker);
   color: var(--white);
-  border: 1px solid var(--darker);
+  border: 3px solid var(--orange);
+}
+
+.item-color-name {
+  background-color: #6c6c6c;
+  padding: 0.1em 0.5em;
+  border-radius: 20px;
+  color: var(--white);
 }
 
 .item-add-btn {
@@ -112,6 +150,18 @@
   border: 1px solid var(--orange);
 }
 
+.item-description-title {
+  font-size: 0.9;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 0.7em;
+}
+
+.item-description-container {
+  margin: 3em 0;
+}
+
 @media (min-width: 480px) {
   .item-information-container {
     flex-direction: row;
@@ -124,5 +174,11 @@
   }
   .item-content-container {
     flex-basis: 33%;
+  }
+  .item-image-gallery {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.4em;
   }
 }

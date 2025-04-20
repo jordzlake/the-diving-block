@@ -1,62 +1,64 @@
 "use client";
 
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import "./order.css";
 import { Loading } from "@/components/controls/loading/Loading";
 import { getOrder, updateOrder } from "@/lib/orderActions";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { toast } from "react-toastify";
 import { CldImage } from "next-cloudinary";
 
-const AdminOrder = () => {
-  const router = useRouter();
+const Order = () => {
   const { id } = useParams();
   const searchParams = useSearchParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [pending, setPending] = useState(false);
-  const [status, setStatus] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
 
   useEffect(() => {
     if (!order) {
-      (async () => {
-        try {
-          let order = await getOrder(id);
-
-          console.log("order", order);
-          setStatus(order.status);
-          setPaymentStatus(order.paymentStatus);
-          setOrder(order);
-
-          setLoading(false);
-        } catch (err) {
-          setLoading(false);
+      if (id) {
+        const status = searchParams.get("status")
+          ? searchParams.get("status")
+          : "";
+        const transaction_id = searchParams.get("transaction_id")
+          ? searchParams.get("transaction_id")
+          : "";
+        let paymentStatus = "Error";
+        if (status == "failed") {
+          paymentStatus = "Failed";
         }
-      })();
-    } else {
-      setLoading(false);
+        if (status == "success") {
+          paymentStatus = "Success";
+        }
+        (async () => {
+          try {
+            let order = await getOrder(id);
+
+            console.log("order", order);
+            if (order.paymentStatus == "Pending") {
+              if (status != "" && transaction_id != "") {
+                let newOrder = await updateOrder({
+                  ...order,
+                  paymentStatus: paymentStatus,
+                });
+                console.log("newOrder", newOrder);
+                setOrder(newOrder);
+              } else {
+                setOrder(order);
+              }
+            } else {
+              setOrder(order);
+            }
+            setLoading(false);
+          } catch (err) {
+            setLoading(false);
+          }
+        })();
+      } else {
+        setLoading(false);
+      }
     }
   }, [searchParams, id, order]);
-
-  const handleSubmit = async () => {
-    setPending(true);
-    const data = {
-      ...order,
-      status: status,
-      paymentStatus: paymentStatus,
-    };
-
-    const res = await updateOrder(data);
-    setPending(false);
-    if (res.error) {
-      toast.error("Error: " + res.error);
-    } else {
-      toast.success("Order was updated successfully");
-      router.push("/admin/orders");
-    }
-  };
 
   return (
     <main>
@@ -190,57 +192,6 @@ const AdminOrder = () => {
                 </tfoot>
               </table>
             </div>
-            <div className="orders-controls">
-              <h2 className="orders-subtitle">Admin Controls</h2>
-
-              <div className="order-status-control">
-                <label>Order Status:</label>
-                <div className="controls">
-                  <div
-                    className={`control ${
-                      status == "In Progress" && "inprogress"
-                    }`}
-                    onClick={() => setStatus("In Progress")}
-                  >
-                    In Progress
-                  </div>
-                  <div
-                    className={`control ${
-                      status == "Completed" && "completed"
-                    }`}
-                    onClick={() => setStatus("Completed")}
-                  >
-                    Completed
-                  </div>
-                </div>
-              </div>
-              <div className="order-status-control">
-                <label>Order Payment Status:</label>
-                <div className="controls">
-                  <div
-                    className={`control ${
-                      paymentStatus == "Failed" && "inprogress"
-                    }`}
-                    onClick={() => setPaymentStatus("Failed")}
-                  >
-                    Unpaid
-                  </div>
-                  <div
-                    className={`control ${
-                      paymentStatus == "Success" && "completed"
-                    }`}
-                    onClick={() => setPaymentStatus("Success")}
-                  >
-                    Paid
-                  </div>
-                </div>
-              </div>
-              <div className="order-submit-container">
-                <button onClick={handleSubmit} className="order-submit-button">
-                  {pending ? "...Please Wait" : "Update Status"}
-                </button>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="cart-fallback-container">
@@ -256,4 +207,4 @@ const AdminOrder = () => {
   );
 };
 
-export default AdminOrder;
+export default Order;

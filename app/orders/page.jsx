@@ -1,19 +1,17 @@
 "use client";
 
 import "./orders.css";
-import "../admin.css";
 import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
 import { useEffect, useState } from "react";
-import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
-
-import { getOrders } from "@/lib/orderActions";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Loading } from "@/components/controls/loading/Loading";
+import { getOrders } from "@/lib/orderActions";
 
 export const dynamic = "force-dynamic";
 
-const AdminOrders = () => {
+const Orders = () => {
+  const session = useSession();
   const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -21,22 +19,25 @@ const AdminOrders = () => {
   const [filter, setFilter] = useState("In Progress");
 
   useEffect(() => {
-    (async () => {
-      try {
-        const adminOrders = await getOrders();
-        setOrders(adminOrders);
-        if (adminOrders.length > 0) {
-          const tempFiltered = adminOrders.filter(
-            (ord) => ord.status == filter || ord.paymentStatus == filter
-          );
-          setFilteredOrders(tempFiltered);
+    if (session && session.data?.user) {
+      (async () => {
+        try {
+          const user = session.data?.user;
+          const myOrders = await getOrders();
+          console.log("my orders", myOrders);
+          console.log("user", user);
+          const newOrders = myOrders.filter((ord) => ord.meta?.id == user._id);
+          setOrders(newOrders);
+          setFilteredOrders(newOrders);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
         }
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-      }
-    })();
-  }, []);
+      })();
+    } else {
+      setLoading(false);
+    }
+  }, [session]);
 
   const filterOrders = (filter) => {
     if (orders.length > 0) {
@@ -53,88 +54,82 @@ const AdminOrders = () => {
   };
 
   return (
-    <main className="admin-orders admin-section">
+    <main className="orders ">
       <ScrollToTop />
-      <AdminNavbar />
-      <div className="admin-container orders-cont">
-        <h1 className="admin-title">Orders</h1>
+      <div className="my-orders-container my-orders-cont">
+        <h1 className="my-orders-title">Orders</h1>
         {!loading ? (
           orders.length > 0 ? (
-            <div className="admin-orders-container">
-              <div className="admin-orders-filter-tabs">
+            <div className="my-orders-container">
+              <div className="my-orders-filter-tabs">
                 <div
-                  className={`admin-filter ${
-                    filter == "In Progress" && "active"
-                  }`}
+                  className={`filter ${filter == "In Progress" && "active"}`}
                   onClick={() => filterOrders("In Progress")}
                 >
                   In Progress
                 </div>
                 <div
-                  className={`admin-filter ${
-                    filter == "Completed" && "active"
-                  }`}
+                  className={`filter ${filter == "Completed" && "active"}`}
                   onClick={() => filterOrders("Completed")}
                 >
                   Completed
                 </div>
                 <div
-                  className={`admin-filter ${filter == "Paid" && "active"}`}
+                  className={`filter ${filter == "Paid" && "active"}`}
                   onClick={() => filterOrders("Paid")}
                 >
                   Paid
                 </div>
                 <div
-                  className={`admin-filter ${filter == "Unpaid" && "active"}`}
+                  className={`filter ${filter == "Unpaid" && "active"}`}
                   onClick={() => filterOrders("Unpaid")}
                 >
                   Unpaid
                 </div>
                 <div
-                  className={`admin-filter ${filter == "All" && "active"}`}
+                  className={`filter ${filter == "All" && "active"}`}
                   onClick={() => filterOrders("All")}
                 >
                   All
                 </div>
               </div>
-              <div className="admin-orders-rows">
+              <div className="my-orders-rows">
                 {filteredOrders.map((ord, i) => (
                   <div
                     key={i}
                     onClick={() => {
-                      router.push(`/admin/orders/${ord._id}`);
+                      router.push(`/orders/${ord._id}`);
                     }}
-                    className="admin-order-container"
+                    className="my-order-container"
                   >
-                    <div className="admin-order-top-info">
-                      <div className="admin-order-name">
-                        {ord.customerData.firstName} {ord.customerData.lastName}
+                    <div className="my-order-top-info">
+                      <div className="my-order-name">
+                        {ord.customerData.recipient}
                       </div>
-                      {ord.new && <div className="admin-order-new">NEW!</div>}
                     </div>
-                    <div className="admin-order-bottom-info">
-                      <div className="admin-order-items-left">
-                        <div className="admin-order-payment-status">
+                    <div className="my-order-bottom-info">
+                      <div className="my-order-items-left">
+                        <div className="my-order-payment-status">
                           Order Status: {ord.status}
                         </div>
-                        <div className="admin-order-payment-status">
+                        <div className="my-order-payment-status">
                           Date:{" "}
                           {new Date(ord.createdAt).toLocaleString("en-GB", {
                             timeZone: "America/Port_of_Spain",
                           })}
                         </div>
-                        <div className="admin-order-payment-type">
+
+                        <div className="my-order-payment-type">
                           Payment Status: {ord.paymentStatus}
                         </div>
                       </div>
-                      <div className="admin-order-items-right">
-                        <div className="admin-order-number">
+                      <div className="my-order-items-right">
+                        <div className="my-order-number">
                           {ord.orderItems.length} Items
                         </div>
-                        <div className="admin-order-cost">
+                        <div className="my-order-cost">
                           ${Number(ord.total).toFixed(2)} TTD
                         </div>
-                        <div className="admin-order-cost">ID: {ord._id}</div>
                       </div>
                     </div>
                   </div>
@@ -142,7 +137,7 @@ const AdminOrders = () => {
               </div>
             </div>
           ) : (
-            <div>There are no orders.</div>
+            <div>You have no orders.</div>
           )
         ) : (
           <Loading />
@@ -152,4 +147,4 @@ const AdminOrders = () => {
   );
 };
 
-export default AdminOrders;
+export default Orders;

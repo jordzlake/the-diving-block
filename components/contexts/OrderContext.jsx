@@ -2,9 +2,9 @@
 
 import { createContext, useEffect, useState } from "react";
 
-export const CartContext = createContext({});
+export const OrderContext = createContext({});
 
-export function CartProvider({ children }) {
+export function OrderContextProvider({ children }) {
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ export function CartProvider({ children }) {
 
   function calcTotal() {
     const total = Number(
-      orderItems.reduce((acc, item) => acc + item.orderItemtotal, 0)
+      orderItems.reduce((acc, item) => acc + item.orderItemTotal, 0)
     );
 
     return total;
@@ -63,13 +63,55 @@ export function CartProvider({ children }) {
     ls?.setItem("orderItems", JSON.stringify([]));
   }
 
+  function incrementItem(index) {
+    if (orderItems[index].amount < orderItems[index].item.quantity) {
+      setOrderItems((prev) => {
+        const updatedItems = prev.map((oi, i) => {
+          if (i === index) {
+            const updatedAmount = oi.amount + 1;
+            return {
+              ...oi,
+              amount: updatedAmount,
+              orderItemTotal: updatedAmount * oi.item.cost,
+            };
+          }
+          return oi;
+        });
+        ls?.setItem("orderItems", JSON.stringify(updatedItems));
+        return updatedItems;
+      });
+    }
+  }
+
+  function decrementItem(index) {
+    if (orderItems[index].amount > 1) {
+      setOrderItems((prev) => {
+        const updatedItems = prev.map((oi, i) => {
+          if (i === index && oi.amount > 1) {
+            const updatedAmount = oi.amount - 1;
+            return {
+              ...oi,
+              amount: updatedAmount,
+              orderItemTotal: updatedAmount * oi.item.cost,
+            };
+          }
+          return oi;
+        });
+        ls?.setItem("orderItems", JSON.stringify(updatedItems));
+        return updatedItems;
+      });
+    }
+  }
+
   return (
-    <CartContext.Provider
+    <OrderContext.Provider
       value={{
         orderItems,
         setOrderItems,
         addItem,
         calcTotal,
+        incrementItem,
+        decrementItem,
         deleteItem,
         updateItem,
         clearItems,
@@ -77,6 +119,6 @@ export function CartProvider({ children }) {
       }}
     >
       {children}
-    </CartContext.Provider>
+    </OrderContext.Provider>
   );
 }

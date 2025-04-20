@@ -244,6 +244,38 @@ const FormInput = ({
           </div>
         </div>
       );
+    case "radio":
+      return (
+        <div
+          className={`form-group ${
+            errorMessage ? "form-checkbox-group-error" : ""
+          }`}
+        >
+          <label className="form-label">{label}:</label>
+          {description && (
+            <label className="form-label-info">{description}</label>
+          )}
+          {options.map((option, i) => (
+            <label
+              key={`radio-${i}`}
+              className="form-radio-label"
+              htmlFor={`${name}-${option.value}-${i}`}
+            >
+              {option.displayValue}
+              <input
+                className="form-input-radio"
+                type="radio"
+                id={`${name}-${option.value}-${i}`}
+                name={name}
+                value={option.value}
+                checked={String(value) === String(option.value)}
+                onChange={handleInputChange}
+              />
+              <span className="form-radio-checkmark"></span>
+            </label>
+          ))}
+        </div>
+      );
     default:
       return null;
   }

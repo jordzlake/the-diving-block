@@ -230,7 +230,7 @@ const Item = () => {
 
                 <FormRow>
                   <FormInput
-                    label="Special Text for Promotion:"
+                    label="Special Text for Promotion"
                     type="text"
                     name="spec"
                     value={formData.spec}
@@ -504,7 +504,7 @@ const Item = () => {
                             return (
                               <button
                                 type="button"
-                                onClick={() => {
+                                onClick={(e) => {
                                   e.preventDefault();
                                   galleryRef.current = [
                                     ...formData.galleryImages,

@@ -10,10 +10,10 @@ import Image from "next/image";
 import "@/components/main/header/header.css";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
-import { CartContext } from "@/components/controls/Contexts/CartProvider";
 import { usePathname, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { handleSignOut } from "@/lib/actions/authActions";
+import { OrderContext } from "@/components/contexts/OrderContext";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ const Header = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [Velocity, setVelocity] = useState(null); // State to hold the Velocity function
   const [curPath, setCurPath] = useState(" ");
-  const { cart, setCart } = useContext(CartContext);
+  const { orderItems, setOrderItems } = useContext(OrderContext);
 
   useEffect(() => {
     (async () => {
@@ -180,21 +180,16 @@ const Header = () => {
                 <>
                   <li className="nav-link mobile-hide">
                     <Link
-                      href={"/"}
+                      href={"/orders"}
                       className={`nav-link-text ${
-                        currentPath === "/profile" ? "active" : ""
+                        currentPath === "/orders" ? "active" : ""
                       }`}
                     >
-                      PROFILE
+                      ORDERS
                     </Link>
                   </li>
                   <li className="nav-link mobile-hide">
-                    <div
-                      className={`nav-link-text ${
-                        currentPath === "/profile" ? "active" : ""
-                      }`}
-                      onClick={() => signOut({ callbackUrl: "/login" })}
-                    >
+                    <div onClick={() => signOut({ callbackUrl: "/login" })}>
                       SIGN OUT
                     </div>
                   </li>
@@ -250,8 +245,11 @@ const Header = () => {
               ) : (
                 <>
                   <div className="subnav-link-container">
-                    <Link href={"/"} className={"subnav-mobile-menu-link-text"}>
-                      PROFILE
+                    <Link
+                      href={"/orders"}
+                      className={"subnav-mobile-menu-link-text"}
+                    >
+                      ORDERS
                     </Link>
                   </div>
                   <div className="subnav-link-container">

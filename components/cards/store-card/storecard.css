@@ -4,7 +4,7 @@
   flex-direction: column;
   text-align: start;
   height: 24em;
-  width: 7em;
+  width: 14em;
   transition: transform 0.2s ease-in-out;
   overflow: hidden;
   white-space: nowrap;

@@ -1,3 +1,5 @@
+"use client";
+
 import "@/components/main/footer/footer.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,9 +9,16 @@ import {
   faInstagram,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
-import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa6";
+import {
+  FaComputer,
+  FaFacebook,
+  FaInstagram,
+  FaWhatsapp,
+} from "react-icons/fa6";
+import { useSession } from "next-auth/react";
 
 const Footer = () => {
+  const session = useSession();
   return (
     <footer className="footer-container">
       <div className="footer-content-container">
@@ -53,11 +62,6 @@ const Footer = () => {
                   Contact
                 </Link>
               </li>
-              <li>
-                <Link href="/privacy" className="footer-content-grid-link">
-                  Privacy Policy
-                </Link>
-              </li>
             </ul>
           </div>
           <div className="footer-content-grid-item">
@@ -97,6 +101,19 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+          {session?.data?.user && session.data.user.isAdmin && (
+            <div className="footer-content-grid-item">
+              <h2 className="footer-content-grid-title">Dashboard</h2>
+              <ul className="footer-content-grid-links">
+                <li>
+                  <Link className="footer-content-grid-link" href="/admin">
+                    <FaComputer />
+                    &nbsp;&nbsp;&nbsp; Dashboard
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
         <div className="footer-content-bottom">
           <p>&copy; 2021 The Diving Block. All Rights Reserved.</p>

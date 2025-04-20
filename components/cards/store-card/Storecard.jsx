@@ -17,7 +17,7 @@ const StoreCard = ({
   return (
     <div
       className="image-card"
-      style={small && { width: "8em" }}
+      style={small && { width: "13em" }}
       onClick={() => {
         handleClick ? handleClick() : url && router.push(url);
       }}

@@ -27,7 +27,7 @@ const Settings = () => {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newSubCategoryNames, setNewSubCategoryNames] = useState([]);
   const [newSize, setNewSize] = useState("");
-  const [newLocationType, setNewLocationType] = useState("");
+  const [newLocation, setNewLocation] = useState({ name: "", cost: 0 });
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -125,21 +125,16 @@ const Settings = () => {
     setSettingsData({ ...settingsData, sizes: updatedSizes });
   };
 
-  const handleLocationTypeChange = (e) => {
-    const { value } = e.target;
-    const index = parseInt(e.target.dataset.index);
-    const updatedLocations = [...settingsData.locations];
-    updatedLocations[index] = value;
-    setSettingsData({ ...settingsData, locations: updatedLocations });
-  };
-
   const handleAddLocation = () => {
-    if (newLocationType.trim()) {
+    if (newLocation.name.trim() && newLocation.cost) {
       setSettingsData({
         ...settingsData,
-        locations: [...settingsData.locations, { type: newLocationType }],
+        locations: [
+          ...settingsData.locations,
+          { name: newLocation.name, cost: Number(newLocation.cost) },
+        ],
       });
-      setNewLocationType("");
+      setNewLocation({ name: "", cost: 0 });
     }
   };
 
@@ -148,6 +143,15 @@ const Settings = () => {
       (_, idx) => idx !== index
     );
     setSettingsData({ ...settingsData, locations: updatedLocations });
+  };
+
+  const handleLocationChange = (e) => {
+    // Consolidated handler
+    const { name, value } = e.target;
+    setNewLocation({
+      ...newLocation,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -305,14 +309,43 @@ const Settings = () => {
 
               {/* Locations */}
               <div className="admin-settings-group">
-                <label className="admin-settings-label">Locations:</label>
+                <label className="admin-settings-label">
+                  Pickup Locations:
+                </label>
                 {settingsData.locations.map((location, index) => (
                   <div key={index} className="admin-settings-item">
                     <FormInput
-                      label={`Location Type ${index + 1}`}
+                      label={`Pickup Location ${index + 1}`}
                       type="text"
-                      value={location}
-                      onChange={handleLocationTypeChange}
+                      value={location.name}
+                      onChange={(e) => {
+                        const updatedLocations = [...settingsData.locations];
+                        updatedLocations[index] = {
+                          ...updatedLocations[index],
+                          name: e.target.value,
+                        };
+                        setSettingsData({
+                          ...settingsData,
+                          locations: updatedLocations,
+                        });
+                      }}
+                      dataIndex={index}
+                    />
+                    <FormInput
+                      label={`Pickup Location Cost ${index + 1}`}
+                      type="number"
+                      value={location.cost}
+                      onChange={(e) => {
+                        const updatedLocations = [...settingsData.locations];
+                        updatedLocations[index] = {
+                          ...updatedLocations[index],
+                          cost: Number(e.target.value),
+                        };
+                        setSettingsData({
+                          ...settingsData,
+                          locations: updatedLocations,
+                        });
+                      }}
                       dataIndex={index}
                     />
                     <button
@@ -326,10 +359,18 @@ const Settings = () => {
                 ))}
                 <div className="admin-settings-add-item">
                   <FormInput
-                    label="New Location Type"
+                    label="New Pickup Location"
                     type="text"
-                    value={newLocationType}
-                    onChange={(e) => setNewLocationType(e.target.value)}
+                    name="name"
+                    value={newLocation.name}
+                    onChange={handleLocationChange}
+                  />
+                  <FormInput
+                    label="New Pickup Location Cost"
+                    type="number"
+                    name="cost"
+                    value={newLocation.cost}
+                    onChange={handleLocationChange}
                   />
                   <button
                     type="button"

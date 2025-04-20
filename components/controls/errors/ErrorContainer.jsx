@@ -1,4 +1,5 @@
 import "./errorContainer.css";
+import parse from "html-react-parser";
 
 const ErrorContainer = ({ errors }) => {
   return (
@@ -9,7 +10,7 @@ const ErrorContainer = ({ errors }) => {
           <ol className="errors-list">
             {errors.map((error, i) => (
               <li key={i} className="error-text">
-                {error}
+                {parse(String(error))}
               </li>
             ))}
           </ol>

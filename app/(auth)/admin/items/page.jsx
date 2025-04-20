@@ -17,8 +17,9 @@ import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
 import { toast } from "react-toastify";
 import { deleteProduct } from "@/lib/productActions";
 import { Loading } from "@/components/controls/loading/Loading";
-import { CartContext } from "@/components/controls/Contexts/CartProvider";
+
 import { getSettings } from "@/lib/settingActions";
+import { OrderContext } from "@/components/contexts/OrderContext";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ const Items = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchText, setSearchText] = useState("");
-  const { addItem } = useContext(CartContext);
+  const { addItem } = useContext(OrderContext);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 

@@ -5,8 +5,8 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export const dynamic = "force-dynamic";
 
-export const GET = async (req, res) => {
-  const { id } = await req.json();
+export const GET = async (req, { params }) => {
+  const { id } = await params;
   console.log(id);
   try {
     connectToDb();
@@ -22,56 +22,35 @@ export const POST = async (req, res) => {
 
   try {
     connectToDb();
-    if (order.id) {
-      const id = order.id;
-      updateOrder = await order.findById(id);
-      console.log("Updating Item:", updateOrder);
 
-      if (!updateOrder) {
-        return {
-          errors: { general: "No order with that id exists to be updated" },
-        };
-      }
+    const id = order._id;
+    const updateOrder = await Order.findById(id);
 
-      const item = await Order.findByIdAndUpdate(id, {
-        new: order.new,
-        status: order.status,
-        total: order.total,
-        customerData: order.customerData,
-        orderItems: order.orderItems,
-        paymentMethod: order.paymentMethod,
-        instructions: order.instructions,
-        paymentStatus: order.paymentStatus,
-        pickupLocation: order.pickupLocation,
-        meta: order.meta,
+    if (!updateOrder) {
+      return NextResponse.json({
+        errors: ["No order with that id exists to be updated"],
       });
-
-      if (!item)
-        return {
-          errors: { general: "No Item found to be Updated" },
-        };
-
-      return NextResponse.json({ success: order });
-    } else {
-      const newOrder = new Order({
-        new: order.new,
-        status: order.status,
-        total: order.total,
-        customerData: order.customerData,
-        orderItems: order.orderItems,
-        paymentMethod: order.paymentMethod,
-        instructions: order.instructions,
-        paymentStatus: order.paymentStatus,
-        pickupLocation: order.pickupLocation,
-        meta: order.meta,
-      });
-      console.log("order", newOrder);
-      await newOrder.save();
-      //return NextResponse.redirect(new URL("/", req.url));
-      return NextResponse.json({ success: newOrder });
     }
+
+    const item = await Order.findByIdAndUpdate(id, {
+      new: order.new,
+      status: order.status,
+      total: order.total,
+      customerData: order.customerData,
+      orderItems: order.orderItems,
+      paymentStatus: order.paymentStatus,
+      pickupLocation: order.pickupLocation,
+      meta: order.meta,
+    });
+    if (!item)
+      NextResponse.json({
+        errors: ["No Item found to be Updated"],
+      });
+
+    console.log("item:", item);
+    return NextResponse.json({ order });
   } catch (err) {
-    return NextResponse.json({ error: err });
+    return NextResponse.json({ errors: [err] });
   }
 };
 
@@ -89,6 +68,6 @@ export const DELETE = async (req, res) => {
       deleted: `Order ${item._id} successfully deleted.`,
     });
   } catch (err) {
-    return NextResponse.json({ error: err });
+    return NextResponse.json({ errors: [err] });
   }
 };

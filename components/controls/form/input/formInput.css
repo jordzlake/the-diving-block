@@ -79,3 +79,61 @@
   background-color: rgb(255, 194, 194);
   color: var(--red);
 }
+
+/* Radio Button Styling */
+
+.form-radio-label {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 1em 0 !important;
+}
+
+/* Hide the browser's default radio button */
+.form-radio-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.form-radio-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 12px;
+  width: 12px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.form-radio-label:hover input ~ .form-radio-checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.form-radio-label input:checked ~ .form-radio-checkmark {
+  background-color: var(--blue);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.form-radio-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.form-radio-label input:checked ~ .form-radio-checkmark:after {
+  display: block;
+}
+/* End Radio button Styling*/
