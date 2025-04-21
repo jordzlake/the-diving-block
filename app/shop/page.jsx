@@ -337,20 +337,34 @@ const Shop = () => {
             </div>
             <div className="shop-store-items-container">
               {!loading ? (
-                <div className="shop-store-container">
-                  {products.map((product) => (
-                    <StoreCard
-                      key={product._id}
-                      id={product._id}
-                      image={product.image}
-                      title={product.title}
-                      cost={product.cost}
-                      discount={product.discount}
-                      category={product.category}
-                      handleClick={() => router.push(`/shop/${product._id}`)}
-                    />
-                  ))}
-                </div>
+                products.length > 0 ? (
+                  <>
+                    {
+                      <div className="shop-store-container">
+                        {products.map((product) => (
+                          <StoreCard
+                            key={product._id}
+                            id={product._id}
+                            image={product.image}
+                            title={product.title}
+                            cost={product.cost}
+                            discount={product.discount}
+                            category={product.category}
+                            handleClick={() =>
+                              router.push(`/shop/${product._id}`)
+                            }
+                          />
+                        ))}
+                      </div>
+                    }
+                  </>
+                ) : (
+                  <>
+                    <div className="shop-store-warning">
+                      There are no products in this category
+                    </div>
+                  </>
+                )
               ) : (
                 <div>
                   <Loading />
