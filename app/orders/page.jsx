@@ -82,13 +82,13 @@ const Orders = () => {
                 </div>
                 <div
                   className={`filter ${filter == "Unpaid" && "active"}`}
-                  onClick={() => filterOrders("Unpaid")}
+                  onClick={() => filterOrders("Success")}
                 >
                   Unpaid
                 </div>
                 <div
                   className={`filter ${filter == "All" && "active"}`}
-                  onClick={() => filterOrders("All")}
+                  onClick={() => filterOrders("Failed")}
                 >
                   All
                 </div>
