@@ -37,7 +37,7 @@
 }
 
 .filter:hover {
-  background-color: var(--dark);
+  background-color: var(--light-orange);
   color: var(--white);
 }
 
@@ -52,7 +52,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  background-color: var(--dark);
+  background-color: var(--white);
   min-height: 50vh;
   padding: 1em;
 }
@@ -62,15 +62,16 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--white);
+  border: 1px solid var(--orange);
   transition: all 0.3s ease-in-out;
-  background-color: var(--darker);
+  background-color: var(--white);
+  color: var(--dark);
   cursor: pointer;
 }
 
 .my-order-container:hover {
   transform: scale(1.01);
-  border: 1px solid var(--orange);
+  border: 1px solid var(--blue);
 }
 
 .my-order-top-info {

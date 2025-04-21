@@ -1,4 +1,13 @@
-.cart-title,
+.cart-title {
+  font-weight: bold;
+  font-size: 2em;
+  font-family: var(--font-rubik);
+  padding: 0 0 1em 0;
+  width: 100%;
+  border-bottom: 1px solid #e9e9e9;
+  margin-bottom: 1em;
+}
+
 .checkout-title {
   font-weight: bold;
   font-size: 2em;
@@ -27,7 +36,7 @@
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  flex-basis: 60%;
+  width: 100%;
 }
 
 .cart-table {
@@ -37,6 +46,7 @@
   border: 1px solid #e9e9e9;
   border-radius: 8px;
   padding: 1em;
+  table-layout: fixed;
 }
 
 .table-title {
@@ -91,18 +101,7 @@ td {
   color: var(--white);
 }
 
-tbody tr::after {
-  border-bottom: 1px solid #e6e6e6;
-  content: "";
-  position: absolute;
-  width: 100%;
-  left: 0;
-  display: block;
-  bottom: 0;
-}
-
 .table-cost {
-  text-align: right;
   padding-top: 2em;
 }
 
@@ -207,30 +206,51 @@ tbody tr::after {
 .control {
   padding: 1em 0;
   width: 100%;
-  background-color: var(--dark);
+  background-color: var(--white);
   border-radius: 10px;
   text-align: center;
-  color: var(--white);
+  color: var(--dark);
   cursor: pointer;
-  border: 1px solid var(--darker);
+  border: 2px solid var(--darker);
   transition: all 0.2s ease-in-out;
 }
 
 .control:hover {
-  background-color: var(--white);
-  color: var(--dark);
+  background-color: var(--blue);
+  color: var(--white);
 }
 
 .inprogress,
 .completed {
-  border: 1px solid var(--orange);
+  border: 2px solid var(--orange);
+}
+
+.status-control {
+  padding: 1em 0;
+  width: 100%;
+  background-color: rgb(202, 202, 202);
+  border-radius: 10px;
+  text-align: center;
+  color: rgb(130, 130, 130);
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.failed {
+  background-color: rgb(171, 40, 40);
+  color: var(--white);
+}
+
+.success {
+  background-color: rgb(1, 156, 102);
+  color: var(--white);
 }
 
 .order-submit-button {
   width: 100%;
   padding: 1em;
   text-align: center;
-  color: var(--dark);
+  color: var(--white);
   font-weight: bold;
   background-color: var(--orange);
   border-radius: 0.6em;
@@ -241,7 +261,19 @@ tbody tr::after {
 }
 
 .order-submit-button:hover {
-  background-color: var(--white);
+  color: var(--white);
+  background-color: var(--blue);
+}
+
+.personal {
+  table-layout: fixed;
+  width: unset;
+  border: none;
+}
+
+.personal td {
+  text-align: left !important;
+  padding: 1em 0;
 }
 
 @media (min-width: 980px) {

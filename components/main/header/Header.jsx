@@ -14,6 +14,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { handleSignOut } from "@/lib/actions/authActions";
 import { OrderContext } from "@/components/contexts/OrderContext";
+import { getSettings } from "@/lib/settingActions";
 
 export const dynamic = "force-dynamic";
 
@@ -26,11 +27,28 @@ const Header = () => {
   const [Velocity, setVelocity] = useState(null); // State to hold the Velocity function
   const [curPath, setCurPath] = useState(" ");
   const { orderItems, setOrderItems } = useContext(OrderContext);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     (async () => {
       const velocity = (await import("velocity-animate")).default; // Dynamically import Velocity
       setVelocity(() => velocity);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const settings = await getSettings();
+        console.log("settings", settings[0]);
+        const itemCategories = settings[0].categories.map((cat) => cat.name);
+
+        setCategories(itemCategories);
+
+        console.log("categories", categories);
+      } catch (err) {
+        console.log(err);
+      }
     })();
   }, []);
 
@@ -195,6 +213,7 @@ const Header = () => {
                   </li>
                 </>
               )}
+              <li className="nav-link mobile-hide"></li>
             </ul>
           )}
         </div>
@@ -202,13 +221,17 @@ const Header = () => {
       {curPath && (
         <div key={curPath} className="subnav container">
           <ul className="subnav-links">
-            {NavLinksMain.map((navLink) => (
-              <li key={navLink.name} className="subnav-link mobile-hide">
-                <Link href={navLink.link} className="subnav-link-text">
-                  {navLink.name}
-                </Link>
-              </li>
-            ))}
+            {categories &&
+              categories.map((navLink) => (
+                <li key={navLink} className="subnav-link mobile-hide">
+                  <Link
+                    href={`/shop?t=${navLink}`}
+                    className="subnav-link-text"
+                  >
+                    {navLink.toUpperCase()}
+                  </Link>
+                </li>
+              ))}
           </ul>
 
           <div
@@ -271,18 +294,20 @@ const Header = () => {
                   >
                     {navLink.name}
                   </Link>
-                  {navLink.sublinks &&
-                    navLink.sublinks.map((navSubLink) => (
-                      <Link
-                        key={`${navLink.name}${navSubLink.name}`}
-                        href={navSubLink.link}
-                        className="subnav-mobile-menu-link-text sublink"
-                      >
-                        {navSubLink.name}
-                      </Link>
-                    ))}
                 </div>
               ))}
+              <div className="subnav-link-container">
+                {categories &&
+                  categories.map((navSubLink) => (
+                    <Link
+                      key={navSubLink}
+                      href={`/shop?t=${navSubLink}`}
+                      className="subnav-mobile-menu-link-text sublink"
+                    >
+                      {navSubLink.toUpperCase()}
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
         </div>

@@ -57,7 +57,12 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
         </div>
       </div>
       <div className="product-section-second">
-        <div className="product-section-second-image-container">
+        <div
+          className="product-section-second-image-container"
+          onClick={() => {
+            router.push("/shop?f=popular");
+          }}
+        >
           <Image
             src={ProductImages[0].path}
             fill

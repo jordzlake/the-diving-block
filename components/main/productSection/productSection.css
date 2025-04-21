@@ -60,6 +60,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 6em;
+  transition: all 0.3s ease-out;
 }
 
 .product-section-second-image-container {
@@ -68,6 +69,12 @@
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.product-section-second:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+  box-shadow: #c0c0c0 6px 7px 12px;
 }
 
 .product-section-second-image-container img {

@@ -27,11 +27,13 @@
   height: 8em;
 }
 
-.nav-links-container a {
+.nav-links-container a,
+.nav-links-container div {
   color: var(--white);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
+  cursor: pointer;
 }
 
 .nav-link .active {

@@ -57,7 +57,7 @@ const AdminOrders = () => {
       <ScrollToTop />
       <AdminNavbar />
       <div className="admin-container orders-cont">
-        <h1 className="admin-title">Orders</h1>
+        <h1 className="admin-title orders-title">Orders</h1>
         {!loading ? (
           orders.length > 0 ? (
             <div className="admin-orders-container">
@@ -80,15 +80,15 @@ const AdminOrders = () => {
                 </div>
                 <div
                   className={`admin-filter ${filter == "Paid" && "active"}`}
-                  onClick={() => filterOrders("Paid")}
+                  onClick={() => filterOrders("Success")}
                 >
-                  Paid
+                  Successful Payment
                 </div>
                 <div
                   className={`admin-filter ${filter == "Unpaid" && "active"}`}
-                  onClick={() => filterOrders("Unpaid")}
+                  onClick={() => filterOrders("Failed")}
                 >
-                  Unpaid
+                  Failed Payment
                 </div>
                 <div
                   className={`admin-filter ${filter == "All" && "active"}`}
