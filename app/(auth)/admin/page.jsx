@@ -18,41 +18,41 @@ const Admin = () => {
           <div className="admin-content-g1">
             <iframe
               style={{
-                background: "#21313C",
+                background: "#FFFF",
                 border: "none",
                 borderRadius: "2px",
                 boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2)",
               }}
               width="100%"
               height="100%"
-              src="https://charts.mongodb.com/charts-symphonytt-oifnudk/embed/charts?id=8fb5833c-46ab-4534-87f8-283a6156bfa1&maxDataAge=3600&theme=dark&autoRefresh=true"
+              src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=321d8431-ac9a-423b-9f14-11ada5b10316&maxDataAge=3600&theme=light&autoRefresh=true"
             ></iframe>
           </div>
           <div className="admin-content-bottom-graphs">
             <div className="admin-content-g2">
               <iframe
                 style={{
-                  background: "#21313C",
+                  background: "#FFF",
                   border: "none",
                   borderRadius: "2px",
                   boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2)",
                 }}
                 width="100%"
                 height="100%"
-                src="https://charts.mongodb.com/charts-symphonytt-oifnudk/embed/charts?id=efa8c83b-60d1-48ec-a627-db68618bc9c3&maxDataAge=3600&theme=dark&autoRefresh=true"
+                src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=8984bf0a-c52c-4531-98d6-104f6cded9c0&maxDataAge=3600&theme=light&autoRefresh=true"
               ></iframe>
             </div>
             <div className="admin-content-g3">
               <iframe
                 style={{
-                  background: "#21313C",
+                  background: "#FFF",
                   border: "none",
                   borderRadius: "2px",
                   boxShadow: "0 2px 10px 0 rgba(70, 76, 79, .2)",
                 }}
                 width="100%"
                 height="100%"
-                src="https://charts.mongodb.com/charts-symphonytt-oifnudk/embed/charts?id=769aa4c5-a11d-481d-a761-1437f9b9b3a1&maxDataAge=3600&theme=dark&autoRefresh=true"
+                src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=69962dd1-40c4-466c-bcc5-f9f1a0ccbb44&maxDataAge=3600&theme=light&autoRefresh=true"
               ></iframe>
             </div>
           </div>

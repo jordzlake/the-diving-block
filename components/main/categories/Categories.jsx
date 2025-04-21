@@ -14,7 +14,7 @@ const Categories = () => {
         <div
           className="category-image-1-container category-image"
           onClick={() => {
-            router.push("/shop?t=ladies");
+            router.push("/shop?category=ladies");
           }}
         >
           <Image src={tempCategoryImages[0].url} fill alt="category1" />
@@ -31,7 +31,7 @@ const Categories = () => {
         <div
           className="category-image-2-container category-image"
           onClick={() => {
-            router.push("/shop?t=men");
+            router.push("/shop?category=men");
           }}
         >
           <Image src={tempCategoryImages[1].url} fill alt="category2" />
@@ -48,7 +48,7 @@ const Categories = () => {
         <div
           className="category-image-3-container category-image"
           onClick={() => {
-            router.push("/shop?t=kids");
+            router.push("/shop?category=kids");
           }}
         >
           <Image src={tempCategoryImages[2].url} fill alt="category3" />

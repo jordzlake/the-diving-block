@@ -12,12 +12,13 @@ const StoreCard = ({
   discount,
   handleClick,
   small,
+  tiny,
 }) => {
   const router = useRouter();
   return (
     <div
       className="image-card"
-      style={small && { width: "13em" }}
+      style={small ? { width: "13em" } : tiny ? { width: "10em" } : {}}
       onClick={() => {
         handleClick ? handleClick() : url && router.push(url);
       }}

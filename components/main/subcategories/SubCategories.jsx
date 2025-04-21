@@ -32,7 +32,7 @@ const SubCategories = () => {
           <div
             className="subcategories-second-image-container"
             onClick={() => {
-              router.push("/shop?t=swimgear");
+              router.push("/shop?category=swimgear");
             }}
           >
             <Image
@@ -53,7 +53,7 @@ const SubCategories = () => {
           <div
             className="subcategories-third-image-container"
             onClick={() => {
-              router.push("/shop?t=beachcasual");
+              router.push("/shop?category=beachcasual");
             }}
           >
             <Image
