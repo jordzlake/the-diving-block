@@ -225,7 +225,7 @@ const Header = () => {
               categories.map((navLink) => (
                 <li key={navLink} className="subnav-link mobile-hide">
                   <Link
-                    href={`/shop?category=${navLink}`}
+                    href={`/shop?category=${navLink}&p=1`}
                     className="subnav-link-text"
                   >
                     {navLink.toUpperCase()}
@@ -301,7 +301,7 @@ const Header = () => {
                   categories.map((navSubLink) => (
                     <Link
                       key={navSubLink}
-                      href={`/shop?category=${navSubLink}`}
+                      href={`/shop?category=${navSubLink}&p=1`}
                       className="subnav-mobile-menu-link-text sublink"
                     >
                       {navSubLink.toUpperCase()}

@@ -27,29 +27,29 @@ export const NavLinksUser = [
 export const NavLinksMain = [
   {
     name: "LADIES",
-    link: "/shop?category=ladies",
+    link: "/shop?category=Ladies&p=1",
   },
 
   {
     name: "MENS",
-    link: "/shop?category=mens",
+    link: "/shop?category=Mens&p=1",
   },
 
   {
     name: "KIDS",
-    link: "/shop?category=kids",
+    link: "/shop?category=Kids&p=1",
   },
   {
     name: "SWIM GEAR",
-    link: "/shop?category=swim%20gear",
+    link: "/shop?category=Swim%20gear&p=1",
   },
   {
     name: "BEACH/ CASUAL",
-    link: "/shop?category=beach%20casual",
+    link: "/shop?category=Ladies&p=1",
   },
   {
     name: "SALE",
-    link: "/shop?category=sale",
+    link: "/shop?category=Ladies&p=1",
   },
 ];
 
