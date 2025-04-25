@@ -25,7 +25,7 @@ const Admin = () => {
               }}
               width="100%"
               height="100%"
-              src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=321d8431-ac9a-423b-9f14-11ada5b10316&maxDataAge=3600&theme=light&autoRefresh=true"
+              src="https://charts.mongodb.com/charts-project-0-rdducjh/embed/charts?id=b28c9709-301e-4ad1-b542-fb456d5e1755&maxDataAge=3600&theme=light&autoRefresh=true"
             ></iframe>
           </div>
           <div className="admin-content-bottom-graphs">
@@ -39,7 +39,7 @@ const Admin = () => {
                 }}
                 width="100%"
                 height="100%"
-                src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=8984bf0a-c52c-4531-98d6-104f6cded9c0&maxDataAge=3600&theme=light&autoRefresh=true"
+                src="https://charts.mongodb.com/charts-project-0-rdducjh/embed/charts?id=3d0f46db-438d-447d-b193-8ebcc352237d&maxDataAge=3600&theme=light&autoRefresh=true"
               ></iframe>
             </div>
             <div className="admin-content-g3">
@@ -52,7 +52,7 @@ const Admin = () => {
                 }}
                 width="100%"
                 height="100%"
-                src="https://charts.mongodb.com/charts-project-0-rbczvsb/embed/charts?id=69962dd1-40c4-466c-bcc5-f9f1a0ccbb44&maxDataAge=3600&theme=light&autoRefresh=true"
+                src="https://charts.mongodb.com/charts-project-0-rdducjh/embed/charts?id=00278bac-bf7f-4b11-95b6-3a38b1698cd3&maxDataAge=3600&theme=light&autoRefresh=true"
               ></iframe>
             </div>
           </div>

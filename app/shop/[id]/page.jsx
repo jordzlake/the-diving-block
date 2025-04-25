@@ -114,7 +114,7 @@ const Item = () => {
                           ? activeImage
                           : product.image
                           ? product.image
-                          : "404_toij8l.png"
+                          : "404_lztxti.png"
                       )
                     }
                   >
@@ -124,11 +124,11 @@ const Item = () => {
                           ? activeImage
                           : product.image
                           ? product.image
-                          : "404_toij8l.png"
+                          : "404_lztxti.png"
                       }`}
                       fill
                       alt={product.title}
-                      defaultImage="404_toij8l.png"
+                      defaultImage="404_lztxti.png"
                     />
                   </div>
                   <div className="item-image-gallery">
@@ -140,10 +140,10 @@ const Item = () => {
                       }}
                     >
                       <CldImage
-                        src={`${product.image ? product.image : "404_toij8l"}`}
+                        src={`${product.image ? product.image : "404_lztxti"}`}
                         fill
                         alt={product.title}
-                        defaultImage="404_toij8l.png"
+                        defaultImage="404_lztxti.png"
                       />
                     </div>
                     {product.galleryImages.length > 0 &&
@@ -157,10 +157,10 @@ const Item = () => {
                           key={gi}
                         >
                           <CldImage
-                            src={`${gi ? gi : "404_toij8l"}`}
+                            src={`${gi ? gi : "404_lztxti"}`}
                             fill
                             alt={gi}
-                            defaultImage="404_toij8l.png"
+                            defaultImage="404_lztxti.png"
                           />
                         </div>
                       ))}

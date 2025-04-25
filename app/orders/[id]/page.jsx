@@ -98,7 +98,7 @@ const Order = () => {
                                     src={oi.item.image}
                                     fill
                                     alt="product image"
-                                    defaultImage="404_toij8l.png"
+                                    defaultImage="404_lztxti.png"
                                   />
                                   <span className="product-quantity">
                                     {oi.amount}

@@ -31,6 +31,8 @@ const Cart = () => {
     deleteItem,
   } = useContext(OrderContext);
 
+  const [pending, setPending] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -49,6 +51,7 @@ const Cart = () => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    setPending(false);
     (async () => {
       try {
         const set = await getSettings();
@@ -84,6 +87,7 @@ const Cart = () => {
   };
 
   const handleSubmit = async (e) => {
+    setPending(true);
     e.preventDefault();
     const total =
       Number(
@@ -129,6 +133,7 @@ const Cart = () => {
     const response = await createOrder(data);
     console.log("res", response);
     if (response.errors) {
+      setPending(false);
       setErrors(response.errors);
     } else {
       toast.success("Order successfully placed");
@@ -170,7 +175,7 @@ const Cart = () => {
                               src={oi.item.image}
                               fill
                               alt="product image"
-                              defaultImage="404_toij8l.png"
+                              defaultImage="404_lztxti.png"
                             />
                             <span className="product-quantity">
                               {oi.amount}
@@ -340,8 +345,9 @@ const Cart = () => {
                       handleSubmit(e);
                     }}
                     className="checkout-button"
+                    disabled={pending}
                   >
-                    Submit
+                    {pending ? "Wait A Sec..." : "Submit"}
                   </button>
                 </div>
                 <ErrorContainer errors={errors} />

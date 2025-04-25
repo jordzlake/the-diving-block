@@ -25,10 +25,10 @@ const StoreCard = ({
     >
       <div className="image-container">
         <CldImage
-          src={`${image ? image : "404_toij8l"}`}
+          src={`${image ? image : "404_lztxti"}`}
           fill
           alt={title}
-          defaultImage="404_toij8l.png"
+          defaultImage="404_lztxti.png"
         />
       </div>
       <h3 className="image-title">{title}</h3>

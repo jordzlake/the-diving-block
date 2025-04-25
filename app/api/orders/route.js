@@ -38,6 +38,7 @@ export const POST = async (req, res) => {
     const oid = obj._id.toString();
     const responseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/orders/${oid}`;
     console.log(responseUrl);
+    console.log("");
 
     if (total === 0) {
       redirect(`/orders/${oid}`);
@@ -45,12 +46,6 @@ export const POST = async (req, res) => {
       const data = {
         account_number: "5203609482",
         avs: "1",
-        email: customerData.email,
-        addr1: customerData.street,
-        city: customerData.city,
-        fname: customerData.firstName,
-        lname: customerData.lastName,
-        phone: customerData.phone,
         zipcode: "000000",
         country_code: "TT",
         currency: "TTD",
@@ -63,7 +58,7 @@ export const POST = async (req, res) => {
         response_url: responseUrl,
         total: String(total) + ".00",
       };
-
+      console.log("data:", data);
       const response = await axios.post(
         "https://tt.wipayfinancial.com/plugins/payments/request",
         data,
@@ -75,6 +70,7 @@ export const POST = async (req, res) => {
           },
         }
       );
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email`, {
         method: "POST",
         body: JSON.stringify({
@@ -87,7 +83,7 @@ export const POST = async (req, res) => {
       return NextResponse.json({ success: true, data: response.data });
     }
   } catch (err) {
-    console.log(err);
+    console.log(JSON.stringify(err));
 
     return NextResponse.json({ errors: [err.message] });
   }

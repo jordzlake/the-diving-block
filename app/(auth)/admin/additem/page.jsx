@@ -447,7 +447,7 @@ const AddItem = () => {
                             fill
                             alt="Product Image"
                             className="admin-item-image-preview"
-                            defaultImage="404_toij8l.png"
+                            defaultImage="404_lztxti.png"
                           />
 
                           <div
@@ -529,7 +529,7 @@ const AddItem = () => {
                                 fill
                                 alt={`Gallery Image ${index + 1}`}
                                 className="admin-item-image-preview"
-                                defaultImage="404_toij8l.png"
+                                defaultImage="404_lztxti.png"
                                 onClick={() =>
                                   lightboxRef.current?.openLightbox(img)
                                 }

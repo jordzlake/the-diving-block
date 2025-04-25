@@ -35,7 +35,7 @@ export const Lightbox = forwardRef((props, ref) => {
             fill
             alt={`Lightbox Image`}
             id="lightbox-image"
-            defaultImage="404_toij8l.png"
+            defaultImage="404_lztxti.png"
           />
         </div>
       )}
