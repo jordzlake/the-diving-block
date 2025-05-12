@@ -147,7 +147,7 @@
 
 .shop-sizes-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 0.5em;
   justify-content: center;
 }

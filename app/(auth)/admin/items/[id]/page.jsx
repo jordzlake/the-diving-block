@@ -12,7 +12,7 @@ import {
   FaTrashCan,
   FaUpload,
 } from "react-icons/fa6";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { CldImage } from "next-cloudinary";
 import { Loading } from "@/components/controls/loading/Loading";
 import { getProduct } from "@/lib/productActions";
 import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
@@ -27,7 +27,15 @@ import { toast } from "react-toastify";
 import { productSchema } from "@/lib/schema";
 import { useRouter } from "next/navigation";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
-export const dynamic = "force-dynamic";
+import dynamic from "next/dynamic";
+
+const CldUploadWidget = dynamic(
+  () => import("next-cloudinary").then((mod) => mod.CldUploadWidget),
+  {
+    ssr: false, // Ensure the component is not rendered on the server
+    loading: () => <p>Loading upload widget...</p>, // Optional loading indicator
+  }
+);
 
 const Item = () => {
   const { id } = useParams();
@@ -54,13 +62,24 @@ const Item = () => {
     tags: "",
     image: "",
     galleryImages: [],
+    colorImageVariants: [],
+    sizeCostVariants: [],
   });
   const [colorInput, setColorInput] = useState("#000000");
   const [colorName, setColorName] = useState("");
   const [errors, setErrors] = useState([]);
   const [settings, setSettings] = useState({});
   const [upload, setUpload] = useState("");
-  const [uploadGallery, setUploadGallery] = useState("");
+  const [uploadGallery, setUploadGallery] = useState([]);
+  const [colorImageVariant, setColorImageVariant] = useState({
+    color: "",
+    image: "",
+  });
+  const [sizeCostVariant, setSizeCostVariant] = useState({
+    size: "",
+    cost: 0,
+  });
+  const [showSelectionImages, setShowSelectionImages] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -94,7 +113,7 @@ const Item = () => {
   }, [upload]);
 
   useEffect(() => {
-    setFormData({ ...formData, galleryImages: uploadGallery });
+    setFormData({ ...formData, galleryImages: [...uploadGallery] });
   }, [uploadGallery]);
 
   const lightboxRef = useRef(null);
@@ -116,32 +135,89 @@ const Item = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleGalleryUpload = (result) => {
-    if ((formData.galleryImages || []).length < 3) {
-      setFormData({
-        ...formData,
-        galleryImages: [
-          ...(formData.galleryImages || []),
-          result.info.public_id,
-        ],
-      });
-    }
-  };
-
   const handleAddColor = () => {
-    if (colorInput && colorName && formData.colors.length < 5) {
-      setFormData({
-        ...formData,
-        colors: [...formData.colors, { name: colorName, hexcode: colorInput }],
-      });
-      setColorInput("#000000");
-      setColorName("");
+    if (colorInput && colorName) {
+      const isDuplicate = formData.colors.some(
+        (color) =>
+          color.hexcode.toUpperCase() === colorInput.toUpperCase() ||
+          color.name === colorName
+      );
+      if (!isDuplicate) {
+        setFormData({
+          ...formData,
+          colors: [
+            ...formData.colors,
+            { name: colorName, hexcode: colorInput.toUpperCase() },
+          ],
+        });
+        setColorInput("#000000");
+        setColorName("");
+      } else {
+        toast.error("This color or color name already exists!");
+      }
     }
   };
 
   const handleRemoveColor = (index) => {
     const newColorArray = formData.colors.filter((_, idx) => idx !== index);
     setFormData({ ...formData, colors: newColorArray });
+  };
+
+  const handleAddColorImageVariant = () => {
+    if (colorImageVariant.color && colorImageVariant.image) {
+      const isDuplicate = formData.colorImageVariants.some(
+        (variant) =>
+          variant.color.toUpperCase() === colorImageVariant.color.toUpperCase()
+      );
+      if (!isDuplicate) {
+        setFormData({
+          ...formData,
+          colorImageVariants: [
+            ...formData.colorImageVariants,
+            colorImageVariant,
+          ],
+        });
+        setColorImageVariant({ color: "", image: "" });
+      } else {
+        toast.error("This color already has a variant!");
+      }
+    } else {
+      toast.error("Please ensure a color and image are selected");
+    }
+  };
+
+  const handleRemoveColorImageVariant = (index) => {
+    const newColorImageVariantArray = formData.colorImageVariants.filter(
+      (_, idx) => idx !== index
+    );
+    setFormData({ ...formData, colorImageVariants: newColorImageVariantArray });
+  };
+
+  const handleAddSizeCostVariant = () => {
+    if (sizeCostVariant.size && sizeCostVariant.cost) {
+      const isDuplicate = formData.sizeCostVariants.some(
+        (variant) =>
+          variant.size.toUpperCase() === sizeCostVariant.size.toUpperCase()
+      );
+      if (!isDuplicate) {
+        setFormData({
+          ...formData,
+          sizeCostVariants: [...formData.sizeCostVariants, sizeCostVariant],
+        });
+        setSizeCostVariant({ size: "", cost: 0 });
+      } else {
+        toast.error("This size already has a variant!");
+      }
+    } else {
+      toast.error("Please ensure a size and cost are entered");
+    }
+  };
+
+  const handleRemoveSizeCostVariant = (index) => {
+    const newSizeCostVariantArray = formData.sizeCostVariants.filter(
+      (_, idx) => idx !== index
+    );
+    setFormData({ ...formData, sizeCostVariants: newSizeCostVariantArray });
   };
 
   const handleCheckboxChange = (e) => {
@@ -370,7 +446,7 @@ const Item = () => {
                       <button
                         type="button"
                         onClick={handleAddColor}
-                        className="remove-color-button"
+                        className="add-color-button"
                       >
                         <FaPlus />
                       </button>
@@ -411,36 +487,38 @@ const Item = () => {
                     <div className="admin-item-form-image-group">
                       <div className="admin-item-image-controls">
                         <label className="admin-item-label">Main Image:</label>
-                        <CldUploadWidget
-                          uploadPreset="your-upload-preset"
-                          onSuccess={(result, { widget }) => {
-                            const img = result.info.public_id;
-                            setUpload(img);
-                            widget.close();
-                          }}
-                        >
-                          {({ open }) => {
-                            function handleMainOnClick() {
-                              open();
-                            }
-                            return (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  !formData.image
-                                    ? handleMainOnClick()
-                                    : toast.error(
-                                        "Delete the Main Image First!"
-                                      );
-                                }}
-                                className="admin-item-upload-button"
-                              >
-                                Upload Main Image <FaUpload />
-                              </button>
-                            );
-                          }}
-                        </CldUploadWidget>
+                        {CldUploadWidget && (
+                          <CldUploadWidget
+                            uploadPreset="your-upload-preset"
+                            onSuccess={(result, { widget }) => {
+                              const img = result.info.public_id;
+                              setUpload(img);
+                              widget.close();
+                            }}
+                          >
+                            {({ open }) => {
+                              function handleMainOnClick() {
+                                open();
+                              }
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    !formData.image
+                                      ? handleMainOnClick()
+                                      : toast.error(
+                                          "Delete the Main Image First!"
+                                        );
+                                  }}
+                                  className="admin-item-upload-button"
+                                >
+                                  Upload Main Image <FaUpload />
+                                </button>
+                              );
+                            }}
+                          </CldUploadWidget>
+                        )}
                       </div>
                       {formData.image ? (
                         <div className="admin-item-image">
@@ -483,46 +561,48 @@ const Item = () => {
                     <div className="admin-item-form-group">
                       <div className="admin-items-image-controls">
                         <label className="admin-item-label">
-                          Gallery Images (Max 3):
+                          Gallery Images:
                         </label>
-                        <CldUploadWidget
-                          uploadPreset="your-upload-preset"
-                          onSuccess={(result, { widget }) => {
-                            const img = result.info.public_id;
-                            if (uploadGallery.length < 3)
-                              setUploadGallery([...galleryRef.current, img]);
+                        {CldUploadWidget && (
+                          <CldUploadWidget
+                            uploadPreset="your-upload-preset"
+                            onSuccess={(result, { widget }) => {
+                              const img = result.info.public_id;
 
-                            console.log(uploadGallery);
-                            widget.close();
-                          }}
-                          multiple={false}
-                        >
-                          {({ open }) => {
-                            function handleGalleryOnClick() {
-                              open();
-                            }
-                            return (
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  galleryRef.current = [
-                                    ...formData.galleryImages,
-                                  ];
-                                  setUploadGallery(formData.galleryImages);
-                                  formData.galleryImages.length < 3
+                              setUploadGallery([...galleryRef.current, img]);
+                              console.log(uploadGallery);
+                              widget.close();
+                            }}
+                            multiple={false}
+                          >
+                            {({ open }) => {
+                              function handleGalleryOnClick() {
+                                open();
+                              }
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    galleryRef.current = [
+                                      ...formData.galleryImages,
+                                    ];
+                                    setUploadGallery(formData.galleryImages);
+                                    /*formData.galleryImages.length < 3
                                     ? handleGalleryOnClick()
                                     : toast.error(
                                         "This product has 3 Gallery Images. Please delete one to upload."
-                                      );
-                                }}
-                                className="admin-item-upload-button"
-                              >
-                                Upload Gallery Images <FaUpload />
-                              </button>
-                            );
-                          }}
-                        </CldUploadWidget>
+                                      );*/
+                                    handleGalleryOnClick();
+                                  }}
+                                  className="admin-item-upload-button"
+                                >
+                                  Upload Gallery Images <FaUpload />
+                                </button>
+                              );
+                            }}
+                          </CldUploadWidget>
+                        )}
                       </div>
                       <div className="gallery-preview">
                         {formData.galleryImages.length > 0 ? (
@@ -594,6 +674,229 @@ const Item = () => {
                           </div>
                         )}
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="admin-item-form-row">
+                  <div className="admin-item-form-group">
+                    <label className="admin-item-label">
+                      Color Image Variants:
+                    </label>
+
+                    <div className="admin-item-color-variant-input">
+                      <FormInput
+                        label="Color to connect to Image"
+                        type="dropdown"
+                        name="colorVariantColor"
+                        value={colorImageVariant.color}
+                        onChange={(e) => {
+                          setColorImageVariant({
+                            ...colorImageVariant,
+                            color: e.target.value,
+                          });
+                        }}
+                        defaultOption={"Select Color"}
+                        options={
+                          formData.colors.map((color) => color.name) || []
+                        }
+                      />
+                      <div
+                        className="admin-image-selector-button"
+                        onClick={() => {
+                          setShowSelectionImages(true);
+                        }}
+                      >
+                        Select Image
+                      </div>
+                      {colorImageVariant.image && (
+                        <div className="admin-image-selected-image-container">
+                          <div className="admin-image-selected-image">
+                            <CldImage
+                              src={colorImageVariant.image}
+                              fill
+                              alt="admin-selected-image"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {showSelectionImages && (
+                        <>
+                          <div className="admin-image-selection-instructions">
+                            Click an image to link to your selected color:
+                          </div>
+                          <div className="admin-image-selection">
+                            {formData.image ? (
+                              <div className="admin-image-selection-container">
+                                <div
+                                  className="admin-image-selection-image"
+                                  onClick={() => {
+                                    setColorImageVariant({
+                                      ...colorImageVariant,
+                                      image: formData.image,
+                                    });
+                                    setShowSelectionImages(false);
+                                  }}
+                                >
+                                  <CldImage
+                                    src={formData.image}
+                                    fill
+                                    alt="admin-main-image"
+                                  />
+                                </div>
+                                {formData.galleryImages.map(
+                                  (galleryImage, i) => (
+                                    <div
+                                      className="admin-image-selection-image"
+                                      key={`sel${i}`}
+                                      onClick={() => {
+                                        setColorImageVariant({
+                                          ...colorImageVariant,
+                                          image: galleryImage,
+                                        });
+                                        setShowSelectionImages(false);
+                                      }}
+                                    >
+                                      <CldImage
+                                        src={galleryImage}
+                                        fill
+                                        alt="admin-selection-image"
+                                      />
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            ) : (
+                              <div className="admin-image-selection-container">
+                                <div>Please Enter A Main Image First.</div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="cancel-selection-container">
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowSelectionImages(false);
+                              }}
+                              className="cancel-selection-button"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </>
+                      )}
+                      <div className="admin-variant-button-container">
+                        <button
+                          type="button"
+                          onClick={handleAddColorImageVariant}
+                          className="admin-variant-color-button"
+                        >
+                          Add Color/Image Variant
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Display added image variants */}
+                    <div className="admin-item-color-list">
+                      {formData.colorImageVariants.map((variant, index) => (
+                        <div
+                          key={index}
+                          className="admin-item-color-item-variant"
+                        >
+                          <p className="admin-item-color-text-variant">
+                            {variant.color}
+                          </p>
+                          <div className="admin-image-selection-image">
+                            <CldImage
+                              src={variant.image}
+                              fill
+                              alt="admin-selected-image"
+                            />
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveColorImageVariant(index)}
+                            className="remove-color-button-variant"
+                          >
+                            Remove Color Image Variation
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="admin-item-form-row">
+                  <div className="admin-item-form-group">
+                    <label className="admin-item-label">
+                      Size Cost Variants:
+                    </label>
+
+                    <div className="admin-item-color-variant-input">
+                      <FormInput
+                        label="Select size to vary price"
+                        type="dropdown"
+                        name="colorVariantColor"
+                        value={sizeCostVariant.size}
+                        onChange={(e) => {
+                          setSizeCostVariant({
+                            ...sizeCostVariant,
+                            size: e.target.value,
+                          });
+                        }}
+                        defaultOption={"Select Size"}
+                        options={sizes || []}
+                      />
+
+                      <FormInput
+                        label="Enter Cost for selected size"
+                        type="number"
+                        name="cost"
+                        value={sizeCostVariant.cost}
+                        onChange={(e) => {
+                          setSizeCostVariant({
+                            ...sizeCostVariant,
+                            cost: e.target.value,
+                          });
+                        }}
+                        validationSchema={productSchema.shape.cost}
+                      />
+
+                      <div className="admin-variant-button-container">
+                        <button
+                          type="button"
+                          onClick={handleAddSizeCostVariant}
+                          className="admin-variant-color-button"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Display added image variants */}
+                    <div className="admin-item-color-list">
+                      {formData.sizeCostVariants.map((variant, index) => (
+                        <div
+                          key={index}
+                          className="admin-item-color-item-variant"
+                        >
+                          <p className="admin-item-color-text-variant">
+                            {variant.size}
+                          </p>
+                          <p className="admin-item-color-text-variant">
+                            $ {Number(variant.cost).toFixed(2)}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSizeCostVariant(index)}
+                            className="remove-color-button-variant"
+                          >
+                            Remove Size Cost Variant
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

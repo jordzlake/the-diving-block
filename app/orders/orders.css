@@ -1,7 +1,6 @@
 .my-orders-cont {
   width: 100%;
   min-height: 80vh;
-  margin-bottom: 2em;
   padding: 3em var(--g-padding);
   text-align: center;
 }

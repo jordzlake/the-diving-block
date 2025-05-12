@@ -49,6 +49,14 @@ const AdminNavbar = () => {
         </li>
         <li className="admin-navbar-link">
           <Link
+            href="/admin/sales"
+            className={`${pathname == "/admin/sales" ? "active" : ""}`}
+          >
+            Sales
+          </Link>
+        </li>
+        <li className="admin-navbar-link">
+          <Link
             href="/admin/settings"
             className={`${pathname == "/admin/settings" ? "active" : ""}`}
           >
@@ -99,6 +107,14 @@ const AdminNavbar = () => {
                 href="/admin/additem"
               >
                 Add Item
+              </Link>
+            </li>
+            <li className="m-admin-navbar-link">
+              <Link
+                className={`${pathname == "/admin/sales" ? "active" : ""}`}
+                href="/admin/sales"
+              >
+                Sales
               </Link>
             </li>
             <li className="m-admin-navbar-link">

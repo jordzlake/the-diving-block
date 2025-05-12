@@ -72,7 +72,7 @@ export function OrderContextProvider({ children }) {
             return {
               ...oi,
               amount: updatedAmount,
-              orderItemTotal: updatedAmount * oi.item.cost,
+              orderItemTotal: updatedAmount * oi.cartItemCost,
             };
           }
           return oi;
@@ -92,7 +92,7 @@ export function OrderContextProvider({ children }) {
             return {
               ...oi,
               amount: updatedAmount,
-              orderItemTotal: updatedAmount * oi.item.cost,
+              orderItemTotal: updatedAmount * oi.cartItemCost,
             };
           }
           return oi;

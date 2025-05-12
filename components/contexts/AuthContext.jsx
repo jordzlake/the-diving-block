@@ -5,7 +5,6 @@ import { useMemo } from "react";
 const AuthContext = ({ children, ...props }) => {
   const { session, sessionKey } = props;
   const memoizedSessionKey = useMemo(() => {
-    console.log("session changed >>> ", session);
     return sessionKey;
   }, [session]);
   return (

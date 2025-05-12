@@ -22,7 +22,9 @@ export const dynamic = "force-dynamic";
 
 const Cart = () => {
   const { data: session } = useSession();
+
   const router = useRouter();
+
   const {
     orderItems,
     setOrderItems,
@@ -42,11 +44,15 @@ const Cart = () => {
     email: "",
     location: 0,
   });
+
   const [settings, setSettings] = useState({});
+
   const [errors, setErrors] = useState([]);
+
   const [locations, setLocations] = useState([
     { name: "Local Pickup", cost: 0 },
   ]);
+
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
@@ -89,12 +95,14 @@ const Cart = () => {
   const handleSubmit = async (e) => {
     setPending(true);
     e.preventDefault();
+
     const total =
       Number(
         orderItems.reduce((acc, oi) => {
           return acc + oi.orderItemTotal;
         }, 0)
       ) + Number(locations[formData.location].cost);
+
     const customerData = {
       firstName: formData.firstName,
       lastName: formData.firstName,
@@ -192,7 +200,7 @@ const Cart = () => {
 
                         <td>
                           $
-                          {`${Number(oi.item.cost).toFixed(2)} x ${
+                          {`${Number(oi.cartItemCost).toFixed(2)} x ${
                             oi.amount
                           } = $${Number(oi.orderItemTotal).toFixed(2)}`}{" "}
                           TTD

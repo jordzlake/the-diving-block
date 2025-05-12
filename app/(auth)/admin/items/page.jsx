@@ -357,6 +357,7 @@ const Items = () => {
                       <div className="admin-items-grid-item" key={item._id}>
                         <StoreCard
                           id={item._id}
+                          spec={item.spec || undefined}
                           image={item.image}
                           title={item.title}
                           cost={item.cost}

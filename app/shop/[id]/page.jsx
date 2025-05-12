@@ -10,7 +10,10 @@ import { useParams, useRouter } from "next/navigation";
 import { CldImage } from "next-cloudinary";
 import { OrderContext } from "@/components/contexts/OrderContext";
 import { Lightbox } from "@/components/controls/lightbox/Lightbox";
+import { getSettings } from "@/lib/settingActions";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
+import parse from "html-react-parser";
+import { CalculateSingleProductDiscount } from "@/components/calculations/CalculateProductDiscounts";
 export const dynamic = "force-dynamic";
 
 const Item = () => {
@@ -20,7 +23,7 @@ const Item = () => {
 
   const router = useRouter();
   const [products, setProducts] = useState([]);
-  const [activeImage, setActiveImage] = useState(null);
+  const [activeImage, setActiveImage] = useState({ index: 0, image: "" });
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
@@ -28,6 +31,7 @@ const Item = () => {
   const [selectedAttributeColor, setSelectedAttributeColor] = useState("");
   const [selectedAttributeSize, setSelectedAttributeSize] = useState("");
   const { cart, setCart } = useContext(OrderContext);
+  const [activeCost, setActiveCost] = useState(undefined);
 
   useEffect(() => {
     if (typeof window) {
@@ -38,10 +42,19 @@ const Item = () => {
         const res = await getProducts();
         const resProduct = await getProduct(id);
         setProducts(res);
-        setProduct(resProduct);
+
+        const settings = await getSettings();
+        if (settings[0]) {
+          const discountedItem = CalculateSingleProductDiscount(
+            resProduct,
+            settings[0]
+          );
+          setProduct(discountedItem);
+          console.log(discountedItem);
+          resProduct.image &&
+            setActiveImage({ index: 0, image: product.image });
+        }
         setLoading(false);
-        resProduct.image && setActiveImage(resProduct.image);
-        console.log(resProduct);
       } catch (err) {
         setLoading(false);
       }
@@ -74,13 +87,25 @@ const Item = () => {
         setErrors(["Size needs to be more than 0!"]);
         return;
       }
-      const orderItemTotal = amount * item.cost;
+      const cartItemCost =
+        product.discount && product.discount > 0
+          ? (
+              (activeCost
+                ? Number(activeCost).toFixed(2)
+                : Number(product.cost).toFixed(2)) *
+              ((100 - product.discount) / 100)
+            ).toFixed(2)
+          : activeCost
+          ? Number(activeCost).toFixed(2)
+          : Number(product.cost).toFixed(2);
+      const orderItemTotal = amount * cartItemCost;
 
       const orderItem = {
         item,
         color,
         size,
         amount,
+        cartItemCost,
         orderItemTotal,
       };
 
@@ -110,8 +135,8 @@ const Item = () => {
                     className="item-image-container"
                     onClick={() =>
                       lightboxRef.current?.openLightbox(
-                        activeImage
-                          ? activeImage
+                        activeImage.image
+                          ? activeImage.image
                           : product.image
                           ? product.image
                           : "404_lztxti.png"
@@ -120,8 +145,8 @@ const Item = () => {
                   >
                     <CldImage
                       src={`${
-                        activeImage
-                          ? activeImage
+                        activeImage.image
+                          ? activeImage.image
                           : product.image
                           ? product.image
                           : "404_lztxti.png"
@@ -133,10 +158,10 @@ const Item = () => {
                   </div>
                   <div className="item-image-gallery">
                     <div
-                      className={`${product.image === activeImage && "active"} 
+                      className={`${activeImage.index === 0 && "active"} 
                             item-gallery-image-container`}
                       onClick={(e) => {
-                        setActiveImage(product.image);
+                        setActiveImage({ index: 0, image: product.image });
                       }}
                     >
                       <CldImage
@@ -149,10 +174,12 @@ const Item = () => {
                     {product.galleryImages.length > 0 &&
                       product.galleryImages.map((gi, i) => (
                         <div
-                          className={`${gi === activeImage && "active"} 
+                          className={`${
+                            i + 1 === activeImage.index && "active"
+                          } 
                             item-gallery-image-container`}
                           onClick={() => {
-                            setActiveImage(gi);
+                            setActiveImage({ index: i + 1, image: gi });
                           }}
                           key={gi}
                         >
@@ -170,7 +197,17 @@ const Item = () => {
                   <h1 className="item-content-title">{product.title}</h1>
                   <div className="item-content-separator" />
                   <div className="item-content-cost">
-                    ${Number(product.cost).toFixed(2)}
+                    $
+                    {product.discount && product.discount > 0
+                      ? (
+                          (activeCost
+                            ? Number(activeCost).toFixed(2)
+                            : Number(product.cost).toFixed(2)) *
+                          ((100 - product.discount) / 100)
+                        ).toFixed(2)
+                      : activeCost
+                      ? Number(activeCost).toFixed(2)
+                      : Number(product.cost).toFixed(2)}
                   </div>
                   <form>
                     <div className="item-colors-container">
@@ -178,9 +215,33 @@ const Item = () => {
                       <div className="item-colors">
                         {product.colors.map((color, i) => (
                           <div
-                            onClick={() =>
-                              setSelectedAttributeColor(color.name)
-                            }
+                            onClick={() => {
+                              setSelectedAttributeColor(color.name);
+                              console.log(product.colorImageVariants);
+
+                              if (product.colorImageVariants?.length > 0) {
+                                const colorImage =
+                                  product.colorImageVariants.find(
+                                    (variant) => variant.color === color.name
+                                  );
+                                let index = 0;
+                                if (colorImage.image != product.image) {
+                                  product.galleryImages.find((img, i) => {
+                                    if (img === colorImage.image) {
+                                      console.log(i);
+                                      index = i + 1;
+                                    }
+                                  });
+                                }
+                                console.log("col img", colorImage);
+                                if (colorImage?.image) {
+                                  setActiveImage({
+                                    index: index,
+                                    image: colorImage.image,
+                                  });
+                                }
+                              }
+                            }}
                             key={i}
                             style={{
                               backgroundColor:
@@ -212,6 +273,16 @@ const Item = () => {
                         name="size"
                         onChange={(e) => {
                           setSelectedAttributeSize(e.target.value);
+                          if (product.sizeCostVariants.length > 0) {
+                            const sizeFound = product.sizeCostVariants.find(
+                              (sz) => sz.size == e.target.value
+                            );
+                            if (sizeFound) {
+                              setActiveCost(sizeFound.cost);
+                            } else {
+                              setActiveCost(undefined);
+                            }
+                          }
                           console.log(e.target.value);
                         }}
                         id="size"
@@ -276,7 +347,9 @@ const Item = () => {
               {product.description && (
                 <div className="item-description-container">
                   <div className="item-description-title">Description</div>
-                  <div className="item-description">{product.description}</div>
+                  <div className="item-description">
+                    {parse(String(product.description))}
+                  </div>
                 </div>
               )}
             </div>

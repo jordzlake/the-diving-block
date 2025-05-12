@@ -10,6 +10,44 @@
   white-space: nowrap;
 }
 
+.image-special-text {
+  position: absolute;
+  top: 1em;
+  left: 0.5em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: var(--font-montserrat);
+  color: var(--white);
+  z-index: 2;
+  background-color: var(--orange);
+  padding: 0.1em 0.5em;
+  border-radius: 1em;
+  transition: all 0.2s linear;
+}
+
+.image-card:hover .image-special-text {
+  background-color: var(--blue);
+}
+
+.image-discount-text {
+  position: absolute;
+  top: 1em;
+  right: 0.5em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: var(--font-montserrat);
+  color: var(--white);
+  z-index: 2;
+  background-color: var(--blue);
+  padding: 0.1em 0.5em;
+  border-radius: 1em;
+  transition: all 0.2s linear;
+}
+
+.image-card:hover .image-discount-text {
+  background-color: var(--pink);
+}
+
 .image-card:hover {
   transform: scale(1.02);
   cursor: pointer;

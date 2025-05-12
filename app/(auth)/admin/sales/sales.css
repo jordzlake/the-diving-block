@@ -1,0 +1,272 @@
+.admin-sales-main-container {
+  background-color: var(--blue) !important;
+}
+
+.admin-sales-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sales-title {
+  font-size: 2em;
+  color: var(--white);
+  margin-bottom: 1em;
+}
+
+.form-group {
+  margin: 1em 0;
+}
+
+.form-row .form-group {
+  margin: 0em;
+}
+
+.admin-sales-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.admin-sales-pair {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: flex-end;
+}
+
+.admin-sale-container {
+  background-color: var(--white);
+  padding: 1em;
+  border-radius: 10px;
+  margin: 1em 0;
+}
+
+.admin-sales-search-bar-container {
+  margin: 1em 0;
+}
+.admin-sales-search-bar-container label,
+.admin-sale-container label {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+.admin-sales-search-bar-container input {
+  border-radius: 20px;
+}
+.admin-sales-group {
+  border: 1px solid var(--gray);
+  padding: 15px;
+  border-radius: 0.4em;
+  overflow: scroll;
+}
+
+.admin-sale-number {
+  color: var(--darker);
+  font-size: 1.4em !important;
+  font-weight: 600 !important;
+}
+
+.admin-sales-label {
+  font-size: 1.2em;
+  color: var(--white);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.admin-sales-label-text {
+  font-size: 1.2em;
+  color: var(--darker);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.admin-sales-label.sub-label {
+  margin-top: 1em;
+}
+
+.admin-sales-item {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+  margin-bottom: 0.8em;
+}
+
+.admin-sales-subcategories {
+  margin-left: 1em;
+  padding-left: 1em;
+  border-left: 1px solid var(--light-gray);
+  width: 100%;
+}
+
+.admin-sales-sub-item {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
+.admin-sales-add,
+.admin-sales-site-sale {
+  margin: 2em 0;
+}
+
+.admin-sales-text {
+  color: var(--white);
+  margin-bottom: 1em;
+}
+
+.admin-sales-add-item,
+.admin-sales-add-subcategory {
+  margin-top: 1em;
+  display: flex;
+  gap: 1em;
+  align-items: flex-end;
+}
+
+.admin-sales-add-button {
+  border: none;
+  border-radius: 0.4em;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 1em;
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-sales-remove-button {
+  border: none;
+  border-radius: 0.4em;
+  background-color: var(--red);
+  color: var(--white);
+  font-size: 1em;
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-sales-add-button:hover {
+  background-color: var(--light-orange);
+  color: var(--white);
+}
+.admin-sales-remove-button:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.admin-sales-array-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  margin-bottom: 1em;
+}
+
+.admin-sales-array-item {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+}
+
+.admin-sales-save-button {
+  border: none;
+  border-radius: 0.4em;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 1.2em;
+  font-weight: 500;
+  padding: 0.8em 1.5em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+
+.admin-sales-save-button:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.admin-sales-add label {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: var(--white);
+  display: block;
+}
+
+.admin-sales-site-sale label {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: var(--white);
+  display: block;
+}
+
+.admin-sales-site-sale .form-radio-label input:checked ~ .form-radio-checkmark {
+  background-color: var(--orange);
+}
+
+.admin-sales-items-in-sale {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.admin-sales-item-in-sale {
+  height: 4em;
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-sales-current-item-in-sale {
+  height: 4em;
+  width: 100%;
+  background-color: #f2f2f2;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-item-title-sale {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-item-image-sale {
+  height: 100%;
+  width: 50%;
+}
+
+.admin-item-image-sale img {
+  object-fit: contain;
+}
+
+.admin-sales-remove-item-button {
+  padding: 1em;
+  font-size: 1.2em;
+  color: var(--white);
+  background-color: var(--red);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+}
+
+.admin-sales-remove-item-button:hover {
+  background-color: var(--reder);
+  cursor: pointer;
+}
+
+.admin-container {
+  margin-bottom: 0;
+}

@@ -20,7 +20,6 @@ export const dynamic = "force-dynamic";
 
 const Header = () => {
   const { data: session } = useSession();
-  console.log("Session", session);
   const currentPath = usePathname();
   const searchParams = useSearchParams();
   const [isAnimating, setIsAnimating] = useState(false);
@@ -40,12 +39,9 @@ const Header = () => {
     (async () => {
       try {
         const settings = await getSettings();
-        console.log("settings", settings[0]);
         const itemCategories = settings[0].categories.map((cat) => cat.name);
 
         setCategories(itemCategories);
-
-        console.log("categories", categories);
       } catch (err) {
         console.log(err);
       }

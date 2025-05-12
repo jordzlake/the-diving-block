@@ -23,6 +23,7 @@ const Settings = () => {
     categories: [],
     sizes: [],
     locations: [],
+    sales: [],
   });
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newSubCategoryNames, setNewSubCategoryNames] = useState([]);

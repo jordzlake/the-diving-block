@@ -23,6 +23,7 @@
   width: 100%;
   border-radius: 0em;
   transition: border 0.2s ease;
+  white-space: pre-wrap;
 }
 .form-label-info {
   color: var(--orange);
@@ -107,7 +108,7 @@
 /* Create a custom radio button */
 .form-radio-checkmark {
   position: absolute;
-  top: 0;
+  top: 4px;
   left: 0;
   height: 12px;
   width: 12px;

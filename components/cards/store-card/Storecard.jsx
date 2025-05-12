@@ -8,11 +8,12 @@ const StoreCard = ({
   title,
   cost,
   id,
+  spec,
   image,
-  discount,
   handleClick,
   small,
   tiny,
+  discount,
 }) => {
   const router = useRouter();
   return (
@@ -23,6 +24,10 @@ const StoreCard = ({
         handleClick ? handleClick() : url && router.push(url);
       }}
     >
+      {spec && <div className="image-special-text">{spec}</div>}
+
+      {discount && <div className="image-discount-text">{`-${discount}%`}</div>}
+
       <div className="image-container">
         <CldImage
           src={`${image ? image : "404_lztxti"}`}
@@ -32,7 +37,13 @@ const StoreCard = ({
         />
       </div>
       <h3 className="image-title">{title}</h3>
-      <p className="image-desc">${cost}</p>
+      {discount && discount > 0 ? (
+        <>
+          <p className="image-desc">${cost * ((100 - discount) / 100)}</p>
+        </>
+      ) : (
+        <p className="image-desc">${cost}</p>
+      )}
       {/* {<p className="image-discount">${discount}</p>} */}
     </div>
   );

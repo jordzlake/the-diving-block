@@ -42,6 +42,8 @@ export const POST = async (req, res) => {
       categories: settings.categories,
       sizes: settings.sizes,
       locations: settings.locations,
+      sales: settings.sales,
+      sitesale: settings.sitesale,
     });
 
     return NextResponse.json({ success: updatedSettings });

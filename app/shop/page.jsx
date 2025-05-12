@@ -15,6 +15,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { getSettings } from "@/lib/settingActions";
 import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
+import { CalculateProductDiscounts } from "@/components/calculations/CalculateProductDiscounts";
 
 const Shop = () => {
   const router = useRouter();
@@ -138,7 +139,11 @@ const Shop = () => {
         setSizes(itemSizes);
 
         const res = await getFilteredProducts(data);
-        setProducts(res.products);
+        const discountedItems = CalculateProductDiscounts(
+          res.products,
+          settings[0]
+        );
+        setProducts(discountedItems);
         setTotalProducts(res.total);
         setLoading(false);
       } catch (err) {
@@ -344,6 +349,7 @@ const Shop = () => {
                         {products.map((product) => (
                           <StoreCard
                             key={product._id}
+                            spec={product.spec || undefined}
                             id={product._id}
                             image={product.image}
                             title={product.title}

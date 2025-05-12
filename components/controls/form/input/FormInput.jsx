@@ -268,6 +268,10 @@ const FormInput = ({
                 id={`${name}-${option.value}-${i}`}
                 name={name}
                 value={option.value}
+                data-index={String(dataIndex) ? dataIndex : undefined}
+                data-category-index={
+                  String(dataCategoryIndex) ? dataCategoryIndex : undefined
+                }
                 checked={String(value) === String(option.value)}
                 onChange={handleInputChange}
               />

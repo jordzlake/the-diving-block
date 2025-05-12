@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export const POST = async (req) => {
   const { data } = await req.json();
+
   try {
     const {
       filter,
@@ -55,7 +56,7 @@ export const POST = async (req) => {
 
     connectToDb();
     const products = await query
-      .sort({ createdAt: order === "asc" ? 1 : -1 })
+      .sort({ createdAt: order === "asc" ? -1 : 1 })
       .skip(skip)
       .limit(limit);
 

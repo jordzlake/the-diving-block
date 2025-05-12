@@ -204,6 +204,23 @@
   color: var(--white);
 }
 
+.add-color-button {
+  color: var(--dark);
+  border: none;
+  padding: 0.5em 2em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  background-color: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-color-button:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
 .admin-item-image-controls {
   display: flex;
   flex-direction: row;
@@ -314,6 +331,131 @@
 .admin-image-control.inactive:hover {
   background-color: rgba(219, 219, 219, 0.53);
   color: #aaaaaac2;
+}
+
+.admin-item-color-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-image-selector-button {
+  padding: 0.5em;
+  font-weight: 600;
+  font-size: 1.1em;
+  background-color: var(--orange);
+  margin: 1em 0;
+  display: block;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.3s linear;
+}
+
+.admin-image-selector-button:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.admin-image-selection-container {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+}
+
+.admin-image-selection-image {
+  width: 8em;
+  height: 8em;
+}
+
+.admin-image-selected-image-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-image-selected-image img {
+  object-fit: contain;
+  background-color: var(--darker);
+}
+
+.admin-variant-color-button {
+  color: var(--white);
+  border: none;
+  padding: 0.5em 2em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  font-size: 1em;
+  background-color: var(--orange);
+  margin: 1em auto;
+  text-align: center;
+}
+
+.admin-variant-color-button:hover {
+  background-color: var(--red);
+  color: var(--white);
+}
+
+.admin-variant-button-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-selection-button {
+  color: var(--white);
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  font-size: 0.9em;
+  background-color: var(--red);
+  margin: 1em auto;
+  text-align: center;
+}
+
+.cancel-selection-button:hover {
+  background-color: var(--pink);
+  color: var(--white);
+}
+
+.cancel-selection-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-item-color-item-variant {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--light-gray);
+  padding: 0.4em;
+  border-radius: 0.3em;
+  margin-top: 0.5em;
+  border: 1px solid var(--gray);
+  align-items: center;
+}
+
+.admin-item-color-text-variant {
+  background-color: transparent;
+}
+
+.remove-color-button-variant {
+  color: var(--white);
+  border: none;
+  padding: 0.2em 0.5em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  height: 4em;
+  background-color: var(--dark);
+}
+
+.remove-color-button-variant:hover {
+  background-color: var(--red);
+  color: var(--white);
 }
 
 @media (min-width: 640px) {
