@@ -9,7 +9,10 @@ const CalculateProductDiscounts = (products, settings) => {
       if (sale.enabled && sale.items && Array.isArray(sale.items)) {
         const baseDiscount = sale.discount || 0;
         const siteDiscount = sitesale?.discount || 0;
-        const totalDiscount = baseDiscount + siteDiscount;
+        let totalDiscount = baseDiscount;
+        if (sitesale?.enabled) {
+          totalDiscount = baseDiscount + siteDiscount;
+        }
 
         const discountedItemIds = new Set(sale.items.map((item) => item._id));
 
@@ -39,7 +42,10 @@ const CalculateSingleProductDiscount = (product, settings) => {
         if (itemFound) {
           const baseDiscount = sale.discount || 0;
           const siteDiscount = sitesale?.discount || 0;
-          const totalDiscount = baseDiscount + siteDiscount;
+          let totalDiscount = baseDiscount;
+          if (sitesale?.enabled) {
+            totalDiscount = baseDiscount + siteDiscount;
+          }
 
           if (totalDiscount > maxDiscount) {
             maxDiscount = totalDiscount;

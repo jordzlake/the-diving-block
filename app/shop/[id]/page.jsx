@@ -32,6 +32,7 @@ const Item = () => {
   const [selectedAttributeSize, setSelectedAttributeSize] = useState("");
   const { cart, setCart } = useContext(OrderContext);
   const [activeCost, setActiveCost] = useState(undefined);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window) {
@@ -62,6 +63,7 @@ const Item = () => {
   }, []);
 
   const handleAddItem = () => {
+    setButtonLoading(true);
     if (product) {
       const item = product;
       let color = "";
@@ -110,8 +112,10 @@ const Item = () => {
       };
 
       addItem(orderItem);
+      setButtonLoading(false);
       router.push("/cart");
     } else {
+      setButtonLoading(false);
       setErrors(["This product does not exist!"]);
     }
   };
@@ -225,7 +229,10 @@ const Item = () => {
                                     (variant) => variant.color === color.name
                                   );
                                 let index = 0;
-                                if (colorImage.image != product.image) {
+                                if (
+                                  colorImage &&
+                                  colorImage.image != product.image
+                                ) {
                                   product.galleryImages.find((img, i) => {
                                     if (img === colorImage.image) {
                                       console.log(i);
@@ -337,8 +344,9 @@ const Item = () => {
                         e.preventDefault();
                         handleAddItem();
                       }}
+                      disabled={buttonLoading}
                     >
-                      Add to basket
+                      {!buttonLoading ? "Add to basket" : "Loading..."}
                     </button>
                     <ErrorContainer errors={errors} />
                   </form>

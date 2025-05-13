@@ -80,6 +80,7 @@ const Item = () => {
     cost: 0,
   });
   const [showSelectionImages, setShowSelectionImages] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -98,6 +99,7 @@ const Item = () => {
           setCategories(itemCategories);
           setSubCategories(settings[0].categories[0].subCategories); // Default to first category's subcategories
           itemSizes.length > 0 && setSizes(itemSizes);
+          sizeIn;
           setLoading(false);
         } catch (err) {
           setLoading(false);
@@ -259,15 +261,18 @@ const Item = () => {
   };
 
   const handleSubmit = async (e) => {
+    setButtonLoading(false);
     e.preventDefault();
     console.log("Form data:", formData);
     const data = { id: id, formData: formData };
     const result = await updateProduct(data);
     if (result.errors) {
+      setButtonLoading(false);
       setErrors(result.errors);
       return;
     }
     toast.success("Product Updated Successfully");
+    setButtonLoading(false);
     router.push("/admin/items");
   };
 
@@ -901,8 +906,14 @@ const Item = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="admin-item-complete-button">
-                  Save Changes
+                {}
+
+                <button
+                  disabled={buttonLoading}
+                  type="submit"
+                  className="admin-item-complete-button"
+                >
+                  {!buttonLoading ? "Save Changes" : "Loading..."}
                 </button>
               </form>
               <ErrorContainer errors={errors} />

@@ -165,6 +165,9 @@
 .item-description {
   white-space: pre-wrap;
 }
+.item-gallery-image-container img {
+  object-fit: contain;
+}
 
 @media (min-width: 480px) {
   .item-information-container {

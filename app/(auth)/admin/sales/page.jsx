@@ -85,7 +85,7 @@ const Sales = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchTimeoutExisting, setSearchTimeoutExisting] = useState(null);
-
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [settingsChanged, setSettingsChanged] = useState(false);
 
   useEffect(() => {
@@ -198,6 +198,7 @@ const Sales = () => {
   };
 
   const handleAddSale = async (e) => {
+    setButtonLoading(true);
     setAddErrors([]);
     e.preventDefault();
     const validationErrors = [];
@@ -211,6 +212,7 @@ const Sales = () => {
     }
 
     if (validationErrors.length > 0) {
+      setButtonLoading(false);
       setAddErrors(validationErrors);
       return;
     }
@@ -229,9 +231,11 @@ const Sales = () => {
     const data = { formData: newSettings };
     const result = await updateSettings(data);
     if (result.errors) {
+      setButtonLoading(false);
       setAddErrors([...validationErrors, ...result.errors]);
       return;
     } else {
+      setButtonLoading(false);
       toast.success("Changed Settings Successfully");
       router.push("/admin/sales");
     }
@@ -244,6 +248,7 @@ const Sales = () => {
   };
 
   const handleSubmit = async (e) => {
+    setButtonLoading(true);
     e.preventDefault();
     setChangeErrors([]);
     const validationErrors = [];
@@ -263,6 +268,7 @@ const Sales = () => {
     });
 
     if (validationErrors.length > 0) {
+      setButtonLoading(false);
       setChangeErrors(validationErrors);
       return;
     }
@@ -271,15 +277,18 @@ const Sales = () => {
     const data = { formData: settingsData };
     const result = await updateSettings(data);
     if (result.errors) {
+      setButtonLoading(false);
       setChangeErrors([...validationErrors, ...result.errors]);
       return;
     } else {
+      setButtonLoading(false);
       toast.success("Changed Settings Successfully");
       router.push("/admin/sales");
     }
   };
 
   const handleSiteSaleSubmit = async (e) => {
+    setButtonLoading(true);
     e.preventDefault();
     setErrors([]);
     const validationErrors = [];
@@ -297,6 +306,7 @@ const Sales = () => {
 
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
+      setButtonLoading(false);
       return;
     }
 
@@ -304,9 +314,11 @@ const Sales = () => {
     const data = { formData: settingsData };
     const result = await updateSettings(data);
     if (result.errors) {
+      setButtonLoading(false);
       setErrors([...validationErrors, ...result.errors]);
       return;
     } else {
+      setButtonLoading(false);
       toast.success("Changed Site Sale Settings Successfully");
       router.push("/admin/sales");
     }
@@ -364,10 +376,18 @@ const Sales = () => {
         setTimeout(async () => {
           const results = await searchProducts(value);
           if (results) {
+            const allItemsInSales = settingsData.sales.reduce((acc, sale) => {
+              if (sale.items) {
+                acc.push(...sale.items.map((item) => item._id));
+              }
+              return acc;
+            }, []);
+
             setSearchResultsNewSale(
               results.filter(
                 (result) =>
-                  !newSale.items.some((item) => item._id === result._id)
+                  !newSale.items.some((item) => item._id === result._id) &&
+                  !allItemsInSales.includes(result._id) // Check against all sales
               )
             );
             setIsDropdownOpenNewSale(true);
@@ -571,11 +591,12 @@ const Sales = () => {
                 )}
                 {settingsChanged && (
                   <button
+                    disabled={buttonLoading}
                     type="submit"
                     className="admin-sales-save-button"
                     onClick={handleSubmit}
                   >
-                    Save Changes
+                    {!buttonLoading ? "SaveChanges" : "Loading..."}
                   </button>
                 )}
                 {changeErrors.length > 0 && (
@@ -683,11 +704,12 @@ const Sales = () => {
                       )}
                   </div>
                   <button
+                    disabled={buttonLoading}
                     type="button"
                     className="admin-sales-save-button"
                     onClick={handleAddSale}
                   >
-                    Add New Sale
+                    {!buttonLoading ? "Add New Sale" : "Loading..."}
                   </button>
                   {addErrors.length > 0 && (
                     <ErrorContainer errors={addErrors} />
@@ -748,11 +770,12 @@ const Sales = () => {
                     />
 
                     <button
+                      disabled={buttonLoading}
                       type="button"
                       className="admin-sales-save-button"
                       onClick={handleSiteSaleSubmit}
                     >
-                      Edit Site Wide Sale
+                      {!buttonLoading ? "Edit Site Wide Sale" : "Loading..."}
                     </button>
                   </div>
                 )}

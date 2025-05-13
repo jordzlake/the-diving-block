@@ -30,7 +30,7 @@
 .footer-content-top-text {
   margin: 2em;
   color: var(--white);
-  font-weight: 200;
+  font-weight: 400;
 }
 
 .footer-content-grid {
@@ -52,7 +52,7 @@
 
 .footer-content-grid-text {
   font-size: 0.75em;
-  font-weight: 100;
+  font-weight: 300;
   font-family: var(--font-montserrat);
   line-height: 2em;
 }
@@ -61,7 +61,7 @@
   color: var(--white);
   font-family: var(--font-montserrat);
   font-size: 0.75em;
-  font-weight: 100;
+  font-weight: 400;
   line-height: 2em;
 }
 
@@ -69,7 +69,7 @@
   color: var(--white);
   font-family: var(--font-montserrat);
   font-size: 0.9em;
-  font-weight: 100;
+  font-weight: 400;
   line-height: 2em;
 }
 

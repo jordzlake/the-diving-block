@@ -39,10 +39,12 @@ const StoreCard = ({
       <h3 className="image-title">{title}</h3>
       {discount && discount > 0 ? (
         <>
-          <p className="image-desc">${cost * ((100 - discount) / 100)}</p>
+          <p className="image-desc">
+            ${Number(cost * ((100 - discount) / 100)).toFixed(2)}
+          </p>
         </>
       ) : (
-        <p className="image-desc">${cost}</p>
+        <p className="image-desc">${Number(cost).toFixed(2)}</p>
       )}
       {/* {<p className="image-discount">${discount}</p>} */}
     </div>

@@ -31,6 +31,7 @@ const Settings = () => {
   const [newLocation, setNewLocation] = useState({ name: "", cost: 0 });
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -157,13 +158,16 @@ const Settings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setButtonLoading(true);
     console.log("Form data:", settingsData);
     const data = { formData: settingsData };
     const result = await updateSettings(data);
     if (result.errors) {
+      setButtonLoading(false);
       setErrors(result.errors);
       return;
     }
+    setButtonLoading(false);
     toast.success("Changed Settings Successfully");
     router.push("/admin/settings");
   };
@@ -383,8 +387,12 @@ const Settings = () => {
                 </div>
               </div>
 
-              <button type="submit" className="admin-settings-save-button">
-                Save Settings
+              <button
+                disabled={buttonLoading}
+                type="submit"
+                className="admin-settings-save-button"
+              >
+                {!buttonLoading ? "Save Settings" : "Loading..."}
               </button>
             </form>
             <ErrorContainer errors={errors} />

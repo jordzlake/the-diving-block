@@ -1,0 +1,137 @@
+.admin-items {
+  width: 100%;
+}
+
+.admin-items-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-items-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 1em;
+  margin: 2em 0;
+}
+.admin-items-filter-controls {
+  width: 100%;
+}
+.admin-searchBarContainer,
+.admin-controlsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--darker);
+  width: 100%;
+  justify-content: space-around;
+  margin-bottom: 0.2em;
+}
+
+.admin-items-grid-item {
+  display: flex;
+  flex-direction: row;
+  gap: 0.8em;
+}
+
+.admin-searchText {
+  color: var(--darker);
+  font-size: 1.2em;
+  display: block;
+}
+
+.admin-searchBar,
+.admin-dropdown {
+  font-size: 1.2em;
+  border: none;
+  color: var(--darker);
+  background-color: var(--white);
+  padding: 0.3em;
+  font-family: var(--font-lato);
+  border-radius: 0.2em;
+  width: 100%;
+  border: 1px solid var(--darker);
+}
+
+.admin-dropdown {
+  border-color: var(--nes-dark-orange);
+  font-size: larger;
+  outline: none;
+}
+
+.admin-items-grid-item-pencil,
+.admin-items-grid-item-trash {
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.admin-items-grid-item-pencil {
+  color: var(--pink);
+}
+
+.admin-items-grid-item-trash {
+  color: var(--gray);
+}
+
+.admin-items-grid-item-red {
+  color: var(--red);
+}
+
+.admin-items-grid-item-green {
+  color: var(--green);
+}
+
+.admin-container-items {
+  background-color: var(--accent-gray);
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2em;
+  padding: 1em 1em;
+}
+
+.admin-pagination-button {
+  border: none;
+  border-radius: 0.4em;
+  background-color: var(--orange);
+  color: var(--white);
+  font-size: 1.2em;
+  font-weight: 500;
+  padding: 0.4em;
+  transition: all 0.3s linear;
+  margin: 0 1em;
+}
+
+.admin-pagination-button:hover {
+  background-color: var(--light-orange);
+  color: var(--orange);
+  cursor: pointer;
+}
+
+@media (min-width: 1000px) {
+  .admin-items-content {
+    flex-direction: row;
+    gap: 1em;
+  }
+
+  .admin-items-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .admin-searchBarContainer,
+  .admin-controlsContainer {
+    width: 100%;
+  }
+  .admin-items-container {
+    width: 200%;
+  }
+}
+
+@media (min-width: 1300px) {
+  .admin-items-grid {
+    padding: 0;
+  }
+  .admin-items-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2em;
+  }
+}

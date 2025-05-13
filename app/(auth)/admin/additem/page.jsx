@@ -77,6 +77,7 @@ const AddItem = () => {
     cost: 0,
   });
   const [showSelectionImages, setShowSelectionImages] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -253,15 +254,18 @@ const AddItem = () => {
   };
 
   const handleSubmit = async (e) => {
+    setButtonLoading(false);
     e.preventDefault();
     console.log("Form data:", formData);
     const data = { formData: formData };
     const result = await addProduct(data);
     if (result.errors) {
+      setButtonLoading(false);
       setErrors(result.errors);
       return;
     }
     toast.success("Added New Product Successfully");
+    setButtonLoading(false);
     router.push("/admin/items");
   };
 
@@ -891,8 +895,12 @@ const AddItem = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="admin-item-complete-button">
-                  Add Item
+                <button
+                  disabled={buttonLoading}
+                  type="submit"
+                  className="admin-item-complete-button"
+                >
+                  {!buttonLoading ? "Add Item" : "Loading..."}
                 </button>
               </form>
               <ErrorContainer errors={errors} />

@@ -116,7 +116,7 @@ const AdminOrder = () => {
 
                               <td>
                                 $
-                                {`${Number(oi.item.cost).toFixed(2)} x ${
+                                {`${Number(oi.cartItemCost).toFixed(2)} x ${
                                   oi.amount
                                 } = $${Number(oi.orderItemTotal).toFixed(
                                   2
