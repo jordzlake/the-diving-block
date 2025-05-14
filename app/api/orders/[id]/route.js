@@ -1,4 +1,4 @@
-import { Order } from "@/lib/models";
+import { Order, Product } from "@/lib/models";
 import { connectToDb } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -19,6 +19,8 @@ export const GET = async (req, { params }) => {
 
 export const POST = async (req, res) => {
   const { order } = await req.json();
+  const updateInventory = order.updateInventory ?? false;
+  const updatePurchase = order.updatePurchase ?? false;
 
   try {
     connectToDb();
@@ -48,7 +50,97 @@ export const POST = async (req, res) => {
       });
 
     console.log("item:", item);
-    return NextResponse.json({ order });
+
+    console.log("update inventory?", updateInventory);
+    // 2. Update Product Inventory (if updateInventory is true)
+    if (updateInventory) {
+      // Use a loop that handles async operations correctly
+      for (const orderItem of order.orderItems) {
+        try {
+          //  product should have at least _id, color, size, and amount.
+          const { productId, color, size, amount } = orderItem;
+
+          const productToUpdate = await Product.findById(productId);
+          if (!productToUpdate) {
+            console.warn(
+              `Product with ID ${productId} not found. Skipping inventory update.`
+            );
+            continue; // Go to the next item in the loop
+          }
+
+          if (
+            productToUpdate.inventory &&
+            productToUpdate.inventory.length > 0
+          ) {
+            // Find the specific inventory item to update
+            const inventoryItem = productToUpdate.inventory.find(
+              (item) => item.color === color && item.size === size
+            );
+
+            if (inventoryItem) {
+              //check if there is enough quantity
+              if (inventoryItem.amount < amount) {
+                console.log("Not enough quantity in stock");
+              }
+              inventoryItem.amount -= amount; // Reduce the quantity
+            } else {
+              console.log(
+                `Inventory item with color ${color} and size ${size} not found for product ${productId}. Skipping.`
+              );
+              continue;
+            }
+          } else {
+            // If product.inventory doesn't exist, reduce product.quantity
+            if (productToUpdate.quantity < amount) {
+              console.log("Not enough quantity in stock");
+            }
+            productToUpdate.quantity -= amount;
+          }
+
+          // Save the updated product
+          await productToUpdate.save();
+          console.log(
+            `Inventory updated for product ${productId}, color ${color}, size ${size}, amount reduced by ${amount}`
+          );
+        } catch (error) {
+          console.error("Error updating inventory:", error);
+        }
+      }
+    }
+
+    if (updatePurchase) {
+      for (const orderItem of order.orderItems) {
+        try {
+          //  product should have at least _id, color, size, and amount.
+          const { productId, amount } = orderItem;
+
+          const productToUpdate = await Product.findById(productId);
+          if (!productToUpdate) {
+            console.warn(
+              `Product with ID ${productId} not found. Skipping inventory update.`
+            );
+            continue; // Go to the next item in the loop
+          }
+          let purchases = 0;
+          console.log("purchases", productToUpdate.purchases);
+          if (productToUpdate.purchases) {
+            purchases = Number(productToUpdate.purchases) + Number(amount);
+          } else {
+            purchases = 1;
+          }
+          productToUpdate.purchases = purchases;
+          // Save the updated product
+          await productToUpdate.save();
+          console.log(
+            `Inventory updated for product ${productId}, color ${color}, size ${size}, amount reduced by ${amount}`
+          );
+        } catch (error) {
+          console.error("Error updating inventory:", error);
+        }
+      }
+    }
+
+    return NextResponse.json(item);
   } catch (err) {
     return NextResponse.json({ errors: [err] });
   }

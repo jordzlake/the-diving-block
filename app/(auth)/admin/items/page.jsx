@@ -49,7 +49,7 @@ const Items = () => {
     Number(searchParams.get("p")) || 1
   );
   const [totalProducts, setTotalProducts] = useState(0);
-  const productsPerPage = 6;
+  const productsPerPage = 8;
 
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);

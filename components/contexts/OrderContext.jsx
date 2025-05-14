@@ -64,7 +64,7 @@ export function OrderContextProvider({ children }) {
   }
 
   function incrementItem(index) {
-    if (orderItems[index].amount < orderItems[index].item.quantity) {
+    if (orderItems[index].amount < orderItems[index].maxQuantity) {
       setOrderItems((prev) => {
         const updatedItems = prev.map((oi, i) => {
           if (i === index) {

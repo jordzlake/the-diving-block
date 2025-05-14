@@ -11,7 +11,13 @@ import { useEffect, useState } from "react";
 import { getSettings } from "@/lib/settingActions";
 import { CalculateProductDiscounts } from "@/components/calculations/CalculateProductDiscounts";
 
-const ProductSection = ({ title, subtitle, content, buttonText }) => {
+const ProductSection = ({
+  title,
+  subtitle,
+  content,
+  buttonText,
+  noImage = false,
+}) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [newContent, setNewContent] = useState([]);
@@ -36,20 +42,22 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
   }, [content]);
 
   return (
-    <section className="product-section-container container">
+    <section className="product-section-container">
       {!loading ? (
         <>
           <div className="product-section-first">
-            <div className="product-section-info">
-              <h2 className="product-section-title">{title}</h2>
-              <div className="product-section-divider-container">
-                <div className="product-section-divider-left" />
-                <div className="product-section-icon-container">
-                  <FaHeart />
+            {!noImage && (
+              <div className="product-section-info">
+                <h2 className="product-section-title">{title}</h2>
+                <div className="product-section-divider-container">
+                  <div className="product-section-divider-left" />
+                  <div className="product-section-icon-container">
+                    <FaHeart />
+                  </div>
+                  <div className="product-section-divider-right" />
                 </div>
-                <div className="product-section-divider-right" />
               </div>
-            </div>
+            )}
             {newContent.length > 0 ? (
               <div className="product-section-grid">
                 {newContent.slice(0, 6).map((product, i) => (
@@ -62,7 +70,6 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
                     cost={product.cost}
                     discount={product.discount}
                     category={product.category}
-                    small
                     handleClick={() => router.push(`/shop/${product._id}`)}
                   />
                 ))}
@@ -87,38 +94,46 @@ const ProductSection = ({ title, subtitle, content, buttonText }) => {
             ) : (
               <Loading />
             )}
-            <div
-              className="product-section-button-container"
-              onClick={() => {
-                router.push("/shop");
-              }}
-            >
-              <button
-                className="product-section-button"
+            {!noImage && (
+              <>
+                <div
+                  className="product-section-button-container"
+                  onClick={() => {
+                    router.push("/shop");
+                  }}
+                >
+                  <button
+                    className="product-section-button"
+                    onClick={() => {
+                      router.push("/shop");
+                    }}
+                  >
+                    {buttonText} <FaCaretRight />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+          {!noImage && (
+            <div className="product-section-second">
+              <div
+                className="product-section-second-image-container"
                 onClick={() => {
-                  router.push("/shop");
+                  router.push("/shop?f=popular");
                 }}
               >
-                {buttonText} <FaCaretRight />
-              </button>
+                <Image
+                  src={ProductImages[0].path}
+                  fill
+                  className="product-section-second-image"
+                  alt="product section second image"
+                />
+              </div>
+              <div className="product-section-subtitle-container">
+                <h3 className="product-section-second-subtitle">{subtitle}</h3>
+              </div>
             </div>
-          </div>
-          <div className="product-section-second">
-            <div
-              className="product-section-second-image-container"
-              onClick={() => {
-                router.push("/shop?f=popular");
-              }}
-            >
-              <Image
-                src={ProductImages[0].path}
-                fill
-                className="product-section-second-image"
-                alt="product section second image"
-              />
-            </div>
-            <h3 className="product-section-second-subtitle">{subtitle}</h3>
-          </div>
+          )}
         </>
       ) : (
         <Loading />

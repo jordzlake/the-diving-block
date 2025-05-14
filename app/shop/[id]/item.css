@@ -97,10 +97,11 @@
 
 .item-colors {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1.3em;
-  width: 100%;
+  width: max-content;
   margin-bottom: 1em;
+  text-align: center;
 }
 
 .item-color,

@@ -62,7 +62,7 @@ const Shop = () => {
         setCurrentPage(1);
         newSearchParams.set("p", "1");
       }
-      router.push(`/shop?${newSearchParams.toString()}`, { scroll: false });
+      router.push(`/shop?${newSearchParams.toString()}`);
     },
     [router, searchParams]
   );
@@ -107,7 +107,6 @@ const Shop = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     updateQuery({ p: page }, false);
-    window.scrollTo(0, 0);
   };
 
   useEffect(() => {

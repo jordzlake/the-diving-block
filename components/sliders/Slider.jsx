@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { CalculateProductDiscounts } from "@/components/calculations/CalculateProductDiscounts";
 import { Loading } from "../controls/loading/Loading";
 import { getSettings } from "@/lib/settingActions";
+import ProductSection from "../main/productSection/ProductSection";
 
 const Slider = ({ objects }) => {
   const router = useRouter();
@@ -72,7 +73,7 @@ const Slider = ({ objects }) => {
 
   return (
     <div className="slider-container">
-      {!loading && newContent.length > 0 ? (
+      {!loading && newContent.length > 0 && newContent.length > 3 ? (
         <div ref={sliderRef} className="keen-slider slider-wrapper">
           {newContent.map((object, i) => (
             <div
@@ -118,6 +119,14 @@ const Slider = ({ objects }) => {
             </>
           )}
         </div>
+      ) : !loading && newContent.length > 0 && newContent.length <= 3 ? (
+        <ProductSection
+          title=""
+          subtitle=""
+          noImage
+          content={newContent}
+          buttonText="View Shop"
+        />
       ) : (
         <Loading />
       )}

@@ -1,5 +1,4 @@
 .product-section-container {
-  padding-bottom: var(--g-mobile-section-padding);
   width: 100%;
   display: flex;
   flex-direction: column-reverse;
@@ -142,11 +141,20 @@
   }
 }
 
-@media (min-width: 980px) {
+@media (min-width: 1200px) {
+  .product-section-subtitle-container {
+    width: 100%;
+    height: 60em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .product-section-container {
-    padding-bottom: var(--g-section-padding);
     flex-direction: row;
     gap: 4em;
+    align-items: center;
+    justify-content: center;
+    margin: 2em 0;
   }
 
   .product-section-divider-left {

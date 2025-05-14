@@ -1,7 +1,11 @@
 "use client";
 import { Loading } from "@/components/controls/loading/Loading";
 import Slider from "@/components/sliders/Slider";
-import { getProduct, getProducts } from "@/lib/productActions";
+import {
+  getProduct,
+  getProducts,
+  getProductsParameters,
+} from "@/lib/productActions";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef } from "react";
@@ -14,12 +18,13 @@ import { getSettings } from "@/lib/settingActions";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
 import parse from "html-react-parser";
 import { CalculateSingleProductDiscount } from "@/components/calculations/CalculateProductDiscounts";
+import ProductSection from "@/components/main/productSection/ProductSection";
 export const dynamic = "force-dynamic";
 
 const Item = () => {
   const { id } = useParams();
   const lightboxRef = useRef(null);
-  const { addItem } = useContext(OrderContext);
+  const { addItem, orderItems } = useContext(OrderContext);
 
   const router = useRouter();
   const [products, setProducts] = useState([]);
@@ -33,6 +38,9 @@ const Item = () => {
   const { cart, setCart } = useContext(OrderContext);
   const [activeCost, setActiveCost] = useState(undefined);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [soldOut, setSoldOut] = useState(false);
+  const [almostSoldOut, setAlmostSoldOut] = useState(false);
+  const [maxQuantity, setMaxQuantity] = useState(0);
 
   useEffect(() => {
     if (typeof window) {
@@ -40,11 +48,18 @@ const Item = () => {
     }
     (async () => {
       try {
-        const res = await getProducts();
         const resProduct = await getProduct(id);
-        setProducts(res);
+        const res = await getProductsParameters({
+          order: "desc",
+          limit: 12,
+          tags: resProduct.tags,
+        });
+        console.log(res);
+        const resFiltered = res.filter((item) => item._id != resProduct._id);
+        setProducts(resFiltered);
 
         const settings = await getSettings();
+
         if (settings[0]) {
           const discountedItem = CalculateSingleProductDiscount(
             resProduct,
@@ -62,6 +77,45 @@ const Item = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    if (product?.inventory?.length) {
+      const allSizesZero = product.inventory.every((item) => item.amount === 0);
+      setSoldOut(allSizesZero);
+
+      const anySizeLessThan3 = product.inventory.every(
+        (item) => item.amount < 3
+      );
+      setAlmostSoldOut(anySizeLessThan3);
+    } else if (product?.sizes?.length) {
+      const allSizesAvailable = product.sizes.every((size) => size);
+      setAlmostSoldOut(false);
+      setSoldOut(false);
+    } else {
+      setSoldOut(false);
+      setAlmostSoldOut(false);
+    }
+  }, [product, selectedAttributeColor, selectedAttributeSize]);
+
+  useEffect(() => {
+    if (product?.inventory && selectedAttributeColor && selectedAttributeSize) {
+      const inventoryItem = product.inventory.find(
+        (item) =>
+          item.color === selectedAttributeColor &&
+          item.size === selectedAttributeSize
+      );
+      if (inventoryItem) {
+        setMaxQuantity(inventoryItem.amount);
+        setSelectedAttributeAmount(
+          Math.min(selectedAttributeAmount, inventoryItem.amount)
+        );
+      } else {
+        setMaxQuantity(0);
+      }
+    } else {
+      setMaxQuantity(product?.quantity || 0);
+    }
+  }, [selectedAttributeColor, selectedAttributeSize, product]);
+
   const handleAddItem = () => {
     setButtonLoading(true);
     if (product) {
@@ -71,6 +125,7 @@ const Item = () => {
         if (selectedAttributeColor) {
           color = selectedAttributeColor;
         } else {
+          setButtonLoading(false);
           setErrors(["You need to select a color!"]);
           return;
         }
@@ -80,6 +135,7 @@ const Item = () => {
         if (selectedAttributeSize) {
           size = selectedAttributeSize;
         } else {
+          setButtonLoading(false);
           setErrors(["You need to select a size!"]);
           return;
         }
@@ -103,17 +159,31 @@ const Item = () => {
       const orderItemTotal = amount * cartItemCost;
 
       const orderItem = {
+        productId: product._id,
         item,
         color,
         size,
         amount,
         cartItemCost,
         orderItemTotal,
+        maxQuantity,
       };
 
-      addItem(orderItem);
-      setButtonLoading(false);
-      router.push("/cart");
+      const isItemInOrder = orderItems.some(
+        (existingItem) =>
+          existingItem.productId === orderItem.productId &&
+          existingItem.color === orderItem.color &&
+          existingItem.size === orderItem.size
+      );
+
+      if (!isItemInOrder) {
+        addItem(orderItem);
+        setButtonLoading(false);
+        router.push("/cart");
+      } else {
+        setButtonLoading(false);
+        setErrors(["This item is already in your cart!"]);
+      }
     } else {
       setButtonLoading(false);
       setErrors(["This product does not exist!"]);
@@ -128,9 +198,15 @@ const Item = () => {
             <div className="item-breadcrumb-container">
               <Link href="/shop">Shop</Link>
               <span className="item-breadcrumb-separator" />
-              <Link href="/shop">Category</Link>
+              <Link
+                href={`/shop?category=${encodeURI(
+                  String(product.category)
+                )}&p=1`}
+              >
+                {String(product.category)}
+              </Link>
               <span className="item-breadcrumb-separator" />
-              <Link href="/shop">Item</Link>
+              <Link href="/">{String(product.title)}</Link>
             </div>
             <div className="item-display-container">
               <div className="item-information-container">
@@ -163,7 +239,7 @@ const Item = () => {
                   <div className="item-image-gallery">
                     <div
                       className={`${activeImage.index === 0 && "active"} 
-                            item-gallery-image-container`}
+                                        item-gallery-image-container`}
                       onClick={(e) => {
                         setActiveImage({ index: 0, image: product.image });
                       }}
@@ -181,7 +257,7 @@ const Item = () => {
                           className={`${
                             i + 1 === activeImage.index && "active"
                           } 
-                            item-gallery-image-container`}
+                                            item-gallery-image-container`}
                           onClick={() => {
                             setActiveImage({ index: i + 1, image: gi });
                           }}
@@ -213,6 +289,10 @@ const Item = () => {
                       ? Number(activeCost).toFixed(2)
                       : Number(product.cost).toFixed(2)}
                   </div>
+                  {soldOut && <p className="text-red-500">Sold Out!</p>}
+                  {almostSoldOut && (
+                    <p className="text-yellow-500">Almost Sold Out!</p>
+                  )}
                   <form>
                     <div className="item-colors-container">
                       <span className="item-colors-text">Colors:</span>
@@ -221,8 +301,9 @@ const Item = () => {
                           <div
                             onClick={() => {
                               setSelectedAttributeColor(color.name);
-                              console.log(product.colorImageVariants);
-
+                              setSelectedAttributeSize("");
+                              setSelectedAttributeAmount(1);
+                              console.log("size", selectedAttributeSize);
                               if (product.colorImageVariants?.length > 0) {
                                 const colorImage =
                                   product.colorImageVariants.find(
@@ -240,7 +321,6 @@ const Item = () => {
                                     }
                                   });
                                 }
-                                console.log("col img", colorImage);
                                 if (colorImage?.image) {
                                   setActiveImage({
                                     index: index,
@@ -262,8 +342,7 @@ const Item = () => {
                               selectedAttributeColor == color.name
                                 ? "item-color-selected"
                                 : ""
-                            }
-                          `}
+                            }`}
                           >
                             <span className="item-color-name">
                               {color.name}
@@ -280,6 +359,7 @@ const Item = () => {
                         name="size"
                         onChange={(e) => {
                           setSelectedAttributeSize(e.target.value);
+                          setSelectedAttributeAmount(1);
                           if (product.sizeCostVariants.length > 0) {
                             const sizeFound = product.sizeCostVariants.find(
                               (sz) => sz.size == e.target.value
@@ -293,6 +373,7 @@ const Item = () => {
                           console.log(e.target.value);
                         }}
                         id="size"
+                        value={selectedAttributeSize}
                       >
                         <option
                           name="size"
@@ -305,21 +386,50 @@ const Item = () => {
                         >
                           --
                         </option>
-                        {product.sizes.map((size, i) => (
-                          <option
-                            key={i}
-                            name="size"
-                            value={size}
-                            className={`item-color ${
-                              selectedAttributeSize &&
-                              selectedAttributeSize == size
-                                ? "item-size-selected"
-                                : ""
-                            }`}
-                          >
-                            {size}
-                          </option>
-                        ))}
+                        {selectedAttributeColor &&
+                        product.inventory &&
+                        product.inventory?.length > 0 // Check for selectedAttributeColor AND product.inventory
+                          ? product.inventory
+                              .filter(
+                                (item) =>
+                                  item.color === selectedAttributeColor &&
+                                  item.amount > 0
+                              ) // Filter based on the selected color
+                              .map((item, i) => (
+                                <option
+                                  key={i}
+                                  name="size"
+                                  value={item.size}
+                                  className={`item-color ${
+                                    selectedAttributeSize &&
+                                    selectedAttributeSize == item.size
+                                      ? "item-size-selected"
+                                      : ""
+                                  }`}
+                                >
+                                  {item.size}
+                                </option>
+                              ))
+                          : product.sizes.map(
+                              (
+                                size,
+                                i // Render all sizes if no color is selected.
+                              ) => (
+                                <option
+                                  key={i}
+                                  name="size"
+                                  value={size}
+                                  className={`item-color ${
+                                    selectedAttributeSize &&
+                                    selectedAttributeSize == size
+                                      ? "item-size-selected"
+                                      : ""
+                                  }`}
+                                >
+                                  {size}
+                                </option>
+                              )
+                            )}
                       </select>
                     </div>
 
@@ -330,11 +440,14 @@ const Item = () => {
                       <input
                         type="number"
                         name="quantity"
-                        max={product.quantity}
+                        max={maxQuantity}
                         min={1}
                         value={selectedAttributeAmount}
                         onChange={(e) => {
-                          setSelectedAttributeAmount(e.target.value);
+                          const newAmount = parseInt(e.target.value, 10);
+                          setSelectedAttributeAmount(
+                            Math.min(newAmount, maxQuantity)
+                          );
                         }}
                       />
                     </div>
@@ -344,9 +457,13 @@ const Item = () => {
                         e.preventDefault();
                         handleAddItem();
                       }}
-                      disabled={buttonLoading}
+                      disabled={buttonLoading || soldOut}
                     >
-                      {!buttonLoading ? "Add to basket" : "Loading..."}
+                      {!buttonLoading
+                        ? soldOut
+                          ? "Sold Out!"
+                          : "Add to basket"
+                        : "Loading..."}
                     </button>
                     <ErrorContainer errors={errors} />
                   </form>
@@ -362,13 +479,15 @@ const Item = () => {
               )}
             </div>
             <div className="item-related-products-container">
-              <h2>Related Products</h2>
-              {products.length > 0 ? (
-                <div>
-                  <Slider objects={products} />
-                </div>
-              ) : (
-                <Loading />
+              {products.length > 0 && (
+                <>
+                  <h2>Related Products</h2>
+                  <br />
+                  <br />
+                  <div>
+                    <Slider objects={products} />
+                  </div>
+                </>
               )}
             </div>
           </div>

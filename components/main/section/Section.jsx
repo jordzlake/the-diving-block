@@ -27,14 +27,14 @@ const Section = ({ title, subtitle, linebreak, content, buttonText }) => {
         )}
         {content.length > 0 ? (
           <div className="section-slider">
-            <Slider objects={content} />
+            <Slider objects={content.slice(0, 6)} />
           </div>
         ) : (
           <Loading />
         )}
         {content.length > 0 ? (
           <div className="section-slider">
-            <Slider objects={content} />
+            <Slider objects={content.slice(6)} />
           </div>
         ) : (
           <Loading />
