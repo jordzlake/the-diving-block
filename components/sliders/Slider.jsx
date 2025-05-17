@@ -127,6 +127,9 @@ const Slider = ({ objects }) => {
           content={newContent}
           buttonText="View Shop"
         />
+      ) : !loading ? (
+        <>
+        </>
       ) : (
         <Loading />
       )}
