@@ -57,7 +57,7 @@ const Order = () => {
                 updatePurchase: true,
               });
               console.log("newOrder", newOrder);
-
+              clearItems();
               setOrder(newOrder);
             } else {
               setOrder(orderFound);

@@ -147,7 +147,7 @@ const Cart = () => {
       setErrors(response.errors);
     } else {
       toast.success("Order successfully placed");
-      clearItems();
+
       window.location.href = response.data.url;
     }
   };
