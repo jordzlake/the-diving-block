@@ -266,7 +266,11 @@ const AddItem = () => {
     }
     toast.success("Added New Product Successfully");
     setButtonLoading(false);
-    router.push("/admin/items");
+    if (formData.sizes.length > 0 && formData.colors.length > 0) {
+      router.push(`/admin/inventory/${result.success._id}`);
+    } else {
+      router.push(`/admin/items`);
+    }
   };
 
   return (

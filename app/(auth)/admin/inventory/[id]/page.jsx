@@ -12,6 +12,7 @@ import FormInput from "@/components/controls/form/input/FormInput";
 import FormRow from "@/components/controls/form/row/FormRow";
 import { toast } from "react-toastify";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
+import Link from "next/link";
 
 const Inventory = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const Inventory = () => {
     try {
       const product = await getProduct(productId);
       setItem(product);
+      console.log(product);
 
       const initialInventory = [];
       if (product?.sizes && product?.colors) {
@@ -164,6 +166,15 @@ const Inventory = () => {
               No sizes or colors are currently associated with this product.
               Please update the product details to include sizes and colors to
               manage inventory.
+              {item && item?._id && (
+                <>
+                  <br />
+                  <br />
+                  <Link href={`/admin/items/${item?._id.toString()}`}>
+                    Edit Product
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </div>
