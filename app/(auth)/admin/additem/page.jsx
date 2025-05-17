@@ -414,7 +414,7 @@ const AddItem = () => {
 
                 <FormRow>
                   <FormInput
-                    label="Additional Notes:"
+                    label="Additional Notes"
                     type="textarea"
                     name="notes"
                     rows={3}
