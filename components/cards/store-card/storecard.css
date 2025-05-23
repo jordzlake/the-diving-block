@@ -59,7 +59,7 @@
 }
 
 .image-container img {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .image-title {
@@ -77,6 +77,10 @@
   margin: auto 0 0;
 }
 
+.image-card:hover .image-title {
+  animation: scrolltext 5s linear infinite;
+}
+
 @media (min-width: 650px) {
   .image-card {
     height: 24em;
@@ -86,4 +90,13 @@
   .image-container {
     height: 20em;
   }
+}
+
+@keyframes scrolltext {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  } /* Scroll to the left */
 }

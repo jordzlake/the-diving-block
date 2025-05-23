@@ -55,6 +55,7 @@ const Order = () => {
                 paymentStatus: paymentStatus,
                 updateInventory: true,
                 updatePurchase: true,
+                new: false,
               });
               console.log("newOrder", newOrder);
               clearItems();
@@ -198,11 +199,15 @@ const Order = () => {
                           className={`order-status-text ${
                             order.status === "In Progress"
                               ? "processing"
+                              : order.status == "Cancelled"
+                              ? "cancelled"
                               : "delivered"
                           }`}
                         >
                           {order.status === "In Progress"
                             ? "Processing"
+                            : order.status === "Cancelled"
+                            ? "Order Cancelled"
                             : "Delivered"}
                         </span>
                       </td>

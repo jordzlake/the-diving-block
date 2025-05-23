@@ -91,6 +91,14 @@ const AdminOrders = () => {
                   Failed Payment
                 </div>
                 <div
+                  className={`admin-filter ${
+                    filter == "Cancelled" && "active"
+                  }`}
+                  onClick={() => filterOrders("Cancelled")}
+                >
+                  Cancelled
+                </div>
+                <div
                   className={`admin-filter ${filter == "All" && "active"}`}
                   onClick={() => filterOrders("All")}
                 >

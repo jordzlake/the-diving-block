@@ -20,7 +20,7 @@ export const POST = async (req) => {
     const { firstName, email, orderID } = await req.json();
     console.log(firstName, email, orderID);
     const mail = await transporter.sendMail({
-      from: username,
+      from: "Diving Block Website",
       to: email,
       replyTo: email,
       subject: `Your order has been received!`,

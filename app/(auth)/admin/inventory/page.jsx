@@ -367,6 +367,7 @@ const InventoryItems = () => {
                           cost={item.cost}
                           discount={item.discount}
                           category={item.category}
+                          datemodified={item.updatedAt}
                           handleClick={() =>
                             router.push(`/admin/inventory/${item._id}`)
                           }

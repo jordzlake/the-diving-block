@@ -14,7 +14,20 @@ const StoreCard = ({
   small,
   tiny,
   discount,
+  datemodified,
 }) => {
+  const showSpec = () => {
+    if (!spec) return false; // Don't show spec if it's not provided
+
+    if (!datemodified) return true; // Fallback: show spec if datemodified is not supplied
+
+    const modifiedDate = new Date(datemodified);
+    const today = new Date();
+    const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000; // 5 days in milliseconds
+
+    return today.getTime() - modifiedDate.getTime() < fiveDaysInMs;
+  };
+
   const router = useRouter();
   return (
     <div
@@ -24,7 +37,7 @@ const StoreCard = ({
         handleClick ? handleClick() : url && router.push(url);
       }}
     >
-      {spec && <div className="image-special-text">{spec}</div>}
+      {showSpec() && <div className="image-special-text">{spec}</div>}
 
       {discount && <div className="image-discount-text">{`-${discount}%`}</div>}
 

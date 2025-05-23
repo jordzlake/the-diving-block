@@ -67,6 +67,7 @@ const Item = () => {
   });
   const [colorInput, setColorInput] = useState("#000000");
   const [colorName, setColorName] = useState("");
+  const [colorMulticolor, setColorMulticolor] = useState(false);
   const [errors, setErrors] = useState([]);
   const [settings, setSettings] = useState({});
   const [upload, setUpload] = useState("");

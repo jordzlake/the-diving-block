@@ -232,6 +232,14 @@ const AdminOrder = () => {
                       >
                         Completed
                       </div>
+                      <div
+                        className={`control ${
+                          status == "Cancelled" && "cancelled"
+                        }`}
+                        onClick={() => setStatus("Cancelled")}
+                      >
+                        Cancelled
+                      </div>
                     </div>
                   </div>
 

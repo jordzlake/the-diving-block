@@ -110,6 +110,9 @@ td {
   background-color: var(--blue);
 }
 
+.cancelled {
+  background-color: slategray;
+}
 .checkout-container {
   flex-basis: 40%;
   width: 100%;
