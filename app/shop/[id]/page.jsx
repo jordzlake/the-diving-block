@@ -277,17 +277,26 @@ const Item = () => {
                   <h1 className="item-content-title">{product.title}</h1>
                   <div className="item-content-separator" />
                   <div className="item-content-cost">
-                    $
-                    {product.discount && product.discount > 0
-                      ? (
-                          (activeCost
-                            ? Number(activeCost).toFixed(2)
-                            : Number(product.cost).toFixed(2)) *
-                          ((100 - product.discount) / 100)
-                        ).toFixed(2)
-                      : activeCost
-                      ? Number(activeCost).toFixed(2)
-                      : Number(product.cost).toFixed(2)}
+                    {product.discount && product.discount > 0 ? (
+                      <div className="item-content-cost-container">
+                        <div className="item-content-cost">
+                          $
+                          {(
+                            (activeCost
+                              ? Number(activeCost).toFixed(2)
+                              : Number(product.cost).toFixed(2)) *
+                            ((100 - product.discount) / 100)
+                          ).toFixed(2)}
+                        </div>
+                        <div className="item-content-cost-strike">
+                          ${Number(product.cost).toFixed(2)}
+                        </div>
+                      </div>
+                    ) : activeCost ? (
+                      Number(activeCost).toFixed(2)
+                    ) : (
+                      Number(product.cost).toFixed(2)
+                    )}
                   </div>
                   {soldOut && <p className="text-red-500">Sold Out!</p>}
                   {almostSoldOut && (

@@ -36,6 +36,13 @@
   margin-bottom: 0.4em;
   font-size: 1em;
 }
+.admin-item-delete-cat {
+  padding: 0.2em;
+  background-color: var(--red);
+  color: var(--white);
+  border-radius: 8px;
+  cursor: pointer;
+}
 
 .admin-item-input,
 .admin-item-select,

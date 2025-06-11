@@ -7,7 +7,7 @@ import { updateProduct, getProduct } from "@/lib/productActions";
 import { Loading } from "@/components/controls/loading/Loading";
 import AdminNavbar from "@/components/structure/adminNavbar/AdminNavbar";
 import ScrollToTop from "@/components/blocks/scrollToTop/ScrollToTop";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import FormInput from "@/components/controls/form/input/FormInput";
 import FormRow from "@/components/controls/form/row/FormRow";
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ import Link from "next/link";
 
 const Inventory = () => {
   const { id } = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -79,7 +80,11 @@ const Inventory = () => {
     }
     toast.success("Product Inventory Updated Successfully");
     setButtonLoading(false);
-    router.push("/admin/inventory");
+    if (searchParams.get("items")) {
+      router.push("/admin/items");
+    } else {
+      router.push("/admin.inventory");
+    }
   };
 
   if (loading) {

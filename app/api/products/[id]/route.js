@@ -65,6 +65,7 @@ export const POST = async (req, res) => {
       colorImageVariants: product.colorImageVariants || [],
       sizeCostVariants: product.sizeCostVariants || [],
       inventory: product.inventory || [],
+      additionalCategories: product.additionalCategories || [],
     });
 
     return NextResponse.json({ success: updatedProduct });

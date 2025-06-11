@@ -73,6 +73,46 @@
   align-items: flex-end;
 }
 
+.admin-item-color-picker {
+  width: 3em;
+  height: 3em;
+  border: none;
+  background-color: var(--gray);
+  border-radius: 0.2em;
+}
+
+.remove-color-button {
+  color: var(--white);
+  border: none;
+  padding: 0.2em 0.5em;
+  cursor: pointer;
+  border-radius: 0.2em;
+
+  background-color: var(--dark);
+}
+
+.remove-color-button:hover {
+  background-color: var(--red);
+  color: var(--white);
+}
+
+.add-color-button {
+  color: var(--dark);
+  border: none;
+  padding: 0.5em 2em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  background-color: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-color-button:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
 .admin-settings-add-button,
 .admin-settings-remove-button {
   border: none;
@@ -101,6 +141,16 @@
 .admin-settings-remove-button:hover {
   background-color: var(--light-gray);
   color: var(--gray);
+}
+
+.admin-item-color-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--light-gray);
+  padding: 0.4em;
+  border-radius: 0.3em;
+  margin-top: 0.5em;
+  border: 1px solid var(--gray);
 }
 
 .admin-settings-array-container {

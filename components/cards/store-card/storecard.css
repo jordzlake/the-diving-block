@@ -81,6 +81,21 @@
   animation: scrolltext 5s linear infinite;
 }
 
+.image-desc-underline {
+  font-weight: normal;
+  text-transform: capitalize;
+  text-decoration: line-through;
+  color: var(--light-gray);
+  margin: auto 0 0;
+}
+
+.image-desc-box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
 @media (min-width: 650px) {
   .image-card {
     height: 24em;

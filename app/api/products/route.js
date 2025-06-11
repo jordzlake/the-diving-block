@@ -53,6 +53,7 @@ export const POST = async (req, res) => {
       tags: product.tags,
       colorImageVariants: product.colorImageVariants || [],
       sizeCostVariants: product.sizeCostVariants || [],
+      additionalCategories: product.additionalCategories || [],
     });
 
     await newProduct.save();

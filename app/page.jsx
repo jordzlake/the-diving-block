@@ -27,7 +27,11 @@ export default function Home() {
           limit: 6,
           purchases: true,
         });
-        const res3 = await getProductsParameters({ order: "asc", limit: 12 });
+        const res3 = await getProductsParameters({
+          order: "asc",
+          limit: 12,
+          category: "Swim Wear",
+        });
         setFilteredProducts(res1);
         setPopularFilteredProducts(res2);
         setAltFilteredProducts(res3);

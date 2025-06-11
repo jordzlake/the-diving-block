@@ -10,6 +10,7 @@ export const GET = async (req) => {
   const limitParam = searchParams.get("limit");
   const tagsParam = searchParams.get("tags");
   const purchasesParam = searchParams.get("purchases");
+  const categoryParam = searchParams.get("category");
 
   const order = orderParam === "desc" ? -1 : 1; // Default to ascending for createdAt
   const limit = limitParam ? parseInt(limitParam, 10) : undefined;
@@ -26,6 +27,11 @@ export const GET = async (req) => {
     await connectToDb();
 
     const query = {};
+
+    if (categoryParam) {
+      query.category = categoryParam; // Assuming product.category is a string matching catagoryParam
+    }
+
     if (tags.length > 0) {
       query.tags = { $in: tags.map((tag) => new RegExp(tag, "i")) };
     }

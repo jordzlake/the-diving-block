@@ -166,8 +166,25 @@
 .item-description {
   white-space: pre-wrap;
 }
+
 .item-gallery-image-container img {
   object-fit: contain;
+}
+
+.item-content-cost-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.item-content-cost-strike {
+  font-weight: 500;
+  font-family: var(--font-rubik);
+  color: var(--gray);
+  text-transform: capitalize;
+  text-decoration: line-through;
+  margin-bottom: 1em;
+  font-size: larger;
 }
 
 @media (min-width: 480px) {

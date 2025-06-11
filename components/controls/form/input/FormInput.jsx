@@ -184,6 +184,32 @@ const FormInput = ({
           {errorMessage && <p className="form-error-message">{errorMessage}</p>}
         </div>
       );
+    case "dropdownplus":
+      return (
+        <div className={`form-group ${errorMessage ? "form-group-error" : ""}`}>
+          <label className="form-label">{label}:</label>
+          {description && (
+            <label className="form-label-info">{description}</label>
+          )}
+          <select
+            name={name}
+            value={value}
+            onChange={handleInputChange}
+            required={required}
+            className={`form-select ${errorMessage ? "form-select-error" : ""}`}
+          >
+            {defaultOption && <option value="">{defaultOption}</option>}
+            {options
+              ? options.map((option, i) => (
+                  <option key={`${option}-${i}`} value={option.value}>
+                    {option.label}
+                  </option>
+                ))
+              : []}
+          </select>
+          {errorMessage && <p className="form-error-message">{errorMessage}</p>}
+        </div>
+      );
     case "textarea":
       return (
         <div className={`form-group ${errorMessage ? "form-group-error" : ""}`}>

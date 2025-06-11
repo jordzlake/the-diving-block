@@ -61,9 +61,12 @@ const AddItem = () => {
     galleryImages: [],
     colorImageVariants: [],
     sizeCostVariants: [],
+    additionalCategories: [],
   });
   const [colorInput, setColorInput] = useState("#000000");
   const [colorName, setColorName] = useState("");
+  const [presetColors, setPresetColors] = useState([]);
+  const [selectedPresetColor, setSelectedPresetColor] = useState("");
   const [errors, setErrors] = useState([]);
   const [settings, setSettings] = useState({});
   const [upload, setUpload] = useState("");
@@ -78,6 +81,11 @@ const AddItem = () => {
   });
   const [showSelectionImages, setShowSelectionImages] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [additionalCategory, setAdditionalCategory] = useState({
+    category: "",
+    subCategory: "",
+  });
+  const [additionalSubCategories, setAdditionalSubCategories] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -95,6 +103,14 @@ const AddItem = () => {
           category: settings[0].categories[0].name || "",
           subCategory: settings[0].categories[0].subCategories[0] || "None",
         });
+        setAdditionalCategory({
+          ...additionalCategory,
+          category: settings[0].categories[0].name,
+        });
+        setPresetColors(settings[0].colors || []);
+
+        setAdditionalSubCategories(settings[0].categories[0].subCategories);
+
         console.log("subcategories", subCategories);
         itemSizes.length > 0 && setSizes(itemSizes);
         setLoading(false);
@@ -127,6 +143,17 @@ const AddItem = () => {
     setFormData({ ...formData, category: selectedCategory, subCategory: "" }); // Reset subcategory
   };
 
+  const handleAdditionalCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    const selectedCategoryObj = settings.categories.find(
+      (cat) => cat.name === selectedCategory
+    );
+    console.log("selectedCat:", selectedCategory);
+    setAdditionalSubCategories(
+      selectedCategoryObj ? selectedCategoryObj.subCategories : []
+    );
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     console.log(formData);
@@ -149,8 +176,57 @@ const AddItem = () => {
         });
         setColorInput("#000000");
         setColorName("");
+        setSelectedPresetColor("");
       } else {
         toast.error("This color or color name already exists!");
+      }
+    }
+  };
+
+  const handleUsePresetColor = (e) => {
+    const selectedHex = e.target.value;
+    const selectedColor = presetColors.find(
+      (color) => color.hexcode === selectedHex
+    );
+    if (selectedColor) {
+      setColorInput(selectedColor.hexcode);
+      setColorName(selectedColor.name);
+      setSelectedPresetColor(selectedHex); // Set selected preset for dropdown
+    } else {
+      // If "Select a preset" or an invalid option is chosen, clear the inputs
+      setColorInput("#000000");
+      setColorName("");
+      setSelectedPresetColor("");
+    }
+  };
+
+  const handleAddAdditionalCategory = () => {
+    if (additionalCategory.category) {
+      console.log("here");
+      const isDuplicate = formData.additionalCategories.some(
+        (addCategory) =>
+          addCategory.category === additionalCategory.category &&
+          addCategory.subCategory === additionalCategory.subCategory
+      );
+
+      if (!isDuplicate) {
+        setFormData({
+          ...formData,
+          additionalCategories: [
+            ...formData.additionalCategories,
+            {
+              category: additionalCategory.category,
+              subCategory: additionalCategory.subCategory,
+            },
+          ],
+        });
+        console.log(formData.additionalCategories);
+        setAdditionalCategory({
+          ...additionalCategory,
+          subCategory: "",
+        });
+      } else {
+        toast.error("This additional category already exists!");
       }
     }
   };
@@ -267,7 +343,7 @@ const AddItem = () => {
     toast.success("Added New Product Successfully");
     setButtonLoading(false);
     if (formData.sizes.length > 0 && formData.colors.length > 0) {
-      router.push(`/admin/inventory/${result.success._id}`);
+      router.push(`/admin/inventory/${result.success._id}?items=true`);
     } else {
       router.push(`/admin/items`);
     }
@@ -363,6 +439,72 @@ const AddItem = () => {
                   />
                 </FormRow>
 
+                <label className="admin-item-label">
+                  Additional Categories:
+                </label>
+                {formData.additionalCategories.length > 0 &&
+                  formData.additionalCategories.map((addcat, i) => (
+                    <FormRow key={i}>
+                      <div>{i + 1}.</div>
+                      <div>Category: {addcat.category}</div>
+                      <div>Subcategory: {addcat.subCategory}</div>
+                      <div
+                        onClick={(e) => {
+                          const newData = formData.additionalCategories.filter(
+                            (cat, index) => index !== i
+                          );
+                          setFormData({
+                            ...formData,
+                            additionalCategories: newData,
+                          });
+                        }}
+                        className="admin-item-delete-cat"
+                      >
+                        delete
+                      </div>
+                    </FormRow>
+                  ))}
+
+                <div className="admin-item-color-input">
+                  <FormRow>
+                    <FormInput
+                      label="Select an additional Category (Optional)"
+                      type="dropdown"
+                      name="additionalCategory"
+                      value={additionalCategory.category}
+                      onChange={(e) => {
+                        setAdditionalCategory({
+                          ...additionalCategory,
+                          category: e.target.value,
+                        });
+                        handleAdditionalCategoryChange(e);
+                      }}
+                      options={categories || []}
+                    />
+                    <FormInput
+                      label="Select an additional Sub-Category"
+                      type="dropdown"
+                      name="additionalsubCategory"
+                      value={additionalCategory.subCategory}
+                      onChange={(e) =>
+                        setAdditionalCategory({
+                          ...additionalCategory,
+                          subCategory: e.target.value,
+                        })
+                      }
+                      options={additionalSubCategories || []}
+                      defaultOption={"None"}
+                    />
+                  </FormRow>
+                  <button
+                    type="button"
+                    onClick={handleAddAdditionalCategory}
+                    className="add-color-button"
+                  >
+                    <FaPlus />
+                  </button>
+                </div>
+
                 <FormRow>
                   <FormInput
                     label="Select the Sizes of the Product"
@@ -446,6 +588,28 @@ const AddItem = () => {
                         onChange={(e) => setColorInput(e.target.value)}
                         className="admin-item-color-picker"
                       />
+                      {/* New: Preset Color Selection */}
+                      {presetColors.length > 0 && (
+                        <div className="admin-item-color-input admin-item-preset-color-selection">
+                          <FormInput
+                            label="Use Preset Color"
+                            type="dropdownplus"
+                            name="presetColor"
+                            value={selectedPresetColor}
+                            onChange={handleUsePresetColor}
+                            options={
+                              presetColors.length > 0
+                                ? presetColors.map((color) => ({
+                                    value: color.hexcode,
+                                    label: `${color.name} (${color.hexcode})`,
+                                  }))
+                                : []
+                            }
+                            defaultOption="Select a preset color"
+                          />
+                        </div>
+                      )}
+
                       <button
                         type="button"
                         onClick={handleAddColor}

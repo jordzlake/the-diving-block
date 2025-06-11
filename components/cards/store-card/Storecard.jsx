@@ -23,7 +23,7 @@ const StoreCard = ({
 
     const modifiedDate = new Date(datemodified);
     const today = new Date();
-    const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000; // 5 days in milliseconds
+    const fiveDaysInMs = 30 * 24 * 60 * 60 * 1000; // 5 days in milliseconds
 
     return today.getTime() - modifiedDate.getTime() < fiveDaysInMs;
   };
@@ -51,11 +51,12 @@ const StoreCard = ({
       </div>
       <h3 className="image-title">{title}</h3>
       {discount && discount > 0 ? (
-        <>
+        <div className="image-desc-box">
           <p className="image-desc">
             ${Number(cost * ((100 - discount) / 100)).toFixed(2)}
           </p>
-        </>
+          <p className="image-desc-underline">${Number(cost).toFixed(2)}</p>
+        </div>
       ) : (
         <p className="image-desc">${Number(cost).toFixed(2)}</p>
       )}

@@ -24,11 +24,14 @@ const Settings = () => {
     sizes: [],
     locations: [],
     sales: [],
+    colors: [],
   });
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newSubCategoryNames, setNewSubCategoryNames] = useState([]);
   const [newSize, setNewSize] = useState("");
   const [newLocation, setNewLocation] = useState({ name: "", cost: 0 });
+  const [newPresetColorName, setNewPresetColorName] = useState(""); // State for new preset color name
+  const [newPresetColorInput, setNewPresetColorInput] = useState("#000000"); // State for new preset color hex code
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -154,6 +157,41 @@ const Settings = () => {
       ...newLocation,
       [name]: value,
     });
+  };
+
+  // Handler to add a new preset color
+  const handleAddPresetColor = () => {
+    if (newPresetColorInput && newPresetColorName.trim()) {
+      const isDuplicate = (settingsData.colors || []).some(
+        (color) =>
+          color.hexcode.toUpperCase() === newPresetColorInput.toUpperCase() ||
+          color.name.toLowerCase() === newPresetColorName.toLowerCase()
+      );
+      if (!isDuplicate) {
+        setSettingsData({
+          ...settingsData,
+          colors: [
+            ...(settingsData.colors || []), // Ensure it's an array
+            {
+              name: newPresetColorName.trim(),
+              hexcode: newPresetColorInput.toUpperCase(),
+            },
+          ],
+        });
+        setNewPresetColorInput("#000000"); // Reset color picker
+        setNewPresetColorName(""); // Reset color name input
+      } else {
+        toast.error("This preset color or color name already exists!");
+      }
+    }
+  };
+
+  // Handler to remove a preset color
+  const handleRemovePresetColor = (index) => {
+    const newPresetColorArray = (settingsData.colors || []).filter(
+      (_, idx) => idx !== index
+    );
+    setSettingsData({ ...settingsData, colors: newPresetColorArray });
   };
 
   const handleSubmit = async (e) => {
@@ -353,6 +391,7 @@ const Settings = () => {
                       }}
                       dataIndex={index}
                     />
+
                     <button
                       type="button"
                       className="admin-settings-remove-button"
@@ -362,6 +401,7 @@ const Settings = () => {
                     </button>
                   </div>
                 ))}
+
                 <div className="admin-settings-add-item">
                   <FormInput
                     label="New Pickup Location"
@@ -386,7 +426,59 @@ const Settings = () => {
                   </button>
                 </div>
               </div>
+              {/* Preset Colors */}
+              <div className="admin-settings-group">
+                <label className="admin-settings-label">Preset Colors:</label>
+                <div className="admin-settings-add-item admin-item-color-input">
+                  <FormInput
+                    label="Color Name"
+                    type="text"
+                    value={newPresetColorName}
+                    onChange={(e) => setNewPresetColorName(e.target.value)}
+                    className="admin-item-input"
+                  />
+                  <input
+                    type="color"
+                    value={newPresetColorInput}
+                    onChange={(e) => setNewPresetColorInput(e.target.value)}
+                    className="admin-item-color-picker"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddPresetColor}
+                    className="admin-settings-add-button"
+                  >
+                    <FaPlus /> Add Preset Color
+                  </button>
+                </div>
 
+                {/* Display added preset colors */}
+                <div className="admin-item-color-list">
+                  {(settingsData.colors || []).map((color, index) => (
+                    <div
+                      key={index}
+                      className="admin-item-color-item"
+                      style={{
+                        backgroundColor: color.hexcode,
+                        padding: "10px",
+                        borderRadius: "5px",
+                        color: "#fff", // Fixed to white text
+                      }}
+                    >
+                      <p className="admin-item-color-text">
+                        {color.name} ({color.hexcode})
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePresetColor(index)}
+                        className="remove-color-button"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <button
                 disabled={buttonLoading}
                 type="submit"

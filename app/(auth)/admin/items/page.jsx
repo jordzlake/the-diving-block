@@ -49,7 +49,7 @@ const Items = () => {
     Number(searchParams.get("p")) || 1
   );
   const [totalProducts, setTotalProducts] = useState(0);
-  const productsPerPage = 8;
+  const productsPerPage = 6;
 
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -202,7 +202,10 @@ const Items = () => {
     <button
       key={i + 1}
       className={`pagination-button ${currentPage === i + 1 ? "active" : ""}`}
-      onClick={() => handlePageChange(i + 1)}
+      onClick={() => {
+        handlePageChange(i + 1);
+        window.scrollTo(0, 100);
+      }}
     >
       {i + 1}
     </button>

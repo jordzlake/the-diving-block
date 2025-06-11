@@ -206,7 +206,10 @@ const InventoryItems = () => {
     <button
       key={i + 1}
       className={`pagination-button ${currentPage === i + 1 ? "active" : ""}`}
-      onClick={() => handlePageChange(i + 1)}
+      onClick={() => {
+        handlePageChange(i + 1);
+        window.scrollTo(0, 100);
+      }}
     >
       {i + 1}
     </button>

@@ -18,6 +18,14 @@
   margin: 1em 0;
 }
 
+.admin-item-delete-cat {
+  padding: 0.2em;
+  background-color: var(--red);
+  color: var(--white);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .admin-item-form-group {
   display: flex;
   flex-direction: column;

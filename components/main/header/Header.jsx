@@ -15,10 +15,12 @@ import { signOut, useSession } from "next-auth/react";
 import { handleSignOut } from "@/lib/actions/authActions";
 import { OrderContext } from "@/components/contexts/OrderContext";
 import { getSettings } from "@/lib/settingActions";
+import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 const Header = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const currentPath = usePathname();
   const searchParams = useSearchParams();
@@ -153,6 +155,7 @@ const Header = () => {
                   alt="diving block logo"
                   className="nav-logo"
                   fill
+                  onClick={() => router.push("/")}
                 />
               </div>
               {NavLinksUser.map((navLink) => (
