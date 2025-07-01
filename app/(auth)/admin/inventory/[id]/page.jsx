@@ -83,7 +83,7 @@ const Inventory = () => {
     if (searchParams.get("items")) {
       router.push("/admin/items");
     } else {
-      router.push("/admin.inventory");
+      router.push("/admin/inventory");
     }
   };
 
