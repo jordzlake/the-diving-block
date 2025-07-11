@@ -28,14 +28,7 @@ import { productSchema } from "@/lib/schema";
 import { useRouter } from "next/navigation";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
 import dynamic from "next/dynamic";
-
-const CldUploadWidget = dynamic(
-  () => import("next-cloudinary").then((mod) => mod.CldUploadWidget),
-  {
-    ssr: false, // Ensure the component is not rendered on the server
-    loading: () => <p>Loading upload widget...</p>, // Optional loading indicator
-  }
-);
+import { CldUploadWidget } from "next-cloudinary";
 
 const Item = () => {
   const { id } = useParams();
