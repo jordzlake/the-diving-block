@@ -427,7 +427,6 @@ const Item = () => {
                     value={formData.subCategory}
                     onChange={handleChange}
                     options={subCategories || []}
-                    defaultOption={"None"}
                     required={true}
                   />
                 </FormRow>

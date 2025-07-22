@@ -25,6 +25,10 @@
   margin-bottom: 20px;
 }
 
+.shop-filters-container {
+  width: 30%;
+}
+
 .admin-content-g2,
 .admin-content-g3 {
   width: 100%;

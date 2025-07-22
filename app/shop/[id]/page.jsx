@@ -293,9 +293,9 @@ const Item = () => {
                         </div>
                       </div>
                     ) : activeCost ? (
-                      Number(activeCost).toFixed(2)
+                      `$${Number(activeCost).toFixed(2)}`
                     ) : (
-                      Number(product.cost).toFixed(2)
+                      `$${Number(product.cost).toFixed(2)}`
                     )}
                   </div>
                   {soldOut && <p className="text-red-500">Sold Out!</p>}

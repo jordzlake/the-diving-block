@@ -41,7 +41,7 @@ const InventoryItems = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("t") || "");
   const [selectedSizes, setSelectedSizes] = useState(
-    searchParams.getAll("size") || []
+    searchParams.get("size") ? searchParams.get("size").split(",") : [] // Read size as comma-separated
   );
   const [selectedColor, setSelectedColor] = useState(
     searchParams.get("color") || undefined
@@ -49,15 +49,31 @@ const InventoryItems = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "All"
   );
+  // New state for selected subcategories, reading from comma-separated URL param
+  const [selectedSubCategories, setSelectedSubCategories] = useState(
+    searchParams.get("subCategory")
+      ? searchParams.get("subCategory").split(",")
+      : []
+  );
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get("p")) || 1
   );
   const [totalProducts, setTotalProducts] = useState(0);
   const productsPerPage = 6;
 
+  // Categories will now store the full category objects from settings
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
+
+  // Helper function to get subcategories for a given category name
+  const getSubCategoriesForCategory = useCallback(
+    (categoryName) => {
+      const category = categories.find((cat) => cat.name === categoryName);
+      return category ? category.subCategories : [];
+    },
+    [categories]
+  );
 
   const updateQuery = useCallback(
     (newParams, shouldResetPage = true) => {
@@ -68,12 +84,18 @@ const InventoryItems = () => {
           newParams[key] === null ||
           newParams[key] === "" ||
           (key === "category" && newParams[key] === "All") ||
-          (key === "size" && newParams[key].length === 0)
+          (key === "size" && newParams[key].length === 0) ||
+          (key === "subCategory" && newParams[key].length === 0) // Handle empty subCategory array
         ) {
           newSearchParams.delete(key);
         } else if (Array.isArray(newParams[key])) {
-          newSearchParams.delete(key);
-          newParams[key].forEach((value) => newSearchParams.append(key, value));
+          // For array parameters like 'size' and 'subCategory', join them with a comma
+          // and set as a single parameter.
+          if (newParams[key].length > 0) {
+            newSearchParams.set(key, newParams[key].join(","));
+          } else {
+            newSearchParams.delete(key); // Delete if array is empty
+          }
         } else {
           newSearchParams.set(key, newParams[key]);
         }
@@ -101,16 +123,11 @@ const InventoryItems = () => {
   const handleSizeChange = (event) => {
     const value = event.target.value;
     const isChecked = event.target.checked;
-    setSelectedSizes((prevSizes) =>
-      isChecked
-        ? [...prevSizes, value]
-        : prevSizes.filter((size) => size !== value)
-    );
-    updateQuery({
-      size: isChecked
-        ? [...selectedSizes, value]
-        : selectedSizes.filter((size) => size !== value),
-    });
+    const updatedSizes = isChecked
+      ? [...selectedSizes, value]
+      : selectedSizes.filter((size) => size !== value);
+    setSelectedSizes(updatedSizes);
+    updateQuery({ size: updatedSizes });
   };
 
   const handleColorChange = (event) => {
@@ -122,7 +139,19 @@ const InventoryItems = () => {
   const handleCategoryChange = (event) => {
     const value = event.target.value === "" ? undefined : event.target.value;
     setSelectedCategory(value);
-    updateQuery({ category: value });
+    // Reset subcategories when main category changes
+    setSelectedSubCategories([]);
+    updateQuery({ category: value, subCategory: [] }); // Pass empty array to clear subCategory in URL
+  };
+
+  const handleSubCategoryChange = (event) => {
+    const value = event.target.value;
+    const isChecked = event.target.checked;
+    const updatedSubCategories = isChecked
+      ? [...selectedSubCategories, value]
+      : selectedSubCategories.filter((subCat) => subCat !== value);
+    setSelectedSubCategories(updatedSubCategories);
+    updateQuery({ subCategory: updatedSubCategories }); // Pass the array to updateQuery
   };
 
   const handlePageChange = (page) => {
@@ -136,9 +165,15 @@ const InventoryItems = () => {
         setLoading(true);
         const filter = searchParams.get("t") || "";
         const page = Number(searchParams.get("p")) || 1;
-        const size = searchParams.getAll("size") || undefined;
+        // Read size and subCategory as comma-separated strings and split into arrays
+        const size = searchParams.get("size")
+          ? searchParams.get("size").split(",")
+          : undefined;
         const color = searchParams.get("color") || undefined;
         const category = searchParams.get("category") || undefined;
+        const subCategory = searchParams.get("subCategory")
+          ? searchParams.get("subCategory").split(",")
+          : undefined;
 
         const queryParams = {
           filter,
@@ -147,6 +182,7 @@ const InventoryItems = () => {
           size,
           color,
           category,
+          subCategory, // Pass subCategory to getFilteredProducts
         };
 
         const res = await getFilteredProducts(queryParams);
@@ -154,9 +190,12 @@ const InventoryItems = () => {
         setTotalProducts(res.total);
 
         const settings = await getSettings();
-        const itemCategories = [{ name: "All" }, ...settings[0].categories];
+        // Store full category objects to access subCategories
+        // Ensure "All" is explicitly added if it's a desired filter option,
+        // otherwise settings.categories will be used directly.
+        const allCategories = [...(settings[0].categories || [])];
+        setCategories(allCategories);
         const itemSizes = settings[0].sizes || [];
-        setCategories(itemCategories.map((item) => item.name));
         setSizes(itemSizes);
 
         // Extract unique colors from fetched products
@@ -181,7 +220,13 @@ const InventoryItems = () => {
 
   const handleDelete = async (item) => {
     try {
-      if (window.confirm("Are you sure you want to delete this item?")) {
+      // Using a custom modal/dialog instead of window.confirm for better UI/UX
+      // For this example, we'll simulate the confirmation. In a real app, you'd
+      // render a modal and handle its state.
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this item?"
+      ); // Replace with custom modal
+      if (confirmed) {
         const data = {
           id: item._id,
           images: [item.image, item.subImage1, item.subImage2],
@@ -202,18 +247,116 @@ const InventoryItems = () => {
   };
 
   const totalPages = Math.ceil(totalProducts / productsPerPage);
-  const paginationItems = Array.from({ length: totalPages }, (_, i) => (
+
+  // Calculate the range of pagination items to display
+  const pageRange = 2; // Number of pages to show around the current page
+  let startPage = Math.max(1, currentPage - pageRange);
+  let endPage = Math.min(totalPages, currentPage + pageRange);
+
+  // Adjust start and end page to ensure a consistent number of visible pages
+  if (endPage - startPage + 1 < 2 * pageRange + 1) {
+    if (currentPage - startPage < pageRange) {
+      endPage = Math.min(totalPages, startPage + 2 * pageRange);
+    } else if (endPage - currentPage < pageRange) {
+      startPage = Math.max(1, endPage - 2 * pageRange);
+    }
+  }
+
+  const paginationItems = [];
+
+  // Add "Previous" button
+  paginationItems.push(
     <button
-      key={i + 1}
-      className={`pagination-button ${currentPage === i + 1 ? "active" : ""}`}
+      key="prev"
+      className="pagination-button"
       onClick={() => {
-        handlePageChange(i + 1);
+        handlePageChange(currentPage - 1);
         window.scrollTo(0, 100);
       }}
+      disabled={currentPage === 1}
     >
-      {i + 1}
+      <FaArrowLeft />
     </button>
-  ));
+  );
+
+  // Add first page if not in range
+  if (startPage > 1) {
+    paginationItems.push(
+      <button
+        key={1}
+        className={`pagination-button ${currentPage === 1 ? "active" : ""}`}
+        onClick={() => {
+          handlePageChange(1);
+          window.scrollTo(0, 100);
+        }}
+      >
+        1
+      </button>
+    );
+    if (startPage > 2) {
+      paginationItems.push(
+        <span key="dots-start" className="pagination-dots">
+          ...
+        </span>
+      );
+    }
+  }
+
+  // Add page numbers within the calculated range
+  for (let i = startPage; i <= endPage; i++) {
+    paginationItems.push(
+      <button
+        key={i}
+        className={`pagination-button ${currentPage === i ? "active" : ""}`}
+        onClick={() => {
+          handlePageChange(i);
+          window.scrollTo(0, 100);
+        }}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  // Add last page if not in range
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      paginationItems.push(
+        <span key="dots-end" className="pagination-dots">
+          ...
+        </span>
+      );
+    }
+    paginationItems.push(
+      <button
+        key={totalPages}
+        className={`pagination-button ${
+          currentPage === totalPages ? "active" : ""
+        }`}
+        onClick={() => {
+          handlePageChange(totalPages);
+          window.scrollTo(0, 100);
+        }}
+      >
+        {totalPages}
+      </button>
+    );
+  }
+
+  // Add "Next" button
+  paginationItems.push(
+    <button
+      key="next"
+      className="pagination-button"
+      onClick={() => {
+        handlePageChange(currentPage + 1);
+        window.scrollTo(0, 100);
+      }}
+      disabled={currentPage === totalPages}
+    >
+      <FaArrowRight />
+    </button>
+  );
 
   const collapseStyles = {
     border: "1px solid #ccc",
@@ -248,7 +391,7 @@ const InventoryItems = () => {
       <ScrollToTop />
       <AdminNavbar />
       <div className="admin-container-items">
-        <h1 className="admin-title">Items</h1>
+        <h1 className="admin-title">Inventory</h1>
 
         <div className="admin-items-content">
           {!loading ? (
@@ -283,15 +426,55 @@ const InventoryItems = () => {
                         <select
                           value={selectedCategory}
                           onChange={handleCategoryChange}
-                          style={{ width: "100%", padding: "8px" }}
+                          style={{
+                            width: "100%",
+                            padding: "8px",
+                            marginBottom: "10px",
+                          }}
                         >
-                          <option value="">All Categories</option>
-                          {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                              {cat}
+                          <option value="All">All Categories</option>
+                          {categories.map((cat, i) => (
+                            <option key={`${cat.name}-${i}`} value={cat.name}>
+                              {cat.name}
                             </option>
                           ))}
                         </select>
+
+                        {/* Subcategory checkboxes */}
+                        {selectedCategory &&
+                          selectedCategory !== "All" &&
+                          getSubCategoriesForCategory(selectedCategory).length >
+                            0 && (
+                            <div className="shop-subcategories-container">
+                              <label className="shop-filter-label">
+                                Subcategories:
+                              </label>
+                              {getSubCategoriesForCategory(
+                                selectedCategory
+                              ).map((subCat, i) => (
+                                <div
+                                  key={`${subCat}-${i}`}
+                                  style={{ marginBottom: "5px" }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    value={subCat}
+                                    checked={selectedSubCategories.includes(
+                                      subCat
+                                    )}
+                                    onChange={handleSubCategoryChange}
+                                    id={`subcat-${subCat}`}
+                                  />
+                                  <label
+                                    htmlFor={`subcat-${subCat}`}
+                                    style={{ marginLeft: "5px" }}
+                                  >
+                                    {subCat}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                       </div>
                     )}
                   </div>

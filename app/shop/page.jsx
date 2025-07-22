@@ -7,6 +7,8 @@ import { Loading } from "@/components/controls/loading/Loading";
 import StoreCard from "@/components/cards/store-card/Storecard";
 import { getFilteredProducts } from "@/lib/productActions";
 import {
+  FaArrowLeft, // Added for pagination arrows
+  FaArrowRight, // Added for pagination arrows
   FaCartShopping,
   FaGlobe,
   FaMagnifyingGlass,
@@ -32,14 +34,31 @@ const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || undefined
   );
+  // New state for selected subcategories
+  // When reading from URL, split the single string by comma
+  const [selectedSubCategories, setSelectedSubCategories] = useState(
+    searchParams.get("subCategory")
+      ? searchParams.get("subCategory").split(",")
+      : []
+  );
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get("p")) || 1
   );
   const [totalProducts, setTotalProducts] = useState(0);
-  const productsPerPage = 8;
+  const productsPerPage = 8; // Products per page for the shop
 
+  // Categories will now store the full category objects from settings
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
+
+  // Helper function to get subcategories for a given category name
+  const getSubCategoriesForCategory = useCallback(
+    (categoryName) => {
+      const category = categories.find((cat) => cat.name === categoryName);
+      return category ? category.subCategories : [];
+    },
+    [categories]
+  );
 
   const updateQuery = useCallback(
     (newParams, shouldResetPage = true) => {
@@ -48,12 +67,20 @@ const Shop = () => {
         if (
           newParams[key] === undefined ||
           newParams[key] === null ||
-          newParams[key] === ""
+          newParams[key] === "" ||
+          // Special handling for array parameters that might become empty
+          (key === "size" && newParams[key].length === 0) ||
+          (key === "subCategory" && newParams[key].length === 0) // Check for empty array for subCategory
         ) {
           newSearchParams.delete(key);
         } else if (Array.isArray(newParams[key])) {
-          newSearchParams.delete(key);
-          newParams[key].forEach((value) => newSearchParams.append(key, value));
+          // For array parameters like 'size' and 'subCategory', join them with a comma
+          // and set as a single parameter.
+          if (newParams[key].length > 0) {
+            newSearchParams.set(key, newParams[key].join(","));
+          } else {
+            newSearchParams.delete(key); // Delete if array is empty
+          }
         } else {
           newSearchParams.set(key, newParams[key]);
         }
@@ -79,17 +106,11 @@ const Shop = () => {
   const handleSizeChange = (event) => {
     const value = event.target.value;
     const isChecked = event.target.checked;
-    setSelectedSizes((prevSizes) =>
-      isChecked
-        ? [...prevSizes, value]
-        : prevSizes.filter((size) => size !== value)
-    );
-    // Update query immediately on size change, resetting page
-    updateQuery({
-      size: isChecked
-        ? [...selectedSizes, value]
-        : selectedSizes.filter((size) => size !== value),
-    });
+    const updatedSizes = isChecked
+      ? [...selectedSizes, value]
+      : selectedSizes.filter((size) => size !== value);
+    setSelectedSizes(updatedSizes);
+    updateQuery({ size: updatedSizes });
   };
 
   const handleColorChange = (event) => {
@@ -101,12 +122,24 @@ const Shop = () => {
   const handleCategoryChange = (event) => {
     const value = event.target.value === "" ? undefined : event.target.value;
     setSelectedCategory(value);
-    updateQuery({ category: value });
+    // Reset subcategories when main category changes
+    setSelectedSubCategories([]);
+    updateQuery({ category: value, subCategory: [] }); // Pass empty array to clear subCategory in URL
+  };
+
+  const handleSubCategoryChange = (event) => {
+    const value = event.target.value;
+    const isChecked = event.target.checked;
+    const updatedSubCategories = isChecked
+      ? [...selectedSubCategories, value]
+      : selectedSubCategories.filter((subCat) => subCat !== value);
+    setSelectedSubCategories(updatedSubCategories);
+    updateQuery({ subCategory: updatedSubCategories }); // Pass the array to updateQuery
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    updateQuery({ p: page }, false);
+    updateQuery({ p: page }, false); // Do not reset page when changing page number
   };
 
   useEffect(() => {
@@ -116,9 +149,14 @@ const Shop = () => {
         let filter = searchParams.get("t") || "";
         let order = searchParams.get("o") || "asc";
         let page = Number(searchParams.get("p")) || 1;
-        let size = searchParams.getAll("size") || undefined;
+        let size = searchParams.get("size")
+          ? searchParams.get("size").split(",")
+          : undefined; // Read size as comma-separated
         let color = searchParams.get("color") || undefined;
         let category = searchParams.get("category") || undefined;
+        let subCategory = searchParams.get("subCategory")
+          ? searchParams.get("subCategory").split(",")
+          : undefined; // Read subCategory as comma-separated
 
         const data = {
           filter,
@@ -127,14 +165,14 @@ const Shop = () => {
           size,
           color,
           category,
+          subCategory, // Pass subCategory to getFilteredProducts
           limit: productsPerPage,
         };
 
         const settings = await getSettings();
-        const itemCategories = settings[0].categories.map((cat) => cat.name);
+        // Store full category objects to access subCategories
+        setCategories(settings[0].categories || []);
         const itemSizes = settings[0].sizes.map((sz) => sz);
-
-        setCategories(itemCategories);
         setSizes(itemSizes);
 
         const res = await getFilteredProducts(data);
@@ -152,23 +190,130 @@ const Shop = () => {
     })();
   }, [searchParams, productsPerPage]);
 
-  // Extract unique values for filters
+  // Extract unique colors from current products for the color filter
   const colors = [
     ...new Set(
-      products.flatMap((product) => product.colors.map((c) => c.name))
+      products
+        .flatMap((product) => product.colors?.map((c) => c.name))
+        .filter(Boolean)
     ),
-  ].filter(Boolean);
+  ];
 
   const totalPages = Math.ceil(totalProducts / productsPerPage);
-  const paginationItems = Array.from({ length: totalPages }, (_, i) => (
+
+  // Calculate the range of pagination items to display
+  const pageRange = 1; // Number of pages to show around the current page
+  let startPage = Math.max(1, currentPage - pageRange);
+  let endPage = Math.min(totalPages, currentPage + pageRange);
+
+  // Adjust start and end page to ensure a consistent number of visible pages
+  if (endPage - startPage + 1 < 2 * pageRange + 1) {
+    if (currentPage - startPage < pageRange) {
+      // If current page is close to the beginning, extend endPage
+      endPage = Math.min(totalPages, startPage + 2 * pageRange);
+    } else if (endPage - currentPage < pageRange) {
+      // If current page is close to the end, extend startPage
+      startPage = Math.max(1, endPage - 2 * pageRange);
+    }
+  }
+
+  const paginationItems = [];
+
+  // Add "Previous" button
+  paginationItems.push(
     <button
-      key={i + 1}
-      className={`pagination-button ${currentPage === i + 1 ? "active" : ""}`}
-      onClick={() => handlePageChange(i + 1)}
+      key="prev"
+      className="pagination-button"
+      onClick={() => {
+        handlePageChange(currentPage - 1);
+        window.scrollTo(0, 100); // Scroll to top after page change
+      }}
+      disabled={currentPage === 1} // Disable if on the first page
     >
-      {i + 1}
+      <FaArrowLeft />
     </button>
-  ));
+  );
+
+  // Add first page if not in range
+  if (startPage > 1) {
+    paginationItems.push(
+      <button
+        key={1}
+        className={`pagination-button ${currentPage === 1 ? "active" : ""}`}
+        onClick={() => {
+          handlePageChange(1);
+          window.scrollTo(0, 100);
+        }}
+      >
+        1
+      </button>
+    );
+    // Add ellipses if there's a gap between the first page and the start of the range
+    if (startPage > 2) {
+      paginationItems.push(
+        <span key="dots-start" className="pagination-dots">
+          ...
+        </span>
+      );
+    }
+  }
+
+  // Add page numbers within the calculated range
+  for (let i = startPage; i <= endPage; i++) {
+    paginationItems.push(
+      <button
+        key={i}
+        className={`pagination-button ${currentPage === i ? "active" : ""}`}
+        onClick={() => {
+          handlePageChange(i);
+          window.scrollTo(0, 100);
+        }}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  // Add last page if not in range
+  if (endPage < totalPages) {
+    // Add ellipses if there's a gap between the end of the range and the last page
+    if (endPage < totalPages - 1) {
+      paginationItems.push(
+        <span key="dots-end" className="pagination-dots">
+          ...
+        </span>
+      );
+    }
+    paginationItems.push(
+      <button
+        key={totalPages}
+        className={`pagination-button ${
+          currentPage === totalPages ? "active" : ""
+        }`}
+        onClick={() => {
+          handlePageChange(totalPages);
+          window.scrollTo(0, 100);
+        }}
+      >
+        {totalPages}
+      </button>
+    );
+  }
+
+  // Add "Next" button
+  paginationItems.push(
+    <button
+      key="next"
+      className="pagination-button"
+      onClick={() => {
+        handlePageChange(currentPage + 1);
+        window.scrollTo(0, 100);
+      }}
+      disabled={currentPage === totalPages} // Disable if on the last page
+    >
+      <FaArrowRight />
+    </button>
+  );
 
   const collapseStyles = {
     border: "1px solid #ccc",
@@ -200,6 +345,7 @@ const Shop = () => {
 
   return (
     <main>
+      <ScrollToTop /> {/* Added ScrollToTop component */}
       <section className="shop-container">
         <div className="shop-banner-content-container">
           <div className="shop-banner-title-container">
@@ -260,15 +406,54 @@ const Shop = () => {
                     <select
                       value={selectedCategory || ""}
                       onChange={handleCategoryChange}
-                      style={{ width: "100%", padding: "8px" }}
+                      style={{
+                        width: "100%",
+                        padding: "8px",
+                        marginBottom: "10px",
+                      }}
                     >
                       <option value="">All Categories</option>
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
+                      {categories.map((cat, i) => (
+                        <option key={`${cat.name}-${i}`} value={cat.name}>
+                          {cat.name}
                         </option>
                       ))}
                     </select>
+
+                    {/* Subcategory checkboxes */}
+                    {selectedCategory &&
+                      getSubCategoriesForCategory(selectedCategory).length >
+                        0 && (
+                        <div className="shop-subcategories-container">
+                          <label className="shop-filter-label">
+                            Subcategories:
+                          </label>
+                          {getSubCategoriesForCategory(selectedCategory).map(
+                            (subCat, i) => (
+                              <div
+                                key={`${subCat}-${i}`}
+                                style={{ marginBottom: "5px" }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  value={subCat}
+                                  checked={selectedSubCategories.includes(
+                                    subCat
+                                  )}
+                                  onChange={handleSubCategoryChange}
+                                  id={`subcat-${subCat}`}
+                                />
+                                <label
+                                  htmlFor={`subcat-${subCat}`}
+                                  style={{ marginLeft: "5px" }}
+                                >
+                                  {subCat}
+                                </label>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
                   </div>
                 )}
               </div>

@@ -206,6 +206,10 @@
   display: block;
 }
 
+.admin-cat-sales-add .form-radio-label input:checked ~ .form-radio-checkmark {
+  background-color: var(--orange);
+}
+
 .admin-sales-site-sale .form-radio-label input:checked ~ .form-radio-checkmark {
   background-color: var(--orange);
 }
@@ -269,4 +273,16 @@
 
 .admin-container {
   margin-bottom: 0;
+}
+
+.admin-sales-subcategories-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.admin-sales-checkbox-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
 }

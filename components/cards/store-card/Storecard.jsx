@@ -39,7 +39,11 @@ const StoreCard = ({
     >
       {showSpec() && <div className="image-special-text">{spec}</div>}
 
-      {discount && <div className="image-discount-text">{`-${discount}%`}</div>}
+      {discount ? (
+        <div className="image-discount-text">{`-${discount}%`}</div>
+      ) : (
+        ""
+      )}
 
       <div className="image-container">
         <CldImage

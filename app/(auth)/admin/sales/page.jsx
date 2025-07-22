@@ -9,7 +9,7 @@ import { getSettings, updateSettings } from "@/lib/settingActions";
 import FormInput from "@/components/controls/form/input/FormInput";
 import FormRow from "@/components/controls/form/row/FormRow";
 import { toast } from "react-toastify";
-import { settingsSchema } from "@/lib/schema";
+import { settingsSchema } from "@/lib/schema"; // Assuming this schema is for validation
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
 import { FaMagnifyingGlass, FaPlus, FaTrashCan } from "react-icons/fa6";
 import { Loading } from "@/components/controls/loading/Loading";
@@ -44,6 +44,7 @@ const dropdownItemStyles = {
 const Sales = () => {
   const router = useRouter();
   const [settingsData, setSettingsData] = useState({
+    categories: [],
     sales: [],
     sitesale: {
       name: "",
@@ -51,7 +52,7 @@ const Sales = () => {
       description: "",
       enabled: false,
     },
-    categorysales: [],
+    categorysales: [], // Initialize categorysales array
   });
   const [newSale, setNewSale] = useState({
     name: "",
@@ -61,8 +62,8 @@ const Sales = () => {
   });
   const [newCategorySale, setNewCategorySale] = useState({
     name: "",
-    category: { subCategories: [] },
-    subCategories: {},
+    category: "", // Store category name as string
+    subCategories: [], // Store selected sub-category names as array of strings
     discount: 0,
     description: "",
     enabled: false,
@@ -70,6 +71,7 @@ const Sales = () => {
   const [errors, setErrors] = useState([]);
   const [changeErrors, setChangeErrors] = useState([]);
   const [addErrors, setAddErrors] = useState([]);
+  const [addCategorySaleErrors, setAddCategorySaleErrors] = useState([]); // New state for category sale errors
   const [searchTermNewSale, setSearchTermNewSale] = useState("");
   const [searchResultsNewSale, setSearchResultsNewSale] = useState([]);
   const [isDropdownOpenNewSale, setIsDropdownOpenNewSale] = useState(false);
@@ -88,12 +90,16 @@ const Sales = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [settingsChanged, setSettingsChanged] = useState(false);
 
+  // State to hold all available categories and their subcategories
+  const [availableCategories, setAvailableCategories] = useState([]);
+
   useEffect(() => {
     (async () => {
       try {
         let fetchedSettings = await getSettings();
         if (fetchedSettings && fetchedSettings.length > 0) {
-          if (!fetchedSettings[0].sitesale.name) {
+          // Ensure sitesale and categorysales are initialized if missing
+          if (!fetchedSettings[0].sitesale) {
             fetchedSettings[0].sitesale = {
               name: "",
               discount: 0,
@@ -101,7 +107,11 @@ const Sales = () => {
               enabled: false,
             };
           }
+          if (!fetchedSettings[0].categorysales) {
+            fetchedSettings[0].categorysales = [];
+          }
           setSettingsData(fetchedSettings[0]);
+          setAvailableCategories(fetchedSettings[0].categories || []); // Set available categories
         }
         setLoading(false);
       } catch (error) {
@@ -112,6 +122,15 @@ const Sales = () => {
     })();
   }, []);
 
+  // Helper to get subcategories for a given category name
+  const getSubCategoriesForCategory = (categoryName) => {
+    const category = availableCategories.find(
+      (cat) => cat.name === categoryName
+    );
+    return category ? category.subCategories : [];
+  };
+
+  // Handlers for existing regular sales
   const handleSalesNameChange = (e) => {
     setSettingsChanged(true);
     const { value } = e.target;
@@ -263,6 +282,37 @@ const Sales = () => {
           `sales.${index}.discount: Sale ${
             index + 1
           } discount must be a positive number.`
+        );
+      }
+    });
+    // Add validation for category sales here
+    settingsData.categorysales.forEach((sale, index) => {
+      if (!sale.name) {
+        validationErrors.push(
+          `categorysales.${index}.name : Category Sale ${
+            index + 1
+          } name is required.`
+        );
+      }
+      if (sale.discount < 0 || isNaN(sale.discount)) {
+        validationErrors.push(
+          `categorysales.${index}.discount: Category Sale ${
+            index + 1
+          } discount must be a positive number.`
+        );
+      }
+      if (!sale.category) {
+        validationErrors.push(
+          `categorysales.${index}.category: Category Sale ${
+            index + 1
+          } category is required.`
+        );
+      }
+      if (sale.subCategories.length === 0) {
+        validationErrors.push(
+          `categorysales.${index}.subCategories: Category Sale ${
+            index + 1
+          } must have at least one sub-category selected.`
         );
       }
     });
@@ -431,6 +481,141 @@ const Sales = () => {
     }
   };
 
+  // Handlers for new category sale
+  const handleNewCategorySaleChange = (e) => {
+    const { name, value } = e.target;
+    setNewCategorySale((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewCategorySaleCategoryChange = (e) => {
+    const categoryName = e.target.value;
+    setNewCategorySale((prev) => ({
+      ...prev,
+      category: categoryName,
+      subCategories: [], // Clear subcategories when main category changes
+    }));
+  };
+
+  const handleNewCategorySaleSubCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setNewCategorySale((prev) => {
+      const updatedSubCategories = checked
+        ? [...prev.subCategories, value]
+        : prev.subCategories.filter((subCat) => subCat !== value);
+      return { ...prev, subCategories: updatedSubCategories };
+    });
+  };
+
+  const handleAddCategorySale = async (e) => {
+    setButtonLoading(true);
+    setAddCategorySaleErrors([]);
+    e.preventDefault();
+    const validationErrors = [];
+    if (!newCategorySale.name) {
+      validationErrors.push(
+        "newCategorySaleName : Category sale name is required."
+      );
+    }
+    if (newCategorySale.discount < 0 || isNaN(newCategorySale.discount)) {
+      validationErrors.push(
+        "newCategorySaleDiscount : Discount must be a positive number."
+      );
+    }
+    if (!newCategorySale.category) {
+      validationErrors.push("newCategorySaleCategory : Category is required.");
+    }
+    if (newCategorySale.subCategories.length === 0) {
+      validationErrors.push(
+        "newCategorySaleSubCategories : At least one sub-category must be selected."
+      );
+    }
+
+    if (validationErrors.length > 0) {
+      setButtonLoading(false);
+      setAddCategorySaleErrors(validationErrors);
+      return;
+    }
+
+    const newSettings = {
+      ...settingsData,
+      categorysales: [...settingsData.categorysales, newCategorySale],
+    };
+    setSettingsData(newSettings);
+    setNewCategorySale({
+      name: "",
+      category: "",
+      subCategories: [],
+      discount: 0,
+      description: "",
+      enabled: false,
+    });
+    const data = { formData: newSettings };
+    const result = await updateSettings(data);
+    if (result.errors) {
+      setButtonLoading(false);
+      setAddCategorySaleErrors([...validationErrors, ...result.errors]);
+      return;
+    } else {
+      setButtonLoading(false);
+      toast.success("Category Sale Added Successfully");
+      router.push("/admin/sales");
+    }
+  };
+
+  // Handlers for existing category sales
+  const handleExistingCategorySaleChange = (e, index) => {
+    setSettingsChanged(true);
+    const { name, value } = e.target;
+    const updatedCategorySales = [...settingsData.categorysales];
+    updatedCategorySales[index] = {
+      ...updatedCategorySales[index],
+      [name]: value,
+    };
+    setSettingsData({ ...settingsData, categorysales: updatedCategorySales });
+  };
+
+  const handleExistingCategorySaleCategoryChange = (e, index) => {
+    setSettingsChanged(true);
+    const categoryName = e.target.value;
+    const updatedCategorySales = [...settingsData.categorysales];
+    updatedCategorySales[index].category = categoryName;
+    updatedCategorySales[index].subCategories = []; // Clear subcategories when main category changes
+    setSettingsData({ ...settingsData, categorysales: updatedCategorySales });
+  };
+
+  const handleExistingCategorySaleSubCategoryChange = (e, saleIndex) => {
+    setSettingsChanged(true);
+    const { value, checked } = e.target;
+    setSettingsData((prevSettings) => {
+      const updatedCategorySales = [...prevSettings.categorysales];
+      const currentSale = { ...updatedCategorySales[saleIndex] };
+      const updatedSubCategories = checked
+        ? [...(currentSale.subCategories || []), value]
+        : (currentSale.subCategories || []).filter(
+            (subCat) => subCat !== value
+          );
+      currentSale.subCategories = updatedSubCategories;
+      updatedCategorySales[saleIndex] = currentSale;
+      return { ...prevSettings, categorysales: updatedCategorySales };
+    });
+  };
+
+  const handleExistingCategorySaleRadioChange = (e, index) => {
+    setSettingsChanged(true);
+    const { value } = e.target;
+    const updatedCategorySales = [...settingsData.categorysales];
+    updatedCategorySales[index].enabled = value === "true";
+    setSettingsData({ ...settingsData, categorysales: updatedCategorySales });
+  };
+
+  const handleRemoveCategorySale = (index) => {
+    setSettingsChanged(true);
+    const updatedCategorySales = settingsData.categorysales.filter(
+      (_, idx) => idx !== index
+    );
+    setSettingsData({ ...settingsData, categorysales: updatedCategorySales });
+  };
+
   return (
     <main className="admin-sales admin-section">
       <ScrollToTop />
@@ -589,6 +774,136 @@ const Sales = () => {
                     ))}
                   </div>
                 )}
+                {/* Category Sales */}
+                {settingsData.categorysales.length > 0 && (
+                  <div className="admin-sales-current">
+                    <label className="admin-sales-label">
+                      Current Category Sales:
+                    </label>
+                    <div className="admin-sales-text">
+                      You can edit category sales by clicking the fields and
+                      changing the text.
+                    </div>
+                    {settingsData.categorysales.map((sale, index) => (
+                      <div
+                        key={`category-sale-${index}`}
+                        className="admin-sale-container"
+                      >
+                        <label className="admin-sale-number">
+                          Category Sale {index + 1}: {sale.name}
+                        </label>
+                        <FormRow>
+                          <FormInput
+                            label={`Name`}
+                            type="text"
+                            name="name"
+                            value={sale.name}
+                            onChange={(e) =>
+                              handleExistingCategorySaleChange(e, index)
+                            }
+                          />
+                          <FormInput
+                            label={`Discount (%)`}
+                            type="number"
+                            min={0}
+                            name="discount"
+                            value={String(sale.discount)}
+                            onChange={(e) =>
+                              handleExistingCategorySaleChange(e, index)
+                            }
+                          />
+                        </FormRow>
+                        <FormInput
+                          label={`Description`}
+                          type="textarea"
+                          name="description"
+                          value={sale.description}
+                          onChange={(e) =>
+                            handleExistingCategorySaleChange(e, index)
+                          }
+                          rows={3}
+                        />
+                        <FormInput
+                          label="Select Category"
+                          type="dropdown"
+                          name="category"
+                          defaultOption="Selct an option..."
+                          options={availableCategories.map((cat) => cat.name)}
+                          value={sale.category}
+                          onChange={(e) =>
+                            handleExistingCategorySaleCategoryChange(e, index)
+                          }
+                        />
+                        {sale.category &&
+                          getSubCategoriesForCategory(sale.category).length >
+                            0 && (
+                            <div className="admin-sales-subcategories-container">
+                              <label className="admin-sales-label-text">
+                                Select Sub-Categories:
+                              </label>
+                              {getSubCategoriesForCategory(sale.category).map(
+                                (subCat, i) => (
+                                  <div
+                                    key={`${subCat}-${i}`}
+                                    className="admin-sales-checkbox-item"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      id={`existing-subcat-${index}-${subCat}`}
+                                      value={subCat}
+                                      checked={sale.subCategories.includes(
+                                        subCat
+                                      )}
+                                      onChange={() =>
+                                        handleExistingCategorySaleSubCategoryChange(
+                                          {
+                                            target: {
+                                              value: subCat,
+                                              checked:
+                                                !sale.subCategories.includes(
+                                                  subCat
+                                                ),
+                                            },
+                                          },
+                                          index
+                                        )
+                                      }
+                                    />
+                                    <label
+                                      htmlFor={`existing-subcat-${index}-${subCat}`}
+                                    >
+                                      {subCat}
+                                    </label>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                        <FormInput
+                          label="Activate Sale"
+                          type="radio"
+                          name={`category-enabled-${index}`}
+                          options={[
+                            { displayValue: "Yes", value: true },
+                            { displayValue: "No", value: false },
+                          ]}
+                          value={sale.enabled}
+                          onChange={(e) =>
+                            handleExistingCategorySaleRadioChange(e, index)
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="admin-sales-remove-button"
+                          onClick={() => handleRemoveCategorySale(index)}
+                        >
+                          <FaTrashCan /> &nbsp; Remove Category Sale
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {settingsChanged && (
                   <button
                     disabled={buttonLoading}
@@ -596,7 +911,7 @@ const Sales = () => {
                     className="admin-sales-save-button"
                     onClick={handleSubmit}
                   >
-                    {!buttonLoading ? "SaveChanges" : "Loading..."}
+                    {!buttonLoading ? "Save Changes" : "Loading..."}
                   </button>
                 )}
                 {changeErrors.length > 0 && (
@@ -621,11 +936,11 @@ const Sales = () => {
                       label="New Sale Discount (%)"
                       type="number"
                       min={0}
-                      value={newSale.discount}
+                      value={String(newSale.discount)}
                       onChange={(e) =>
                         setNewSale({
                           ...newSale,
-                          discount: e.target.value,
+                          discount: parseFloat(e.target.value), // Ensure discount is a number
                         })
                       }
                     />
@@ -646,7 +961,7 @@ const Sales = () => {
                     {newSale.items &&
                       newSale.items?.map((item, index) => (
                         <div
-                          key={`new-sale-item-${index}`}
+                          key={`new-sale-item-${item._id}`} // Use item._id for key
                           className="admin-sales-item-in-sale"
                         >
                           <div className="admin-item-image-sale">
@@ -715,6 +1030,113 @@ const Sales = () => {
                     <ErrorContainer errors={addErrors} />
                   )}
                 </div>
+
+                {/* Add New Category Sale Section */}
+                <div className="admin-sales-add admin-cat-sales-add">
+                  <label className="admin-sales-label">
+                    Add A New Category Sale:
+                  </label>
+                  <div className="admin-sales-text">
+                    Define a new sale that applies to specific categories and
+                    their sub-categories.
+                  </div>
+                  <FormRow>
+                    <FormInput
+                      label="Category Sale Name"
+                      type="text"
+                      name="name"
+                      value={newCategorySale.name}
+                      onChange={handleNewCategorySaleChange}
+                    />
+                    <FormInput
+                      label="Category Sale Discount (%)"
+                      type="number"
+                      min={0}
+                      name="discount"
+                      value={String(newCategorySale.discount)}
+                      onChange={(e) =>
+                        setNewCategorySale({
+                          ...newCategorySale,
+                          discount: parseFloat(e.target.value),
+                        })
+                      }
+                    />
+                  </FormRow>
+                  <FormInput
+                    label="Category Sale Description"
+                    type="textarea"
+                    name="description"
+                    value={newCategorySale.description}
+                    onChange={handleNewCategorySaleChange}
+                    rows={3}
+                  />
+                  <FormInput
+                    label="Select Category"
+                    type="dropdown"
+                    name="category"
+                    defaultOption={"Selct an option..."}
+                    options={availableCategories.map((cat) => cat.name)}
+                    value={newCategorySale.category}
+                    onChange={handleNewCategorySaleCategoryChange}
+                  />
+                  {newCategorySale.category &&
+                    getSubCategoriesForCategory(newCategorySale.category)
+                      .length > 0 && (
+                      <div className="admin-sales-subcategories-container">
+                        <label className="admin-sales-label-text">
+                          Select Sub-Categories:
+                        </label>
+                        {getSubCategoriesForCategory(
+                          newCategorySale.category
+                        ).map((subCat, i) => (
+                          <div
+                            key={`${subCat}-${i}`}
+                            className="admin-sales-checkbox-item"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`new-subcat-${subCat}`}
+                              value={subCat}
+                              checked={newCategorySale.subCategories.includes(
+                                subCat
+                              )}
+                              onChange={handleNewCategorySaleSubCategoryChange}
+                            />
+                            <label htmlFor={`new-subcat-${subCat}`}>
+                              {subCat}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  <FormInput
+                    label="Activate Category Sale"
+                    type="radio"
+                    name="enabled"
+                    options={[
+                      { displayValue: "Yes", value: true },
+                      { displayValue: "No", value: false },
+                    ]}
+                    value={newCategorySale.enabled}
+                    onChange={(e) =>
+                      setNewCategorySale({
+                        ...newCategorySale,
+                        enabled: e.target.value === "true",
+                      })
+                    }
+                  />
+                  <button
+                    disabled={buttonLoading}
+                    type="button"
+                    className="admin-sales-save-button"
+                    onClick={handleAddCategorySale}
+                  >
+                    {!buttonLoading ? "Add New Category Sale" : "Loading..."}
+                  </button>
+                  {addCategorySaleErrors.length > 0 && (
+                    <ErrorContainer errors={addCategorySaleErrors} />
+                  )}
+                </div>
               </form>
               <form>
                 {settingsData.sitesale && (
@@ -752,7 +1174,7 @@ const Sales = () => {
                       rows={3}
                     />
                     <FormInput
-                      label="Activate  Sale"
+                      label="Activate Sale"
                       type="radio"
                       name="enabledsitesale"
                       options={[

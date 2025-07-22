@@ -15,6 +15,7 @@ export const POST = async (req) => {
       limit = 8,
       size,
       color,
+      subCategory, // Destructure subCategory from the request data
       category,
     } = data;
 
@@ -28,67 +29,73 @@ export const POST = async (req) => {
     console.log("Received Size:", size);
     console.log("Received Color:", color);
     console.log("Received Category:", category);
+    console.log("Received SubCategory:", subCategory); // Log the received subCategory
 
-    // Initialize a Mongoose query builder for the Product model
-    const query = Product.find();
+    // Array to hold all individual conditions
+    const conditions = [];
 
     // Apply text search filter if 'filter' parameter is provided
     if (filter) {
-      // Use $or to search across multiple text fields (title, description, category, brand, tags)
-      // MODIFICATION START: Added "additionalCategories.category" to the filter criteria
-      query.or([
-        { title: { $regex: filter, $options: "i" } },
-        { description: { $regex: filter, $options: "i" } },
-        { category: { $regex: filter, $options: "i" } },
-        { brand: { $regex: filter, $options: "i" } },
-        { tags: { $regex: filter, $options: "i" } },
-        { "additionalCategories.category": { $regex: filter, $options: "i" } }, // New: Search within additionalCategories
-      ]);
-      // MODIFICATION END
+      // Use $or to search across multiple text fields (title, description, category, brand, tags, subCategory)
+      conditions.push({
+        $or: [
+          { title: { $regex: filter, $options: "i" } },
+          { description: { $regex: filter, $options: "i" } },
+          { category: { $regex: filter, $options: "i" } },
+          { subCategory: { $regex: filter, $options: "i" } }, // Search within main subCategory
+          { brand: { $regex: filter, $options: "i" } },
+          { tags: { $regex: filter, $options: "i" } },
+        ],
+      });
     }
 
     // Apply size filter if 'size' parameter is provided and has values
     if (size && size.length > 0) {
-      // Use .in() to match products where the 'sizes' array contains any of the provided sizes
-      // Ensure 'size' is treated as an array
-      query.where("sizes").in(Array.isArray(size) ? size : [size]);
+      conditions.push({ sizes: { $in: Array.isArray(size) ? size : [size] } });
     }
 
     // Apply color filter if 'color' parameter is provided
     if (color) {
-      // Match products where 'colors.name' (nested field) equals the provided color
-      query.where("colors.name").equals(color);
+      conditions.push({ "colors.name": color });
     }
 
     // Apply category filter if 'category' parameter is provided
     if (category) {
-      // Use $or to search for the category in either the main 'category' field
-      // or within the 'category' field of objects in the 'additionalCategories' array.
-      query.or([
-        { category: category }, // Match main category field
-        { "additionalCategories.category": category }, // Match category within additionalCategories array
-      ]);
+      conditions.push({ category: category });
     }
 
+    // Apply subCategory filter if 'subCategory' parameter is provided and has values
+    if (subCategory && subCategory.length > 0) {
+      conditions.push({ subCategory: { $in: subCategory } });
+    }
+
+    // Combine all conditions using $and if there are multiple, otherwise use the single condition
+    const finalFindConditions =
+      conditions.length > 0 ? { $and: conditions } : {};
+
     // Log the constructed query object's filter for debugging purposes
-    console.log("Fluent Query Object (before execution):", query.getFilter());
+    console.log(
+      "Constructed findConditions:",
+      JSON.stringify(finalFindConditions, null, 2)
+    );
 
     // Establish connection to the database
     connectToDb();
 
     // Execute the Mongoose query:
-    // 1. Sort by createdAt field (descending for 'asc' order based on user's 'order' param)
+    // 1. Find documents matching the constructed finalFindConditions
+    // 2. Sort by createdAt field (descending for 'asc' order based on user's 'order' param)
     //    Note: -1 for descending (newest first), 1 for ascending (oldest first)
-    // 2. Skip documents for pagination
-    // 3. Limit the number of documents returned per page
-    const products = await query
+    // 3. Skip documents for pagination
+    // 4. Limit the number of documents returned per page
+    const products = await Product.find(finalFindConditions)
       .sort({ createdAt: order === "asc" ? -1 : 1 }) // Assuming 'asc' means latest first by convention
       .skip(skip)
       .limit(limit);
 
     // Get the total count of documents that match the current filter criteria
     // This is used for pagination metadata (e.g., total pages)
-    const total = await Product.countDocuments(query.getFilter());
+    const total = await Product.countDocuments(finalFindConditions);
 
     // Log the results for debugging
     console.log("Found Products:", products);
