@@ -17,6 +17,7 @@
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
+    "cors": "^2.8.5",
     "html-react-parser": "^5.2.3",
     "keen-slider": "^6.8.6",
     "mongoose": "^8.13.0",

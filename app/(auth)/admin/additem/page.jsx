@@ -346,6 +346,7 @@ const AddItem = () => {
     <Suspense>
       <main className="admin-items admin-section">
         <ScrollToTop />
+
         <AdminNavbar />
         <div className="admin-container">
           {!loading ? (

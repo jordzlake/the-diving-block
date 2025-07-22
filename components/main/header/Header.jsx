@@ -16,6 +16,7 @@ import { handleSignOut } from "@/lib/actions/authActions";
 import { OrderContext } from "@/components/contexts/OrderContext";
 import { getSettings } from "@/lib/settingActions";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 
 export const dynamic = "force-dynamic";
 
@@ -134,6 +135,10 @@ const Header = () => {
   return (
     <header>
       <nav className="nav-container">
+        <Script
+          src="https://widget.cloudinary.com/v2.0/global/all.js"
+          strategy="beforeInteractive"
+        />
         <div className="container nav-content-container">
           {Velocity && (
             <ul className="nav-links-container">
