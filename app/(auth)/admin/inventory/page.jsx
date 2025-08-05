@@ -104,7 +104,7 @@ const InventoryItems = () => {
         setCurrentPage(1);
         newSearchParams.set("p", "1");
       }
-      router.push(`/admin/items?${newSearchParams.toString()}`, {
+      router.push(`/admin/inventory?${newSearchParams.toString()}`, {
         scroll: false,
       });
     },

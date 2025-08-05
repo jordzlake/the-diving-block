@@ -12,7 +12,7 @@ const SubCategories = () => {
         <div
           className="subcategories-first-container"
           onClick={() => {
-            router.push("/shop?f=sale");
+            router.push("/shop?t=sale");
           }}
         >
           <div className="subcategories-first-image-container">
