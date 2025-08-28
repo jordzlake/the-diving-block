@@ -268,6 +268,16 @@ const Cart = () => {
                   </tr>
                 </tfoot>
               </table>
+              <div className="checkout-button-container ">
+                <button
+                  onClick={(e) => {
+                    router.push("/shop");
+                  }}
+                  className="checkout-button"
+                >
+                  Continue Shopping
+                </button>
+              </div>
             </div>
             <div className="checkout-container">
               <div>
