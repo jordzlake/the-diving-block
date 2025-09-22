@@ -107,7 +107,7 @@ const Cart = () => {
 
     const customerData = {
       firstName: formData.firstName,
-      lastName: formData.firstName,
+      lastName: formData.lastName,
       city: formData.city,
       street: formData.street,
       phone: formData.phone,
