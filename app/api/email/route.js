@@ -31,7 +31,7 @@ export const POST = async (req) => {
             <p>Thank you for shopping at TheDivingBlock. Your order for ${firstName} is currently being processed you can track it using the link below:</p>
             <br/>
             <br/>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/orders?o=${orderID}">Click Here To Track Order!</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/orders/${orderID}">Click Here To Track Order!</a>
             <br/>
             <br/>
             <p>Have a nice day!</p>
@@ -54,7 +54,7 @@ export const POST = async (req) => {
             <p>An order was placed. Click the link below to process it:</p>
             <br/>
             <br/>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin/order?o=${orderID}">Click Here To Process Order.</a>
+            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin/orders/${orderID}">Click Here To Process Order.</a>
            
             <br/>
             <br/>
