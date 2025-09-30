@@ -60,6 +60,18 @@
   color: var(--dark);
 }
 
+.success-container {
+  border-color: #00df6f;
+}
+
+.failed-container {
+  border-color: #ff3939;
+}
+
+.pending-container {
+  border-color: #ffbe09;
+}
+
 .admin-order-container:hover {
   transform: scale(1.01);
   border: 1px solid var(--orange);

@@ -201,6 +201,14 @@ const AdminOrder = () => {
                         className={`status-control ${
                           paymentStatus == "Failed" && "failed"
                         }`}
+                        onClick={() => {
+                          const confirm = window.confirm(
+                            "Are you sure you want to change the payment status to failed?"
+                          );
+                          if (confirm) {
+                            setPaymentStatus("Failed");
+                          }
+                        }}
                       >
                         Failed
                       </div>
@@ -208,6 +216,14 @@ const AdminOrder = () => {
                         className={`status-control ${
                           paymentStatus == "Success" && "success"
                         }`}
+                        onClick={() => {
+                          const confirm = window.confirm(
+                            "Are you sure you want to change the payment status to success?"
+                          );
+                          if (confirm) {
+                            setPaymentStatus("Success");
+                          }
+                        }}
                       >
                         Success
                       </div>

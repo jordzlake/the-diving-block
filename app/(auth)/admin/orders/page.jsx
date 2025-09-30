@@ -42,6 +42,14 @@ const AdminOrders = () => {
     if (orders.length > 0) {
       if (filter === "All") {
         setFilteredOrders(orders);
+      } else if (filter === "Failed") {
+        const tempFiltered = orders.filter(
+          (ord) =>
+            ord.status == "Failed" ||
+            ord.paymentStatus == "Pending" ||
+            ord.paymentStatus == "Failed"
+        );
+        setFilteredOrders(tempFiltered);
       } else {
         const tempFiltered = orders.filter(
           (ord) => ord.status == filter || ord.paymentStatus == filter
@@ -79,13 +87,13 @@ const AdminOrders = () => {
                   Completed
                 </div>
                 <div
-                  className={`admin-filter ${filter == "Paid" && "active"}`}
+                  className={`admin-filter ${filter == "Success" && "active"}`}
                   onClick={() => filterOrders("Success")}
                 >
                   Successful Payment
                 </div>
                 <div
-                  className={`admin-filter ${filter == "Unpaid" && "active"}`}
+                  className={`admin-filter ${filter == "Failed" && "active"}`}
                   onClick={() => filterOrders("Failed")}
                 >
                   Failed Payment
@@ -112,7 +120,11 @@ const AdminOrders = () => {
                     onClick={() => {
                       router.push(`/admin/orders/${ord._id}`);
                     }}
-                    className="admin-order-container"
+                    className={`admin-order-container ${
+                      ord.paymentStatus === "Success" && "success-container"
+                    } ${ord.paymentStatus === "Failed" && "failed-container"}
+                    ${ord.paymentStatus === "Pending" && "pending-container"}
+                    `}
                   >
                     <div className="admin-order-top-info">
                       <div className="admin-order-name">
