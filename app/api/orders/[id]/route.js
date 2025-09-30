@@ -33,7 +33,6 @@ export const POST = async (req, res) => {
         errors: ["No order with that id exists to be updated"],
       });
     }
-
     const item = await Order.findByIdAndUpdate(id, {
       new: order.new,
       status: order.status,
@@ -42,6 +41,8 @@ export const POST = async (req, res) => {
       orderItems: order.orderItems,
       paymentStatus: order.paymentStatus,
       pickupLocation: order.pickupLocation,
+      updateInventory: false,
+      updatePurchase: false,
       meta: order.meta,
     });
     if (!item)
@@ -131,9 +132,6 @@ export const POST = async (req, res) => {
           productToUpdate.purchases = purchases;
           // Save the updated product
           await productToUpdate.save();
-          console.log(
-            `Inventory updated for product ${productId}, color ${color}, size ${size}, amount reduced by ${amount}`
-          );
         } catch (error) {
           console.error("Error updating inventory:", error);
         }

@@ -193,6 +193,9 @@ td {
   width: unset;
   border: none;
 }
+.cart-wrapper {
+  width: 100%;
+}
 
 .personal td {
   text-align: left !important;

@@ -163,6 +163,10 @@ tbody tr::after {
   margin: 2em 0 0;
 }
 
+.second-checkout button {
+  margin-top: 0em;
+}
+
 .checkout-container button:hover {
   border: 1px solid var(--orange);
   color: var(--orange);
@@ -177,6 +181,7 @@ tbody tr::after {
   justify-content: center;
   margin-bottom: 2em;
 }
+
 .checkout-row-item {
   flex-basis: 100%;
 }

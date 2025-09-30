@@ -42,14 +42,6 @@ const AdminOrders = () => {
     if (orders.length > 0) {
       if (filter === "All") {
         setFilteredOrders(orders);
-      } else if (filter === "Failed") {
-        const tempFiltered = orders.filter(
-          (ord) =>
-            ord.status == "Failed" ||
-            ord.paymentStatus == "Pending" ||
-            ord.paymentStatus == "Failed"
-        );
-        setFilteredOrders(tempFiltered);
       } else {
         const tempFiltered = orders.filter(
           (ord) => ord.status == filter || ord.paymentStatus == filter
@@ -87,10 +79,24 @@ const AdminOrders = () => {
                   Completed
                 </div>
                 <div
+                  className={`admin-filter ${
+                    filter == "Bank Transfer" && "active"
+                  }`}
+                  onClick={() => filterOrders("Bank Transfer")}
+                >
+                  Bank Transfer
+                </div>
+                <div
                   className={`admin-filter ${filter == "Success" && "active"}`}
                   onClick={() => filterOrders("Success")}
                 >
                   Successful Payment
+                </div>
+                <div
+                  className={`admin-filter ${filter == "Pending" && "active"}`}
+                  onClick={() => filterOrders("Pending")}
+                >
+                  Pending Payment
                 </div>
                 <div
                   className={`admin-filter ${filter == "Failed" && "active"}`}
@@ -98,6 +104,7 @@ const AdminOrders = () => {
                 >
                   Failed Payment
                 </div>
+
                 <div
                   className={`admin-filter ${
                     filter == "Cancelled" && "active"

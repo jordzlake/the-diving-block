@@ -51,7 +51,7 @@ const Cart = () => {
   const [errors, setErrors] = useState([]);
 
   const [locations, setLocations] = useState([
-    { name: "Local Pickup", cost: 0 },
+    { name: "Local Pickup Maraval", cost: 0 },
   ]);
 
   const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ const Cart = () => {
     if (session?.user) {
       setFormData({
         firstName: session.user.firstName,
-        lastName: session.user.firstName,
+        lastName: session.user.lastName,
         city: session.user.city,
         street: session.user.street,
         phone: session.user.phone,
@@ -149,6 +149,64 @@ const Cart = () => {
       toast.success("Order successfully placed");
 
       window.location.href = response.data.url;
+    }
+  };
+
+  const handleSubmitBank = async (e) => {
+    setPending(true);
+    e.preventDefault();
+
+    const total =
+      Number(
+        orderItems.reduce((acc, oi) => {
+          return acc + oi.orderItemTotal;
+        }, 0)
+      ) + Number(locations[formData.location].cost);
+
+    const customerData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      city: formData.city,
+      street: formData.street,
+      phone: formData.phone,
+      email: formData.email,
+      password: "Ordering1!",
+    };
+
+    const validationResult = userSchema.safeParse(customerData);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map(
+        (issue) => `${issue.message}`
+      );
+      setErrors(errors);
+      return;
+    }
+
+    const pickupLocation =
+      locations[formData.location].name +
+      ": $" +
+      String(Number(locations[formData.location].cost).toFixed(2));
+
+    delete customerData.password;
+
+    const data = {
+      total,
+      customerData,
+      orderItems,
+      pickupLocation,
+      userId: userId ? userId : "",
+      paymentStatus: "Bank Transfer",
+    };
+
+    const response = await createOrder(data);
+    console.log("res", response);
+    if (response.errors) {
+      setPending(false);
+      setErrors(response.errors);
+    } else {
+      toast.success("Order successfully placed");
+      router.push(response.data.url);
     }
   };
 
@@ -367,7 +425,18 @@ const Cart = () => {
                     className="checkout-button"
                     disabled={pending}
                   >
-                    {pending ? "Wait A Sec..." : "Submit"}
+                    {pending ? "Wait A Sec..." : "Pay with Credit Card"}
+                  </button>
+                </div>
+                <div className="checkout-button-container second-checkout">
+                  <button
+                    onClick={(e) => {
+                      handleSubmitBank(e);
+                    }}
+                    className="checkout-button"
+                    disabled={pending}
+                  >
+                    {pending ? "Wait A Sec..." : "Pay with Bank Transfer"}
                   </button>
                 </div>
                 <ErrorContainer errors={errors} />

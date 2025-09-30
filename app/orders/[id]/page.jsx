@@ -4,9 +4,10 @@ import { useParams, useSearchParams } from "next/navigation";
 import "./order.css";
 import { Loading } from "@/components/controls/loading/Loading";
 import { getOrder, updateOrder } from "@/lib/orderActions";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { CldImage } from "next-cloudinary";
+import { OrderContext } from "@/components/contexts/OrderContext";
 
 const Order = () => {
   const { id } = useParams();
@@ -14,20 +15,9 @@ const Order = () => {
   const [order, setOrder] = useState(undefined);
   const [loading, setLoading] = useState(true);
 
+  const { clearItems } = useContext(OrderContext);
+
   useEffect(() => {
-    console.log("id", id);
-    console.log("order", order);
-    console.log(
-      "order oi length",
-
-      order?.orderItems?.length > 0
-    );
-    console.log(
-      "order cd length",
-
-      order && order?.customerData > 0
-    );
-
     if (id) {
       setLoading(true);
       const status = searchParams.get("status")
@@ -47,26 +37,64 @@ const Order = () => {
         try {
           let orderFound = await getOrder(id);
 
-          console.log("order", orderFound);
+          console.log("orderFound", orderFound);
           if (orderFound.paymentStatus == "Pending") {
             if (status != "" && transaction_id != "") {
-              let newOrder = await updateOrder({
-                ...orderFound,
-                paymentStatus: paymentStatus,
-                updateInventory: true,
-                updatePurchase: true,
-                new: false,
-              });
-              console.log("newOrder", newOrder);
-              clearItems();
-              setOrder(newOrder);
+              if (
+                orderFound.updateInventory == undefined ||
+                orderFound.updateInventory == true
+              ) {
+                let newOrder = await updateOrder({
+                  ...orderFound,
+                  paymentStatus: paymentStatus,
+                  updateInventory: true,
+                  updatePurchase: true,
+                  new: true,
+                });
+                console.log("newOrder", newOrder);
+                clearItems();
+                setOrder(newOrder);
+                setLoading(false);
+              } else {
+                let newOrder = orderFound;
+                console.log("newOrder", newOrder);
+                clearItems();
+                setOrder(newOrder);
+                setLoading(false);
+              }
             } else {
               setOrder(orderFound);
+              setLoading(false);
+            }
+          } else if (orderFound.paymentStatus == "Bank Transfer") {
+            if (
+              orderFound.updateInventory == undefined ||
+              orderFound.updateInventory == true
+            ) {
+              let newOrder = await updateOrder({
+                ...orderFound,
+                paymentStatus: "Bank Transfer",
+                updateInventory: true,
+                updatePurchase: true,
+                new: true,
+              });
+              console.log("newOrder", newOrder);
+              console.log("order", order);
+              clearItems();
+              setOrder(newOrder);
+              setLoading(false);
+            } else {
+              let newOrder = orderFound;
+              console.log("newOrder", newOrder);
+              console.log("order", order);
+              clearItems();
+              setOrder(newOrder);
+              setLoading(false);
             }
           } else {
             setOrder(orderFound);
+            setLoading(false);
           }
-          setLoading(false);
         } catch (err) {
           setLoading(false);
         }
@@ -157,6 +185,37 @@ const Order = () => {
                   </table>
                 </div>
               </div>
+              {order.paymentStatus == "Bank Transfer" && (
+                <div className="checkout-container">
+                  <h2 className="checkout-title">Bank Transfer Information</h2>
+                  <table className="cart-table personal">
+                    <thead>
+                      <tr></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Beneficiary:</td>
+                        <td>The Diving Block</td>
+                      </tr>
+                      <tr>
+                        <td>Bank Name:</td>
+                        <td>First Citizens Bank</td>
+                      </tr>
+                      <tr>
+                        <td>Account Number:</td>
+                        <td>2470385</td>
+                      </tr>
+                      <tr>
+                        <td>Account Type:</td>
+                        <td>Chequing</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr></tr>
+                    </tfoot>
+                  </table>
+                </div>
+              )}
               <div className="checkout-container">
                 <div>
                   <h2 className="checkout-title">Details</h2>

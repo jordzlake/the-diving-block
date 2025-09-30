@@ -75,13 +75,13 @@ const Orders = () => {
                   Completed
                 </div>
                 <div
-                  className={`filter ${filter == "Paid" && "active"}`}
-                  onClick={() => filterOrders("Paid")}
+                  className={`filter ${filter == "Failed" && "active"}`}
+                  onClick={() => filterOrders("Failed")}
                 >
                   Paid
                 </div>
                 <div
-                  className={`filter ${filter == "Unpaid" && "active"}`}
+                  className={`filter ${filter == "Success" && "active"}`}
                   onClick={() => filterOrders("Success")}
                 >
                   Unpaid
@@ -104,7 +104,7 @@ const Orders = () => {
                   >
                     <div className="my-order-top-info">
                       <div className="my-order-name">
-                        {ord.customerData.recipient}
+                        {ord.customerData.firstName} {ord.customerData.lastName}
                       </div>
                     </div>
                     <div className="my-order-bottom-info">

@@ -23,6 +23,10 @@ export const POST = async (req, res) => {
   const total = Number(data.total);
   const userId = data.userId;
   const pickupLocation = data.pickupLocation;
+  let paymentStatus = "";
+  if (data.paymentStatus) {
+    paymentStatus = data.paymentStatus;
+  }
 
   try {
     connectToDb();
@@ -31,6 +35,7 @@ export const POST = async (req, res) => {
       customerData,
       orderItems,
       pickupLocation,
+      paymentStatus: paymentStatus ? paymentStatus : undefined,
       meta: userId ? { id: userId } : undefined,
     });
     //return NextResponse.json({ success: newOrder });
@@ -42,6 +47,12 @@ export const POST = async (req, res) => {
 
     if (total === 0) {
       redirect(`/orders/${oid}`);
+    } else if (paymentStatus === "Bank Transfer") {
+      let newResponseUrl = `/orders/${oid}`;
+      return NextResponse.json({
+        success: true,
+        data: { url: newResponseUrl },
+      });
     } else {
       const data = {
         account_number: "5203609482",
