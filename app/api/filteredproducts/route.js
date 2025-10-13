@@ -140,18 +140,24 @@ export const POST = async (req) => {
     } else {
       // --- Original Text Search Filter Logic (only applied if 'filter' is NOT "sales") ---
       if (filter) {
-        // Use $or to search across multiple text fields (title, description, category, brand, tags)
-        // Includes searching within 'additionalCategories.category' for general text filter
-        query.or([
-          { title: { $regex: filter, $options: "i" } },
-          { description: { $regex: filter, $options: "i" } },
-          { category: { $regex: filter, $options: "i" } },
-          { brand: { $regex: filter, $options: "i" } },
-          { tags: { $regex: filter, $options: "i" } },
-          {
-            "additionalCategories.category": { $regex: filter, $options: "i" },
-          },
-        ]);
+        const words = filter.trim().split(/\s+/); // Split filter string into words
+
+        // Build a list of AND conditions, one for each word
+        const andConditions = words.map((word) => ({
+          $or: [
+            { title: { $regex: word, $options: "i" } },
+            { description: { $regex: word, $options: "i" } },
+            { category: { $regex: word, $options: "i" } },
+            { brand: { $regex: word, $options: "i" } },
+            { tags: { $regex: word, $options: "i" } },
+            {
+              "additionalCategories.category": { $regex: word, $options: "i" },
+            },
+          ],
+        }));
+
+        // Each word must match in at least one field
+        query.and(andConditions);
       }
     }
     // --- End of Sales/Category Sales Logic ---
