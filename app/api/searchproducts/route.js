@@ -23,6 +23,7 @@ export const POST = async (req) => {
       $or: [
         { title: { $regex: searchTerm, $options: "i" } },
         { description: { $regex: searchTerm, $options: "i" } },
+        { tags: { $regex: searchTerm, $options: "i" } },
       ],
     });
 
@@ -34,6 +35,7 @@ export const POST = async (req) => {
       $or: [
         { title: { $regex: searchTerm, $options: "i" } },
         { description: { $regex: searchTerm, $options: "i" } },
+        { tags: { $regex: searchTerm, $options: "i" } },
       ],
     });
 
