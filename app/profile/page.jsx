@@ -47,7 +47,7 @@ const Profile = () => {
       ...session,
       user: {
         ...session?.user,
-        ...data, // Spreading the new form data into the session
+        ...data, // Spreading the new form data into the session user object
       },
     });
     toast.success("User Updated Successfully");
