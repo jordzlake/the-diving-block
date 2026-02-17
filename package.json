@@ -21,7 +21,7 @@
     "html-react-parser": "^5.2.3",
     "keen-slider": "^6.8.6",
     "mongoose": "^8.13.0",
-    "next": "^15.2.4",
+    "next": "15.2.8",
     "next-auth": "^5.0.0-beta.25",
     "next-cloudinary": "^6.16.0",
     "nodemailer": "^6.10.1",
