@@ -74,7 +74,7 @@
   font-weight: bold;
   text-transform: capitalize;
   color: var(--orange);
-  margin: auto 0 0;
+  margin: 0 0;
 }
 
 .image-card:hover .image-title {

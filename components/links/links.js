@@ -22,6 +22,10 @@ export const NavLinksUser = [
     name: "CART",
     link: "/cart",
   },
+  {
+    name: "PROFILE",
+    link: "/profile",
+  },
 ];
 
 export const NavLinksMain = [
@@ -70,6 +74,10 @@ export const NavLinksMobileMain = [
   {
     name: "CART",
     link: "/cart",
+  },
+  {
+    name: "PROFILE",
+    link: "/profile",
   },
   {
     name: "SHOP",

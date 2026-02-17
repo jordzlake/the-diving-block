@@ -2,6 +2,7 @@ import { User } from "@/lib/models";
 import { connectToDb } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
 
@@ -51,14 +52,18 @@ export const PUT = async (req, res) => {
   const { user } = await req.json();
 
   try {
+    console.log("Updating user with data:", user);
     let userFound = await User.findOne({ email: user.email });
+    console.log("user found", userFound ? userFound.email : "no user found");
     connectToDb();
     if (userFound) {
       const salt = await bcrypt.genSalt(10);
+      console.log("user password before hashing", user.password);
       const hashedPassword = await bcrypt.hash(user.password, salt);
+      console.log("hashed password", hashedPassword);
       const updatedUser = await User.findByIdAndUpdate(user.id, {
         email: user.email,
-        password: hashedPassword,
+        password: user.password ? hashedPassword : userFound.password,
         firstName: user.firstName,
         lastName: user.lastName,
         city: user.city,
