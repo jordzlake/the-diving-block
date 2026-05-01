@@ -26,23 +26,23 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("t") || "");
   const [selectedSizes, setSelectedSizes] = useState(
-    searchParams.getAll("size") || []
+    searchParams.getAll("size") || [],
   );
   const [selectedColor, setSelectedColor] = useState(
-    searchParams.get("color") || undefined
+    searchParams.get("color") || undefined,
   );
   const [selectedCategory, setSelectedCategory] = useState(
-    searchParams.get("category") || undefined
+    searchParams.get("category") || undefined,
   );
   // New state for selected subcategories
   // When reading from URL, split the single string by comma
   const [selectedSubCategories, setSelectedSubCategories] = useState(
     searchParams.get("subCategory")
       ? searchParams.get("subCategory").split(",")
-      : []
+      : [],
   );
   const [currentPage, setCurrentPage] = useState(
-    Number(searchParams.get("p")) || 1
+    Number(searchParams.get("p")) || 1,
   );
   const [totalProducts, setTotalProducts] = useState(0);
   const productsPerPage = 8; // Products per page for the shop
@@ -57,7 +57,7 @@ const Shop = () => {
       const category = categories.find((cat) => cat.name === categoryName);
       return category ? category.subCategories : [];
     },
-    [categories]
+    [categories],
   );
 
   const updateQuery = useCallback(
@@ -91,7 +91,7 @@ const Shop = () => {
       }
       router.push(`/shop?${newSearchParams.toString()}`);
     },
-    [router, searchParams]
+    [router, searchParams],
   );
 
   const handleSearch = (event) => {
@@ -178,7 +178,7 @@ const Shop = () => {
         const res = await getFilteredProducts(data);
         const discountedItems = CalculateProductDiscounts(
           res.products,
-          settings[0]
+          settings[0],
         );
         setProducts(discountedItems);
         setTotalProducts(res.total);
@@ -190,13 +190,14 @@ const Shop = () => {
     })();
   }, [searchParams, productsPerPage]);
 
-  // Extract unique colors from current products for the color filter
+  // Extract unique colors (with their images) from current products for the color filter
   const colors = [
-    ...new Set(
+    ...new Map(
       products
-        .flatMap((product) => product.colors?.map((c) => c.name))
-        .filter(Boolean)
-    ),
+        .flatMap((product) => product.colors || [])
+        .filter((c) => c?.name)
+        .map((c) => [c.name, c]),
+    ).values(),
   ];
 
   const totalPages = Math.ceil(totalProducts / productsPerPage);
@@ -231,7 +232,7 @@ const Shop = () => {
       disabled={currentPage === 1} // Disable if on the first page
     >
       <FaArrowLeft />
-    </button>
+    </button>,
   );
 
   // Add first page if not in range
@@ -246,14 +247,14 @@ const Shop = () => {
         }}
       >
         1
-      </button>
+      </button>,
     );
     // Add ellipses if there's a gap between the first page and the start of the range
     if (startPage > 2) {
       paginationItems.push(
         <span key="dots-start" className="pagination-dots">
           ...
-        </span>
+        </span>,
       );
     }
   }
@@ -270,7 +271,7 @@ const Shop = () => {
         }}
       >
         {i}
-      </button>
+      </button>,
     );
   }
 
@@ -281,7 +282,7 @@ const Shop = () => {
       paginationItems.push(
         <span key="dots-end" className="pagination-dots">
           ...
-        </span>
+        </span>,
       );
     }
     paginationItems.push(
@@ -296,7 +297,7 @@ const Shop = () => {
         }}
       >
         {totalPages}
-      </button>
+      </button>,
     );
   }
 
@@ -312,7 +313,7 @@ const Shop = () => {
       disabled={currentPage === totalPages} // Disable if on the last page
     >
       <FaArrowRight />
-    </button>
+    </button>,
   );
 
   const collapseStyles = {
@@ -438,7 +439,7 @@ const Shop = () => {
                                   type="checkbox"
                                   value={subCat}
                                   checked={selectedSubCategories.includes(
-                                    subCat
+                                    subCat,
                                   )}
                                   onChange={handleSubCategoryChange}
                                   id={`subcat-${subCat}`}
@@ -450,7 +451,7 @@ const Shop = () => {
                                   {subCat}
                                 </label>
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                       )}
@@ -503,18 +504,43 @@ const Shop = () => {
                 </div>
                 {openFilters.color && (
                   <div style={contentStyles}>
-                    <select
-                      value={selectedColor || ""}
-                      onChange={handleColorChange}
-                      style={{ width: "100%", padding: "8px" }}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "8px",
+                      }}
                     >
-                      <option value="">All Colors</option>
                       {colors.map((color) => (
-                        <option key={color} value={color}>
-                          {color}
-                        </option>
+                        <img
+                          key={color.name}
+                          src={color.image}
+                          alt={color.name}
+                          title={color.name}
+                          onClick={() =>
+                            handleColorChange({
+                              target: {
+                                value:
+                                  selectedColor === color.name
+                                    ? ""
+                                    : color.name,
+                              },
+                            })
+                          }
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            cursor: "pointer",
+                            objectFit: "cover",
+                            borderRadius: "4px",
+                            border:
+                              selectedColor === color.name
+                                ? "2px solid #000"
+                                : "2px solid transparent",
+                          }}
+                        />
                       ))}
-                    </select>
+                    </div>
                   </div>
                 )}
               </div>
