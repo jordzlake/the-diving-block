@@ -42,6 +42,18 @@ const Item = () => {
   const [almostSoldOut, setAlmostSoldOut] = useState(false);
   const [maxQuantity, setMaxQuantity] = useState(0);
 
+  // Selects the color whose colorImageVariant matches the given image.
+  // Used when clicking a thumbnail to auto-select its corresponding color.
+  const selectColorByImage = (image) => {
+    if (!image || !product?.colorImageVariants?.length) return;
+    const variant = product.colorImageVariants.find((v) => v.image === image);
+    if (variant) {
+      setSelectedAttributeColor(variant.color);
+      setSelectedAttributeSize("");
+      setSelectedAttributeAmount(1);
+    }
+  };
+
   useEffect(() => {
     if (typeof window) {
       window.scrollTo(0, 0);
@@ -63,7 +75,7 @@ const Item = () => {
         if (settings[0]) {
           const discountedItem = CalculateSingleProductDiscount(
             resProduct,
-            settings[0]
+            settings[0],
           );
           setProduct(discountedItem);
           console.log(discountedItem);
@@ -83,7 +95,7 @@ const Item = () => {
       setSoldOut(allSizesZero);
 
       const anySizeLessThan3 = product.inventory.every(
-        (item) => item.amount < 3
+        (item) => item.amount < 3,
       );
       setAlmostSoldOut(anySizeLessThan3);
     } else if (product?.sizes?.length) {
@@ -101,12 +113,12 @@ const Item = () => {
       const inventoryItem = product.inventory.find(
         (item) =>
           item.color === selectedAttributeColor &&
-          item.size === selectedAttributeSize
+          item.size === selectedAttributeSize,
       );
       if (inventoryItem) {
         setMaxQuantity(inventoryItem.amount);
         setSelectedAttributeAmount(
-          Math.min(selectedAttributeAmount, inventoryItem.amount)
+          Math.min(selectedAttributeAmount, inventoryItem.amount),
         );
       } else {
         setMaxQuantity(0);
@@ -154,8 +166,8 @@ const Item = () => {
               ((100 - product.discount) / 100)
             ).toFixed(2)
           : activeCost
-          ? Number(activeCost).toFixed(2)
-          : Number(product.cost).toFixed(2);
+            ? Number(activeCost).toFixed(2)
+            : Number(product.cost).toFixed(2);
       const orderItemTotal = amount * cartItemCost;
 
       const orderItem = {
@@ -173,7 +185,7 @@ const Item = () => {
         (existingItem) =>
           existingItem.productId === orderItem.productId &&
           existingItem.color === orderItem.color &&
-          existingItem.size === orderItem.size
+          existingItem.size === orderItem.size,
       );
 
       if (!isItemInOrder) {
@@ -200,7 +212,7 @@ const Item = () => {
               <span className="item-breadcrumb-separator" />
               <Link
                 href={`/shop?category=${encodeURI(
-                  String(product.category)
+                  String(product.category),
                 )}&p=1`}
               >
                 {String(product.category)}
@@ -218,8 +230,8 @@ const Item = () => {
                         activeImage.image
                           ? activeImage.image
                           : product.image
-                          ? product.image
-                          : "404_lztxti.png"
+                            ? product.image
+                            : "404_lztxti.png",
                       )
                     }
                   >
@@ -228,8 +240,8 @@ const Item = () => {
                         activeImage.image
                           ? activeImage.image
                           : product.image
-                          ? product.image
-                          : "404_lztxti.png"
+                            ? product.image
+                            : "404_lztxti.png"
                       }`}
                       fill
                       alt={product.title}
@@ -242,6 +254,7 @@ const Item = () => {
                                         item-gallery-image-container`}
                       onClick={(e) => {
                         setActiveImage({ index: 0, image: product.image });
+                        selectColorByImage(product.image);
                       }}
                     >
                       <CldImage
@@ -260,6 +273,7 @@ const Item = () => {
                                             item-gallery-image-container`}
                           onClick={() => {
                             setActiveImage({ index: i + 1, image: gi });
+                            selectColorByImage(gi);
                           }}
                           key={gi}
                         >
@@ -316,7 +330,7 @@ const Item = () => {
                               if (product.colorImageVariants?.length > 0) {
                                 const colorImage =
                                   product.colorImageVariants.find(
-                                    (variant) => variant.color === color.name
+                                    (variant) => variant.color === color.name,
                                   );
                                 let index = 0;
                                 if (
@@ -371,7 +385,7 @@ const Item = () => {
                           setSelectedAttributeAmount(1);
                           if (product.sizeCostVariants.length > 0) {
                             const sizeFound = product.sizeCostVariants.find(
-                              (sz) => sz.size == e.target.value
+                              (sz) => sz.size == e.target.value,
                             );
                             if (sizeFound) {
                               setActiveCost(sizeFound.cost);
@@ -402,7 +416,7 @@ const Item = () => {
                               .filter(
                                 (item) =>
                                   item.color === selectedAttributeColor &&
-                                  item.amount > 0
+                                  item.amount > 0,
                               ) // Filter based on the selected color
                               .map((item, i) => (
                                 <option
@@ -422,7 +436,7 @@ const Item = () => {
                           : product.sizes.map(
                               (
                                 size,
-                                i // Render all sizes if no color is selected.
+                                i, // Render all sizes if no color is selected.
                               ) => (
                                 <option
                                   key={i}
@@ -437,7 +451,7 @@ const Item = () => {
                                 >
                                   {size}
                                 </option>
-                              )
+                              ),
                             )}
                       </select>
                     </div>
@@ -455,7 +469,7 @@ const Item = () => {
                         onChange={(e) => {
                           const newAmount = parseInt(e.target.value, 10);
                           setSelectedAttributeAmount(
-                            Math.min(newAmount, maxQuantity)
+                            Math.min(newAmount, maxQuantity),
                           );
                         }}
                       />

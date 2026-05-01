@@ -190,14 +190,13 @@ const Shop = () => {
     })();
   }, [searchParams, productsPerPage]);
 
-  // Extract unique colors (with their images) from current products for the color filter
+  // Extract unique colors from current products for the color filter
   const colors = [
-    ...new Map(
+    ...new Set(
       products
-        .flatMap((product) => product.colors || [])
-        .filter((c) => c?.name)
-        .map((c) => [c.name, c]),
-    ).values(),
+        .flatMap((product) => product.colors?.map((c) => c.name))
+        .filter(Boolean),
+    ),
   ];
 
   const totalPages = Math.ceil(totalProducts / productsPerPage);
@@ -504,42 +503,18 @@ const Shop = () => {
                 </div>
                 {openFilters.color && (
                   <div style={contentStyles}>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "8px",
-                      }}
+                    <select
+                      value={selectedColor || ""}
+                      onChange={handleColorChange}
+                      style={{ width: "100%", padding: "8px" }}
                     >
-                      {colors.map((color) => {
-                        const isSelected = selectedColor === color.name;
-                        return (
-                          <img
-                            key={color.name}
-                            src={color.image}
-                            alt={color.name}
-                            title={color.name}
-                            onClick={() => {
-                              const newColor = isSelected
-                                ? undefined
-                                : color.name;
-                              setSelectedColor(newColor);
-                              updateQuery({ color: newColor });
-                            }}
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              cursor: "pointer",
-                              objectFit: "cover",
-                              borderRadius: "4px",
-                              border: isSelected
-                                ? "2px solid #000"
-                                : "2px solid transparent",
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
+                      <option value="">All Colors</option>
+                      {colors.map((color) => (
+                        <option key={color} value={color}>
+                          {color}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
               </div>
