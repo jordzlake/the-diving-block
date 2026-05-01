@@ -511,35 +511,34 @@ const Shop = () => {
                         gap: "8px",
                       }}
                     >
-                      {colors.map((color) => (
-                        <img
-                          key={color.name}
-                          src={color.image}
-                          alt={color.name}
-                          title={color.name}
-                          onClick={() =>
-                            handleColorChange({
-                              target: {
-                                value:
-                                  selectedColor === color.name
-                                    ? ""
-                                    : color.name,
-                              },
-                            })
-                          }
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            cursor: "pointer",
-                            objectFit: "cover",
-                            borderRadius: "4px",
-                            border:
-                              selectedColor === color.name
+                      {colors.map((color) => {
+                        const isSelected = selectedColor === color.name;
+                        return (
+                          <img
+                            key={color.name}
+                            src={color.image}
+                            alt={color.name}
+                            title={color.name}
+                            onClick={() => {
+                              const newColor = isSelected
+                                ? undefined
+                                : color.name;
+                              setSelectedColor(newColor);
+                              updateQuery({ color: newColor });
+                            }}
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              cursor: "pointer",
+                              objectFit: "cover",
+                              borderRadius: "4px",
+                              border: isSelected
                                 ? "2px solid #000"
                                 : "2px solid transparent",
-                          }}
-                        />
-                      ))}
+                            }}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 )}
