@@ -91,15 +91,20 @@ const Item = () => {
 
   useEffect(() => {
     if (product?.inventory?.length) {
-      const allZero = product.inventory.every((item) => item.amount === 0);
-      setSoldOut(allZero);
-      const lowStock = product.inventory.some(
-        (item) => item.amount > 0 && item.amount < 3,
+      const allZero = product.inventory.every(
+        (item) => Number(item.amount) === 0,
       );
+      setSoldOut(allZero);
+      const lowStock = product.inventory.some((item) => {
+        const amt = Number(item.amount);
+        return amt > 0 && amt < 3;
+      });
       setAlmostSoldOut(!allZero && lowStock);
     } else {
-      setSoldOut(false);
-      setAlmostSoldOut(false);
+      // no inventory array — fall back to quantity
+      const qty = Number(product?.quantity) || 0;
+      setSoldOut(qty === 0);
+      setAlmostSoldOut(qty > 0 && qty < 3);
     }
   }, [product, selectedAttributeColor, selectedAttributeSize]);
 

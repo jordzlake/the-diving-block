@@ -102,7 +102,7 @@ const Cart = () => {
       Number(
         orderItems.reduce((acc, oi) => {
           return acc + oi.orderItemTotal;
-        }, 0)
+        }, 0),
       ) + Number(locations[formData.location].cost);
 
     const customerData = {
@@ -119,7 +119,7 @@ const Cart = () => {
 
     if (!validationResult.success) {
       const errors = validationResult.error.issues.map(
-        (issue) => `${issue.message}`
+        (issue) => `${issue.message}`,
       );
       setErrors(errors);
       return;
@@ -160,7 +160,7 @@ const Cart = () => {
       Number(
         orderItems.reduce((acc, oi) => {
           return acc + oi.orderItemTotal;
-        }, 0)
+        }, 0),
       ) + Number(locations[formData.location].cost);
 
     const customerData = {
@@ -177,7 +177,7 @@ const Cart = () => {
 
     if (!validationResult.success) {
       const errors = validationResult.error.issues.map(
-        (issue) => `${issue.message}`
+        (issue) => `${issue.message}`,
       );
       setErrors(errors);
       return;
@@ -240,7 +240,11 @@ const Cart = () => {
                             }}
                           >
                             <CldImage
-                              src={oi.item.image}
+                              src={
+                                oi.item.colorImageVariants?.find(
+                                  (v) => v.color === oi.color,
+                                )?.image || oi.item.image
+                              }
                               fill
                               alt="product image"
                               defaultImage="404_lztxti.png"
@@ -318,7 +322,7 @@ const Cart = () => {
                         Number(
                           orderItems.reduce((acc, oi) => {
                             return acc + oi.orderItemTotal;
-                          }, 0)
+                          }, 0),
                         ) + Number(locations[formData.location].cost)
                       ).toFixed(2)}{" "}
                       TTD
