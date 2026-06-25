@@ -91,17 +91,12 @@ const Item = () => {
 
   useEffect(() => {
     if (product?.inventory?.length) {
-      const allSizesZero = product.inventory.every((item) => item.amount === 0);
-      setSoldOut(allSizesZero);
-
-      const anySizeLessThan3 = product.inventory.every(
-        (item) => item.amount < 3,
+      const allZero = product.inventory.every((item) => item.amount === 0);
+      setSoldOut(allZero);
+      const lowStock = product.inventory.some(
+        (item) => item.amount > 0 && item.amount < 3,
       );
-      setAlmostSoldOut(anySizeLessThan3);
-    } else if (product?.sizes?.length) {
-      const allSizesAvailable = product.sizes.every((size) => size);
-      setAlmostSoldOut(false);
-      setSoldOut(false);
+      setAlmostSoldOut(!allZero && lowStock);
     } else {
       setSoldOut(false);
       setAlmostSoldOut(false);
