@@ -135,7 +135,11 @@ const Order = () => {
                                 }}
                               >
                                 <CldImage
-                                  src={oi.item.image}
+                                  src={
+                                    oi.item.colorImageVariants?.find(
+                                      (v) => v.color === oi.color,
+                                    )?.image || oi.item.image
+                                  }
                                   fill
                                   alt="product image"
                                   defaultImage="404_lztxti.png"
@@ -158,7 +162,7 @@ const Order = () => {
                               {`${Number(oi.cartItemCost).toFixed(2)} x ${
                                 oi.amount
                               } = $${Number(oi.orderItemTotal).toFixed(
-                                2
+                                2,
                               )}`}{" "}
                               TTD
                             </td>
@@ -259,15 +263,15 @@ const Order = () => {
                             order.status === "In Progress"
                               ? "processing"
                               : order.status == "Cancelled"
-                              ? "cancelled"
-                              : "delivered"
+                                ? "cancelled"
+                                : "delivered"
                           }`}
                         >
                           {order.status === "In Progress"
                             ? "Processing"
                             : order.status === "Cancelled"
-                            ? "Order Cancelled"
-                            : "Delivered"}
+                              ? "Order Cancelled"
+                              : "Delivered"}
                         </span>
                       </td>
                     </tr>

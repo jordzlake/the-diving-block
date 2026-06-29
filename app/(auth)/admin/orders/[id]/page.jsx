@@ -96,7 +96,11 @@ const AdminOrder = () => {
                                   }}
                                 >
                                   <CldImage
-                                    src={oi.item.image}
+                                    src={
+                                      oi.item.colorImageVariants?.find(
+                                        (v) => v.color === oi.color,
+                                      )?.image || oi.item.image
+                                    }
                                     fill
                                     alt="product image"
                                     defaultImage="404_lztxti.png"
@@ -119,7 +123,7 @@ const AdminOrder = () => {
                                 {`${Number(oi.cartItemCost).toFixed(2)} x ${
                                   oi.amount
                                 } = $${Number(oi.orderItemTotal).toFixed(
-                                  2
+                                  2,
                                 )}`}{" "}
                                 TTD
                               </td>
@@ -185,8 +189,8 @@ const AdminOrder = () => {
                           {order.status === "In Progress"
                             ? "Processing"
                             : order.status === "Cancelled"
-                            ? "Cancelled"
-                            : "Delivered"}
+                              ? "Cancelled"
+                              : "Delivered"}
                         </td>
                       </tr>
                     </tfoot>
@@ -203,7 +207,7 @@ const AdminOrder = () => {
                         }`}
                         onClick={() => {
                           const confirm = window.confirm(
-                            "Are you sure you want to change the payment status to failed?"
+                            "Are you sure you want to change the payment status to failed?",
                           );
                           if (confirm) {
                             setPaymentStatus("Failed");
@@ -218,7 +222,7 @@ const AdminOrder = () => {
                         }`}
                         onClick={() => {
                           const confirm = window.confirm(
-                            "Are you sure you want to change the payment status to success?"
+                            "Are you sure you want to change the payment status to success?",
                           );
                           if (confirm) {
                             setPaymentStatus("Success");

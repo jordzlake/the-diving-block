@@ -220,7 +220,7 @@ const Cart = () => {
               <table className="cart-table">
                 <thead>
                   <tr>
-                    <th className="table-title">Name</th>
+                    <th className="table-title">Item</th>
                     <th className="table-title">Size</th>
                     <th className="table-title">Color</th>
                     <th className="table-title">Cost</th>
