@@ -97,14 +97,14 @@ const Item = () => {
       setSoldOut(allZero);
       const lowStock = product.inventory.some((item) => {
         const amt = Number(item.amount);
-        return amt > 0 && amt < 3;
+        return amt > 0 && amt <= 1;
       });
       setAlmostSoldOut(!allZero && lowStock);
     } else {
       // no inventory array — fall back to quantity
       const qty = Number(product?.quantity) || 0;
       setSoldOut(qty === 0);
-      setAlmostSoldOut(qty > 0 && qty < 3);
+      setAlmostSoldOut(qty > 0 && qty <= 1);
     }
   }, [product, selectedAttributeColor, selectedAttributeSize]);
 
