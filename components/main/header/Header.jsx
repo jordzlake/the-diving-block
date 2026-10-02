@@ -11,6 +11,7 @@ import "@/components/main/header/header.css";
 import Link from "next/link";
 import { useState, useEffect, useContext, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { FaMagnifyingGlass, FaCartShopping } from "react-icons/fa6";
 import { signOut, useSession } from "next-auth/react";
 import { handleSignOut } from "@/lib/actions/authActions";
 import { OrderContext } from "@/components/contexts/OrderContext";
@@ -30,6 +31,33 @@ const Header = () => {
   const [curPath, setCurPath] = useState(" ");
   const { orderItems, setOrderItems } = useContext(OrderContext);
   const [categories, setCategories] = useState([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [headerSearch, setHeaderSearch] = useState("");
+
+  // Total number of items currently in the cart (sum of quantities).
+  const cartCount =
+    orderItems?.reduce((acc, oi) => acc + (Number(oi.amount) || 1), 0) || 0;
+
+  const goToSearch = () => {
+    const term = headerSearch.trim();
+    if (!term) return;
+    router.push(`/shop?t=${encodeURIComponent(term)}&p=1`);
+  };
+
+  const handleHeaderSearch = (e) => {
+    e.preventDefault();
+    goToSearch();
+  };
+
+  const handleGlassClick = () => {
+    if (!searchOpen) {
+      setSearchOpen(true);
+    } else if (headerSearch.trim()) {
+      goToSearch();
+    } else {
+      setSearchOpen(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -237,6 +265,36 @@ const Header = () => {
                 </li>
               ))}
           </ul>
+
+          <div className="subnav-tools">
+            <form
+              className={`subnav-search ${searchOpen ? "open" : ""}`}
+              onSubmit={handleHeaderSearch}
+            >
+              <input
+                className="subnav-search-input"
+                type="text"
+                placeholder="Search products..."
+                value={headerSearch}
+                onChange={(e) => setHeaderSearch(e.target.value)}
+                aria-label="Search products"
+              />
+              <button
+                type="button"
+                className="subnav-search-btn"
+                onClick={handleGlassClick}
+                aria-label="Search"
+              >
+                <FaMagnifyingGlass />
+              </button>
+            </form>
+            <Link href="/cart" className="subnav-cart" aria-label="Cart">
+              <FaCartShopping />
+              {cartCount > 0 && (
+                <span className="subnav-cart-badge">{cartCount}</span>
+              )}
+            </Link>
+          </div>
 
           <div
             onClick={handleMobileMenuClick}

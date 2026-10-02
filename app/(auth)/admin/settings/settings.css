@@ -184,3 +184,9 @@
   background-color: var(--blue);
   color: var(--white);
 }
+
+.admin-settings-hint {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 0.6em;
+}

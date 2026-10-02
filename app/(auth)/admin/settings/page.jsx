@@ -32,6 +32,11 @@ const Settings = () => {
   const [newLocation, setNewLocation] = useState({ name: "", cost: 0 });
   const [newPresetColorName, setNewPresetColorName] = useState(""); // State for new preset color name
   const [newPresetColorInput, setNewPresetColorInput] = useState("#000000"); // State for new preset color hex code
+  const [newDiscountCode, setNewDiscountCode] = useState({
+    code: "",
+    discount: 0,
+    description: "",
+  });
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -192,6 +197,49 @@ const Settings = () => {
       (_, idx) => idx !== index
     );
     setSettingsData({ ...settingsData, colors: newPresetColorArray });
+  };
+
+  // Discount code handlers
+  const handleAddDiscountCode = () => {
+    const code = newDiscountCode.code.trim();
+    const discount = Number(newDiscountCode.discount);
+    if (!code || !discount) {
+      toast.error("A discount code needs a code and a discount percentage.");
+      return;
+    }
+    const isDuplicate = (settingsData.discountCodes || []).some(
+      (dc) => dc.code.toLowerCase() === code.toLowerCase()
+    );
+    if (isDuplicate) {
+      toast.error("That discount code already exists!");
+      return;
+    }
+    setSettingsData({
+      ...settingsData,
+      discountCodes: [
+        ...(settingsData.discountCodes || []),
+        {
+          code,
+          discount,
+          description: newDiscountCode.description.trim(),
+          enabled: true,
+        },
+      ],
+    });
+    setNewDiscountCode({ code: "", discount: 0, description: "" });
+  };
+
+  const handleRemoveDiscountCode = (index) => {
+    const updated = (settingsData.discountCodes || []).filter(
+      (_, idx) => idx !== index
+    );
+    setSettingsData({ ...settingsData, discountCodes: updated });
+  };
+
+  const handleDiscountCodeChange = (index, field, value) => {
+    const updated = [...(settingsData.discountCodes || [])];
+    updated[index] = { ...updated[index], [field]: value };
+    setSettingsData({ ...settingsData, discountCodes: updated });
   };
 
   const handleSubmit = async (e) => {
@@ -479,6 +527,122 @@ const Settings = () => {
                   ))}
                 </div>
               </div>
+              {/* Discount Codes */}
+              <div className="admin-settings-group">
+                <label className="admin-settings-label">Discount Codes:</label>
+                <p className="admin-settings-hint">
+                  Codes customers can enter at checkout. They apply only to
+                  items that are not already discounted.
+                </p>
+                {(settingsData.discountCodes || []).map((dc, index) => (
+                  <div key={index} className="admin-settings-item">
+                    <div className="admin-settings-pair">
+                      <FormInput
+                        label={`Code ${index + 1}`}
+                        type="text"
+                        value={dc.code}
+                        onChange={(e) =>
+                          handleDiscountCodeChange(
+                            index,
+                            "code",
+                            e.target.value
+                          )
+                        }
+                      />
+                      <FormInput
+                        label="Discount (%)"
+                        type="number"
+                        value={dc.discount}
+                        onChange={(e) =>
+                          handleDiscountCodeChange(
+                            index,
+                            "discount",
+                            Number(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+                    <FormInput
+                      label="Description (optional)"
+                      type="text"
+                      value={dc.description || ""}
+                      onChange={(e) =>
+                        handleDiscountCodeChange(
+                          index,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <div className="admin-settings-pair">
+                      <label className="admin-settings-label sub-label">
+                        <input
+                          type="checkbox"
+                          checked={dc.enabled !== false}
+                          onChange={(e) =>
+                            handleDiscountCodeChange(
+                              index,
+                              "enabled",
+                              e.target.checked
+                            )
+                          }
+                        />
+                        &nbsp;Enabled
+                      </label>
+                      <button
+                        type="button"
+                        className="admin-settings-remove-button"
+                        onClick={() => handleRemoveDiscountCode(index)}
+                      >
+                        <FaTrashCan /> Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="admin-settings-add-item">
+                  <FormInput
+                    label="New Code"
+                    type="text"
+                    value={newDiscountCode.code}
+                    onChange={(e) =>
+                      setNewDiscountCode({
+                        ...newDiscountCode,
+                        code: e.target.value,
+                      })
+                    }
+                  />
+                  <FormInput
+                    label="Discount (%)"
+                    type="number"
+                    value={newDiscountCode.discount}
+                    onChange={(e) =>
+                      setNewDiscountCode({
+                        ...newDiscountCode,
+                        discount: Number(e.target.value),
+                      })
+                    }
+                  />
+                  <FormInput
+                    label="Description (optional)"
+                    type="text"
+                    value={newDiscountCode.description}
+                    onChange={(e) =>
+                      setNewDiscountCode({
+                        ...newDiscountCode,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="admin-settings-add-button"
+                    onClick={handleAddDiscountCode}
+                  >
+                    <FaPlus /> Add Discount Code
+                  </button>
+                </div>
+              </div>
+
               <button
                 disabled={buttonLoading}
                 type="submit"

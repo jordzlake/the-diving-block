@@ -46,6 +46,7 @@ export const POST = async (req, res) => {
       sitesale: settings.sitesale,
       categorysales: settings.categorysales,
       colors: settings.colors ? settings.colors : [],
+      discountCodes: settings.discountCodes ? settings.discountCodes : [],
     });
 
     return NextResponse.json({ success: updatedSettings });

@@ -132,26 +132,25 @@ const Item = () => {
     setButtonLoading(true);
     if (product) {
       const item = product;
-      let color = "";
-      if (item.colors.length > 0) {
-        if (selectedAttributeColor) {
-          color = selectedAttributeColor;
-        } else {
-          setButtonLoading(false);
-          setErrors(["You need to select a color!"]);
-          return;
-        }
+      // Color/Size are only mandatory when the product genuinely offers a
+      // choice (more than one option). Products that don't need a color or
+      // size (e.g. a clear liquid) can be added without selecting one.
+      let color = selectedAttributeColor || "";
+      if (item.colors?.length > 1 && !selectedAttributeColor) {
+        setButtonLoading(false);
+        setErrors(["You need to select a color!"]);
+        return;
       }
-      let size;
-      if (item.sizes.length > 0) {
-        if (selectedAttributeSize) {
-          size = selectedAttributeSize;
-        } else {
-          setButtonLoading(false);
-          setErrors(["You need to select a size!"]);
-          return;
-        }
+      let size = selectedAttributeSize || "";
+      if (item.sizes?.length > 1 && !selectedAttributeSize) {
+        setButtonLoading(false);
+        setErrors(["You need to select a size!"]);
+        return;
       }
+      // If there is exactly one option, record it automatically so the order
+      // still carries the correct variant for fulfilment/inventory.
+      if (!color && item.colors?.length === 1) color = item.colors[0].name;
+      if (!size && item.sizes?.length === 1) size = item.sizes[0];
       const amount = selectedAttributeAmount;
       if (amount <= 0) {
         setErrors(["Size needs to be more than 0!"]);

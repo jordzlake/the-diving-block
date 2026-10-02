@@ -58,6 +58,72 @@ const Cart = () => {
 
   const [userId, setUserId] = useState(null);
 
+  // Discount code (entered by the customer at checkout)
+  const [discountCodeInput, setDiscountCodeInput] = useState("");
+  const [appliedCode, setAppliedCode] = useState(null);
+  const [codeError, setCodeError] = useState("");
+
+  // Subtotal of everything in the cart
+  const subtotal = orderItems.reduce(
+    (acc, oi) => acc + Number(oi.orderItemTotal),
+    0,
+  );
+
+  // Items already on sale (product-level discount) are NOT eligible for a code
+  const eligibleSubtotal = orderItems.reduce(
+    (acc, oi) =>
+      acc + (oi.item?.discount > 0 ? 0 : Number(oi.orderItemTotal)),
+    0,
+  );
+
+  const codeDiscountAmount = appliedCode
+    ? Number(((eligibleSubtotal * Number(appliedCode.discount)) / 100).toFixed(2))
+    : 0;
+
+  const shippingCost = Number(locations?.[formData.location]?.cost || 0);
+
+  const grandTotal = Number(
+    (subtotal - codeDiscountAmount + shippingCost).toFixed(2),
+  );
+
+  const applyDiscountCode = () => {
+    setCodeError("");
+    const code = discountCodeInput.trim();
+    if (!code) return;
+
+    const codes = settings?.discountCodes || [];
+    const found = codes.find(
+      (c) =>
+        c.enabled !== false &&
+        c.code &&
+        c.code.toLowerCase() === code.toLowerCase(),
+    );
+
+    if (!found) {
+      setAppliedCode(null);
+      setCodeError("That discount code is not valid.");
+      return;
+    }
+
+    // The code can only apply if at least one item isn't already discounted
+    const hasEligibleItem = orderItems.some((oi) => !(oi.item?.discount > 0));
+    if (!hasEligibleItem) {
+      setAppliedCode(null);
+      setCodeError(
+        "Your cart items are already discounted, so this code can't be applied.",
+      );
+      return;
+    }
+
+    setAppliedCode(found);
+  };
+
+  const removeDiscountCode = () => {
+    setAppliedCode(null);
+    setDiscountCodeInput("");
+    setCodeError("");
+  };
+
   useEffect(() => {
     setPending(false);
     (async () => {
@@ -98,12 +164,7 @@ const Cart = () => {
     setPending(true);
     e.preventDefault();
 
-    const total =
-      Number(
-        orderItems.reduce((acc, oi) => {
-          return acc + oi.orderItemTotal;
-        }, 0),
-      ) + Number(locations[formData.location].cost);
+    const total = grandTotal;
 
     const customerData = {
       firstName: formData.firstName,
@@ -138,6 +199,8 @@ const Cart = () => {
       orderItems,
       pickupLocation,
       userId: userId ? userId : "",
+      discountCode: appliedCode ? appliedCode.code : "",
+      discountAmount: codeDiscountAmount,
     };
 
     const response = await createOrder(data);
@@ -156,12 +219,7 @@ const Cart = () => {
     setPending(true);
     e.preventDefault();
 
-    const total =
-      Number(
-        orderItems.reduce((acc, oi) => {
-          return acc + oi.orderItemTotal;
-        }, 0),
-      ) + Number(locations[formData.location].cost);
+    const total = grandTotal;
 
     const customerData = {
       firstName: formData.firstName,
@@ -196,6 +254,8 @@ const Cart = () => {
       orderItems,
       pickupLocation,
       userId: userId ? userId : "",
+      discountCode: appliedCode ? appliedCode.code : "",
+      discountAmount: codeDiscountAmount,
       paymentStatus: "Bank Transfer",
     };
 
@@ -299,14 +359,26 @@ const Cart = () => {
                         </td>
                       </tr>
                     ))}
+                  {appliedCode && codeDiscountAmount > 0 && (
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td className="table-cost final">
+                        Discount ({appliedCode.code}):
+                      </td>
+                      <td className="table-cost final">
+                        -${codeDiscountAmount.toFixed(2)} TTD
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td className="table-cost final">Shipping:</td>
                     <td className="table-cost final">
-                      ${Number(locations[formData.location].cost).toFixed(2)}{" "}
-                      TTD
+                      ${shippingCost.toFixed(2)} TTD
                     </td>
                   </tr>
                 </tbody>
@@ -317,15 +389,7 @@ const Cart = () => {
                     <td></td>
                     <td className="table-cost final">Total:</td>
                     <td className="table-cost final">
-                      $
-                      {(
-                        Number(
-                          orderItems.reduce((acc, oi) => {
-                            return acc + oi.orderItemTotal;
-                          }, 0),
-                        ) + Number(locations[formData.location].cost)
-                      ).toFixed(2)}{" "}
-                      TTD
+                      ${grandTotal.toFixed(2)} TTD
                     </td>
                   </tr>
                 </tfoot>
@@ -404,6 +468,52 @@ const Cart = () => {
                     validationSchema={userSchema.shape.street}
                   />
                 </FormRow>
+                <div className="discount-code-container">
+                  <label className="discount-code-label">Discount Code</label>
+                  <div className="discount-code-row">
+                    <input
+                      type="text"
+                      className="discount-code-input"
+                      placeholder="Enter code"
+                      value={discountCodeInput}
+                      onChange={(e) => setDiscountCodeInput(e.target.value)}
+                      disabled={!!appliedCode}
+                    />
+                    {!appliedCode ? (
+                      <button
+                        type="button"
+                        className="discount-code-button"
+                        onClick={applyDiscountCode}
+                      >
+                        Apply
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="discount-code-button"
+                        onClick={removeDiscountCode}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  {appliedCode && codeDiscountAmount > 0 && (
+                    <p className="discount-code-success">
+                      Code &quot;{appliedCode.code}&quot; applied:{" "}
+                      {appliedCode.discount}% off eligible items.
+                    </p>
+                  )}
+                  {appliedCode && codeDiscountAmount === 0 && (
+                    <p className="discount-code-error">
+                      All items in your cart are already discounted, so this
+                      code has no effect.
+                    </p>
+                  )}
+                  {codeError && (
+                    <p className="discount-code-error">{codeError}</p>
+                  )}
+                </div>
+
                 {locations && (
                   <FormInput
                     label="Shipping"

@@ -23,6 +23,8 @@ export const POST = async (req, res) => {
   const total = Number(data.total);
   const userId = data.userId;
   const pickupLocation = data.pickupLocation;
+  const discountCode = data.discountCode || undefined;
+  const discountAmount = Number(data.discountAmount) || 0;
   let paymentStatus = "";
   if (data.paymentStatus) {
     paymentStatus = data.paymentStatus;
@@ -35,6 +37,8 @@ export const POST = async (req, res) => {
       customerData,
       orderItems,
       pickupLocation,
+      discountCode,
+      discountAmount,
       paymentStatus: paymentStatus ? paymentStatus : undefined,
       meta: userId ? { id: userId } : undefined,
     });
