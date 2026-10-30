@@ -15,7 +15,13 @@ const StoreCard = ({
   tiny,
   discount,
   datemodified,
+  colors,
 }) => {
+  // Only show the swatch row when the product actually has colours.
+  const swatches = Array.isArray(colors)
+    ? colors.filter((c) => c && c.hexcode)
+    : [];
+  const maxSwatches = 5;
   const showSpec = () => {
     if (!spec) return false; // Don't show spec if it's not provided
 
@@ -63,6 +69,23 @@ const StoreCard = ({
         </div>
       ) : (
         <p className="image-desc">${Number(cost).toFixed(2)}</p>
+      )}
+      {swatches.length > 0 && (
+        <div className="image-colors" title="Available colours">
+          {swatches.slice(0, maxSwatches).map((color, i) => (
+            <span
+              key={`${color.name || "color"}-${i}`}
+              className="image-color-dot"
+              style={{ backgroundColor: color.hexcode }}
+              title={color.name || undefined}
+            />
+          ))}
+          {swatches.length > maxSwatches && (
+            <span className="image-color-more">
+              +{swatches.length - maxSwatches}
+            </span>
+          )}
+        </div>
       )}
       {/* {<p className="image-discount">${discount}</p>} */}
     </div>

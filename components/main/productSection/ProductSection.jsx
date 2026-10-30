@@ -70,6 +70,7 @@ const ProductSection = ({
                     cost={product.cost}
                     discount={product.discount}
                     category={product.category}
+                    colors={product.colors}
                     datemodified={product.updatedAt}
                     handleClick={() => router.push(`/shop/${product._id}`)}
                   />
@@ -87,6 +88,7 @@ const ProductSection = ({
                     cost={product.cost}
                     discount={product.discount}
                     category={product.category}
+                    colors={product.colors}
                     datemodified={product.updatedAt}
                     small
                     handleClick={() => router.push(`/shop/${product._id}`)}

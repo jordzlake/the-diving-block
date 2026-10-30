@@ -96,6 +96,31 @@
   gap: 1em;
 }
 
+/* Available-colour swatches */
+.image-colors {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35em;
+  margin-top: 0.6em;
+}
+
+.image-color-dot {
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 1px #fff inset;
+  flex: 0 0 auto;
+}
+
+.image-color-more {
+  font-size: 0.8em;
+  color: var(--light-gray);
+  margin-left: 0.2em;
+}
+
 @media (min-width: 650px) {
   .image-card {
     height: 24em;

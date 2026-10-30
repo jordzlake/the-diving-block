@@ -92,6 +92,7 @@ const Slider = ({ objects }) => {
                   cost={object.cost}
                   discount={object.discount}
                   category={object.category}
+                  colors={object.colors}
                   datemodified={object.updatedAt}
                   handleClick={() => router.push(`/shop/${object._id}`)}
                 />
