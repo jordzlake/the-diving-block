@@ -42,6 +42,7 @@ const Header = () => {
     const term = headerSearch.trim();
     if (!term) return;
     router.push(`/shop?t=${encodeURIComponent(term)}&p=1`);
+    setSearchOpen(false);
   };
 
   const handleHeaderSearch = (e) => {
@@ -267,8 +268,9 @@ const Header = () => {
           </ul>
 
           <div className="subnav-tools">
+            {/* Desktop: inline expanding search */}
             <form
-              className={`subnav-search ${searchOpen ? "open" : ""}`}
+              className={`subnav-search mobile-hide ${searchOpen ? "open" : ""}`}
               onSubmit={handleHeaderSearch}
             >
               <input
@@ -288,6 +290,15 @@ const Header = () => {
                 <FaMagnifyingGlass />
               </button>
             </form>
+            {/* Mobile: glass toggles a full-width search row below the bar */}
+            <button
+              type="button"
+              className="subnav-search-btn subnav-search-toggle"
+              onClick={() => setSearchOpen((o) => !o)}
+              aria-label="Search"
+            >
+              <FaMagnifyingGlass />
+            </button>
             <Link href="/cart" className="subnav-cart" aria-label="Cart">
               <FaCartShopping />
               {cartCount > 0 && (
@@ -295,6 +306,31 @@ const Header = () => {
               )}
             </Link>
           </div>
+
+          {/* Mobile full-width search panel */}
+          {searchOpen && (
+            <form
+              className="subnav-search-mobile"
+              onSubmit={handleHeaderSearch}
+            >
+              <input
+                className="subnav-search-mobile-input"
+                type="text"
+                placeholder="Search products..."
+                value={headerSearch}
+                onChange={(e) => setHeaderSearch(e.target.value)}
+                aria-label="Search products"
+                autoFocus
+              />
+              <button
+                type="submit"
+                className="subnav-search-mobile-btn"
+                aria-label="Search"
+              >
+                <FaMagnifyingGlass />
+              </button>
+            </form>
+          )}
 
           <div
             onClick={handleMobileMenuClick}
