@@ -47,6 +47,8 @@ export const POST = async (req, res) => {
       categorysales: settings.categorysales,
       colors: settings.colors ? settings.colors : [],
       discountCodes: settings.discountCodes ? settings.discountCodes : [],
+      promoBanner: settings.promoBanner ? settings.promoBanner : {},
+      hideMainBanner: settings.hideMainBanner ? true : false,
     });
 
     return NextResponse.json({ success: updatedSettings });

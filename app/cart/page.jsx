@@ -105,6 +105,19 @@ const Cart = () => {
       return;
     }
 
+    // Reject expired codes (expiry is an end-of-day cutoff)
+    if (found.expiry) {
+      const expiryDate = new Date(found.expiry);
+      if (!isNaN(expiryDate.getTime())) {
+        expiryDate.setHours(23, 59, 59, 999);
+        if (expiryDate.getTime() < Date.now()) {
+          setAppliedCode(null);
+          setCodeError("That discount code has expired.");
+          return;
+        }
+      }
+    }
+
     // The code can only apply if at least one item isn't already discounted
     const hasEligibleItem = orderItems.some((oi) => !(oi.item?.discount > 0));
     if (!hasEligibleItem) {

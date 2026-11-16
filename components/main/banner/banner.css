@@ -148,3 +148,29 @@
     opacity: 1; /* End fully opaque */
   }
 }
+
+/* Promotional banner (settings-driven, under the main banner) */
+.promo-banner-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1600 / 420;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+}
+
+.promo-banner-container .promo-banner-image,
+.promo-banner-image {
+  object-fit: cover;
+}
+
+.promo-banner-container:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -3px;
+}
+
+@media (max-width: 768px) {
+  .promo-banner-container {
+    aspect-ratio: 16 / 10;
+  }
+}

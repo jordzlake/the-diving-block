@@ -11,9 +11,10 @@ import FormRow from "@/components/controls/form/row/FormRow";
 import { toast } from "react-toastify";
 import { settingsSchema } from "@/lib/schema";
 import ErrorContainer from "@/components/controls/errors/ErrorContainer";
-import { FaPlus, FaTrashCan } from "react-icons/fa6";
+import { FaPlus, FaTrashCan, FaUpload } from "react-icons/fa6";
 import { Loading } from "@/components/controls/loading/Loading";
 import { useRouter } from "next/navigation";
+import { CldUploadWidget, CldImage } from "next-cloudinary";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,7 @@ const Settings = () => {
     code: "",
     discount: 0,
     description: "",
+    expiry: "",
   });
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -222,11 +224,12 @@ const Settings = () => {
           code,
           discount,
           description: newDiscountCode.description.trim(),
+          expiry: newDiscountCode.expiry || "",
           enabled: true,
         },
       ],
     });
-    setNewDiscountCode({ code: "", discount: 0, description: "" });
+    setNewDiscountCode({ code: "", discount: 0, description: "", expiry: "" });
   };
 
   const handleRemoveDiscountCode = (index) => {
@@ -240,6 +243,14 @@ const Settings = () => {
     const updated = [...(settingsData.discountCodes || [])];
     updated[index] = { ...updated[index], [field]: value };
     setSettingsData({ ...settingsData, discountCodes: updated });
+  };
+
+  // Promo banner handlers
+  const updatePromoBanner = (field, value) => {
+    setSettingsData({
+      ...settingsData,
+      promoBanner: { ...(settingsData.promoBanner || {}), [field]: value },
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -532,7 +543,8 @@ const Settings = () => {
                 <label className="admin-settings-label">Discount Codes:</label>
                 <p className="admin-settings-hint">
                   Codes customers can enter at checkout. They apply only to
-                  items that are not already discounted.
+                  items that are not already discounted. A code past its expiry
+                  date is automatically rejected.
                 </p>
                 {(settingsData.discountCodes || []).map((dc, index) => (
                   <div key={index} className="admin-settings-item">
@@ -574,6 +586,23 @@ const Settings = () => {
                         )
                       }
                     />
+                    <div className="admin-settings-field">
+                      <label className="admin-settings-label sub-label">
+                        Expiry date (optional):
+                      </label>
+                      <input
+                        type="date"
+                        className="admin-settings-date-input"
+                        value={dc.expiry || ""}
+                        onChange={(e) =>
+                          handleDiscountCodeChange(
+                            index,
+                            "expiry",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
                     <div className="admin-settings-pair">
                       <label className="admin-settings-label sub-label">
                         <input
@@ -633,6 +662,22 @@ const Settings = () => {
                       })
                     }
                   />
+                  <div className="admin-settings-field">
+                    <label className="admin-settings-label sub-label">
+                      Expiry date (optional):
+                    </label>
+                    <input
+                      type="date"
+                      className="admin-settings-date-input"
+                      value={newDiscountCode.expiry}
+                      onChange={(e) =>
+                        setNewDiscountCode({
+                          ...newDiscountCode,
+                          expiry: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
                   <button
                     type="button"
                     className="admin-settings-add-button"
@@ -641,6 +686,130 @@ const Settings = () => {
                     <FaPlus /> Add Discount Code
                   </button>
                 </div>
+              </div>
+
+              {/* Promo Banner */}
+              <div className="admin-settings-group">
+                <label className="admin-settings-label">Promo Banner:</label>
+                <p className="admin-settings-hint">
+                  Show a clickable promotional image under the main banner on the
+                  home page. Upload a wide banner image and choose the category it
+                  links to. You can also hide the main banner to show only this
+                  promo image.
+                </p>
+
+                <label className="admin-settings-label sub-label">
+                  <input
+                    type="checkbox"
+                    checked={settingsData.hideMainBanner === true}
+                    onChange={(e) =>
+                      setSettingsData({
+                        ...settingsData,
+                        hideMainBanner: e.target.checked,
+                      })
+                    }
+                  />
+                  &nbsp;Hide the main banner (show only the promo image)
+                </label>
+
+                <label className="admin-settings-label sub-label">
+                  <input
+                    type="checkbox"
+                    checked={settingsData.promoBanner?.enabled === true}
+                    onChange={(e) =>
+                      updatePromoBanner("enabled", e.target.checked)
+                    }
+                  />
+                  &nbsp;Show the promo banner
+                </label>
+
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label sub-label">
+                    Banner image:
+                  </label>
+                  {CldUploadWidget && (
+                    <CldUploadWidget
+                      uploadPreset={
+                        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+                        "your-upload-preset"
+                      }
+                      onSuccess={(result, { widget }) => {
+                        updatePromoBanner("image", result.info.public_id);
+                        widget.close();
+                      }}
+                    >
+                      {({ open }) => (
+                        <button
+                          type="button"
+                          className="admin-settings-add-button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            !settingsData.promoBanner?.image
+                              ? open()
+                              : toast.error("Remove the current image first.");
+                          }}
+                        >
+                          Upload Banner Image <FaUpload />
+                        </button>
+                      )}
+                    </CldUploadWidget>
+                  )}
+                  {settingsData.promoBanner?.image && (
+                    <div className="admin-settings-promo-preview">
+                      <CldImage
+                        src={settingsData.promoBanner.image}
+                        fill
+                        alt="Promo banner preview"
+                        defaultImage="404_lztxti.png"
+                      />
+                      <button
+                        type="button"
+                        className="admin-settings-remove-button"
+                        onClick={() => updatePromoBanner("image", "")}
+                      >
+                        <FaTrashCan /> Remove Image
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <FormInput
+                  label="Links to category"
+                  type="dropdown"
+                  value={settingsData.promoBanner?.category || ""}
+                  defaultOption="Select a category"
+                  options={(settingsData.categories || []).map((c) => c.name)}
+                  onChange={(e) => updatePromoBanner("category", e.target.value)}
+                />
+
+                {settingsData.promoBanner?.category &&
+                  (
+                    settingsData.categories?.find(
+                      (c) => c.name === settingsData.promoBanner.category
+                    )?.subCategories || []
+                  ).length > 0 && (
+                    <FormInput
+                      label="Sub-category (optional)"
+                      type="dropdown"
+                      value={settingsData.promoBanner?.subCategory || ""}
+                      defaultOption="All sub-categories"
+                      options={
+                        settingsData.categories?.find(
+                          (c) => c.name === settingsData.promoBanner.category
+                        )?.subCategories || []
+                      }
+                      onChange={(e) =>
+                        updatePromoBanner("subCategory", e.target.value)
+                      }
+                    />
+                  )}
+
+                <FormInput
+                  label="Custom link (optional — overrides the category)"
+                  type="text"
+                  value={settingsData.promoBanner?.link || ""}
+                  onChange={(e) => updatePromoBanner("link", e.target.value)}
+                />
               </div>
 
               <button

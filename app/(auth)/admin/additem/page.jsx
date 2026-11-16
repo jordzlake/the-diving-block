@@ -230,23 +230,24 @@ const AddItem = () => {
   };
 
   const handleAddColorImageVariant = () => {
-    if (colorImageVariant.color && colorImageVariant.image) {
-      const isDuplicate = formData.colorImageVariants.some(
-        (variant) =>
-          variant.color.toUpperCase() === colorImageVariant.color.toUpperCase()
+    if (!colorImageVariant.color || !colorImageVariant.image) {
+      toast.error(
+        "Pick a colour and select an uploaded image before adding the variant."
       );
-      if (!isDuplicate) {
-        setFormData({
-          ...formData,
-          colorImageVariants: [
-            ...formData.colorImageVariants,
-            colorImageVariant,
-          ],
-        });
-        setColorImageVariant({ color: "", image: "" });
-      } else {
-        toast.error("This color already has a variant!");
-      }
+      return;
+    }
+    const isDuplicate = formData.colorImageVariants.some(
+      (variant) =>
+        variant.color.toUpperCase() === colorImageVariant.color.toUpperCase()
+    );
+    if (!isDuplicate) {
+      setFormData({
+        ...formData,
+        colorImageVariants: [...formData.colorImageVariants, colorImageVariant],
+      });
+      setColorImageVariant({ color: "", image: "" });
+    } else {
+      toast.error("This color already has a variant!");
     }
   };
 
@@ -323,22 +324,52 @@ const AddItem = () => {
   };
 
   const handleSubmit = async (e) => {
-    setButtonLoading(false);
     e.preventDefault();
-    console.log("Form data:", formData);
-    const data = { formData: formData };
-    const result = await addProduct(data);
-    if (result.errors) {
+    setButtonLoading(true);
+    setErrors([]);
+
+    // Strip out any half-finished uploads so an incomplete image can never
+    // block the product from posting. Color/image variants need BOTH a colour
+    // and a (fully uploaded) image; gallery entries need a value.
+    const cleanedFormData = {
+      ...formData,
+      galleryImages: (formData.galleryImages || []).filter(Boolean),
+      colorImageVariants: (formData.colorImageVariants || []).filter(
+        (v) => v && v.color && v.image
+      ),
+    };
+
+    try {
+      const data = { formData: cleanedFormData };
+      const result = await addProduct(data);
+
+      if (result?.errors) {
+        setErrors(result.errors);
+        toast.error("Could not add product. Please check the fields below.");
+        setButtonLoading(false);
+        return;
+      }
+
+      if (!result?.success?._id) {
+        setErrors(["Something went wrong while saving. Please try again."]);
+        toast.error("Something went wrong while saving. Please try again.");
+        setButtonLoading(false);
+        return;
+      }
+
+      toast.success("Added New Product Successfully");
       setButtonLoading(false);
-      setErrors(result.errors);
-      return;
-    }
-    toast.success("Added New Product Successfully");
-    setButtonLoading(false);
-    if (formData.sizes.length > 0 && formData.colors.length > 0) {
-      router.push(`/admin/inventory/${result.success._id}?items=true`);
-    } else {
-      router.push(`/admin/items`);
+      if (cleanedFormData.sizes.length > 0 && cleanedFormData.colors.length > 0) {
+        router.push(`/admin/inventory/${result.success._id}?items=true`);
+      } else {
+        router.push(`/admin/items`);
+      }
+    } catch (err) {
+      setButtonLoading(false);
+      setErrors([
+        "Could not reach the server. Please check your connection and try again.",
+      ]);
+      toast.error("Could not add product. Please try again.");
     }
   };
 
@@ -650,7 +681,7 @@ const AddItem = () => {
                         <label className="admin-item-label">Main Image:</label>
                         {CldUploadWidget && (
                           <CldUploadWidget
-                            uploadPreset="your-upload-preset"
+                            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "your-upload-preset"}
                             onSuccess={(result, { widget }) => {
                               const img = result.info.public_id;
                               setUpload(img);
@@ -726,7 +757,7 @@ const AddItem = () => {
                         </label>
                         {CldUploadWidget && (
                           <CldUploadWidget
-                            uploadPreset="your-upload-preset"
+                            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "your-upload-preset"}
                             onSuccess={(result, { widget }) => {
                               const img = result.info.public_id;
 

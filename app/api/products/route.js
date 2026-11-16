@@ -59,7 +59,6 @@ export const POST = async (req, res) => {
     await newProduct.save();
     return NextResponse.json({ success: newProduct });
   } catch (err) {
-    throw err;
-    return NextResponse.json({ error: [err.message] });
+    return NextResponse.json({ errors: [err.message] });
   }
 };

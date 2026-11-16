@@ -328,19 +328,40 @@ const Item = () => {
   };
 
   const handleSubmit = async (e) => {
-    setButtonLoading(false);
     e.preventDefault();
-    console.log("Form data:", formData);
-    const data = { id: id, formData: formData };
-    const result = await updateProduct(data);
-    if (result.errors) {
+    setButtonLoading(true);
+    setErrors([]);
+
+    // Drop any half-finished uploads so an incomplete image can't block saving.
+    const cleanedFormData = {
+      ...formData,
+      galleryImages: (formData.galleryImages || []).filter(Boolean),
+      colorImageVariants: (formData.colorImageVariants || []).filter(
+        (v) => v && v.color && v.image
+      ),
+    };
+
+    try {
+      const data = { id: id, formData: cleanedFormData };
+      const result = await updateProduct(data);
+
+      if (result?.errors) {
+        setErrors(result.errors);
+        toast.error("Could not update product. Please check the fields below.");
+        setButtonLoading(false);
+        return;
+      }
+
+      toast.success("Product Updated Successfully");
       setButtonLoading(false);
-      setErrors(result.errors);
-      return;
+      router.push("/admin/items");
+    } catch (err) {
+      setButtonLoading(false);
+      setErrors([
+        "Could not reach the server. Please check your connection and try again.",
+      ]);
+      toast.error("Could not update product. Please try again.");
     }
-    toast.success("Product Updated Successfully");
-    setButtonLoading(false);
-    router.push("/admin/items");
   };
 
   return (
@@ -648,7 +669,7 @@ const Item = () => {
                         <label className="admin-item-label">Main Image:</label>
                         {CldUploadWidget && (
                           <CldUploadWidget
-                            uploadPreset="your-upload-preset"
+                            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "your-upload-preset"}
                             onSuccess={(result, { widget }) => {
                               const img = result.info.public_id;
                               setUpload(img);
@@ -724,7 +745,7 @@ const Item = () => {
                         </label>
                         {CldUploadWidget && (
                           <CldUploadWidget
-                            uploadPreset="your-upload-preset"
+                            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "your-upload-preset"}
                             onSuccess={(result, { widget }) => {
                               const img = result.info.public_id;
 

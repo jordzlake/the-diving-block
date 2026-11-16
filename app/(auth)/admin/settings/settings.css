@@ -190,3 +190,38 @@
   color: #666;
   margin: 0 0 0.6em;
 }
+
+/* Promo code expiry + promo banner */
+.admin-settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  margin: 0.6em 0;
+}
+.admin-settings-date-input {
+  padding: 0.55em 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  max-width: 16em;
+  outline: none;
+}
+.admin-settings-promo-preview {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 16 / 6;
+  margin-top: 0.6em;
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.admin-settings-promo-preview img {
+  object-fit: cover;
+}
+.admin-settings-promo-preview .admin-settings-remove-button {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+  z-index: 2;
+}
