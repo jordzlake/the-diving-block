@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .banner-background-image {
@@ -149,9 +150,10 @@
   }
 }
 
-/* Promotional banner (settings-driven, under the main banner) */
+/* Promotional banner (settings-driven, shown under the main banner) */
 .promo-banner-container {
   position: relative;
+  z-index: 1;
   width: 100%;
   aspect-ratio: 1600 / 420;
   cursor: pointer;
@@ -161,7 +163,7 @@
 
 .promo-banner-container .promo-banner-image,
 .promo-banner-image {
-  object-fit: cover;
+  object-fit: fill;
 }
 
 .promo-banner-container:focus-visible {
