@@ -166,13 +166,32 @@
   object-fit: fill;
 }
 
+/* Desktop image shows by default; mobile image is hidden until small screens */
+.promo-banner-desktop {
+  display: block;
+}
+.promo-banner-mobile {
+  display: none;
+}
+
 .promo-banner-container:focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: -3px;
 }
 
 @media (max-width: 768px) {
+  .promo-banner-desktop {
+    display: none;
+  }
+  .promo-banner-mobile {
+    display: block;
+  }
+  /* Fallback (desktop image on mobile) keeps a wide-ish ratio */
   .promo-banner-container {
     aspect-ratio: 16 / 10;
+  }
+  /* A dedicated square/portrait mobile image gets a square frame */
+  .promo-banner-container.has-mobile {
+    aspect-ratio: 1 / 1;
   }
 }

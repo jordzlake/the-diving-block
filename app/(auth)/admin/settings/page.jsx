@@ -725,7 +725,7 @@ const Settings = () => {
 
                 <div className="admin-settings-field">
                   <label className="admin-settings-label sub-label">
-                    Banner image:
+                    Banner image (desktop / wide):
                   </label>
                   {CldUploadWidget && (
                     <CldUploadWidget
@@ -749,7 +749,7 @@ const Settings = () => {
                               : toast.error("Remove the current image first.");
                           }}
                         >
-                          Upload Banner Image <FaUpload />
+                          Upload Desktop Image <FaUpload />
                         </button>
                       )}
                     </CldUploadWidget>
@@ -759,13 +759,67 @@ const Settings = () => {
                       <CldImage
                         src={settingsData.promoBanner.image}
                         fill
-                        alt="Promo banner preview"
+                        alt="Promo banner desktop preview"
                         defaultImage="404_lztxti.png"
                       />
                       <button
                         type="button"
                         className="admin-settings-remove-button"
                         onClick={() => updatePromoBanner("image", "")}
+                      >
+                        <FaTrashCan /> Remove Image
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="admin-settings-field">
+                  <label className="admin-settings-label sub-label">
+                    Banner image (mobile / square) — optional:
+                  </label>
+                  <p className="admin-settings-hint">
+                    Shown on phones instead of the desktop image. If left empty,
+                    the desktop image is used on mobile too.
+                  </p>
+                  {CldUploadWidget && (
+                    <CldUploadWidget
+                      uploadPreset={
+                        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+                        "your-upload-preset"
+                      }
+                      onSuccess={(result, { widget }) => {
+                        updatePromoBanner("imageMobile", result.info.public_id);
+                        widget.close();
+                      }}
+                    >
+                      {({ open }) => (
+                        <button
+                          type="button"
+                          className="admin-settings-add-button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            !settingsData.promoBanner?.imageMobile
+                              ? open()
+                              : toast.error("Remove the current image first.");
+                          }}
+                        >
+                          Upload Mobile Image <FaUpload />
+                        </button>
+                      )}
+                    </CldUploadWidget>
+                  )}
+                  {settingsData.promoBanner?.imageMobile && (
+                    <div className="admin-settings-promo-preview admin-settings-promo-preview-mobile">
+                      <CldImage
+                        src={settingsData.promoBanner.imageMobile}
+                        fill
+                        alt="Promo banner mobile preview"
+                        defaultImage="404_lztxti.png"
+                      />
+                      <button
+                        type="button"
+                        className="admin-settings-remove-button"
+                        onClick={() => updatePromoBanner("imageMobile", "")}
                       >
                         <FaTrashCan /> Remove Image
                       </button>

@@ -75,7 +75,9 @@ const Banner = () => {
 
       {showPromo && (
         <section
-          className="promo-banner-container"
+          className={`promo-banner-container ${
+            promo.imageMobile ? "has-mobile" : ""
+          }`}
           onClick={goToPromo}
           role="link"
           tabIndex={0}
@@ -91,7 +93,14 @@ const Banner = () => {
             src={promo.image}
             fill
             alt="Promotional banner"
-            className="promo-banner-image"
+            className="promo-banner-image promo-banner-desktop"
+            defaultImage="404_lztxti.png"
+          />
+          <CldImage
+            src={promo.imageMobile || promo.image}
+            fill
+            alt="Promotional banner"
+            className="promo-banner-image promo-banner-mobile"
             defaultImage="404_lztxti.png"
           />
         </section>
