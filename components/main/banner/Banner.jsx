@@ -9,24 +9,30 @@ import { getSettings } from "@/lib/settingActions";
 import "@/components/main/banner/banner.css";
 import { FaCaretRight } from "react-icons/fa6";
 
-const Banner = () => {
+const Banner = ({ settings }) => {
   const router = useRouter();
-  const [hideMainBanner, setHideMainBanner] = useState(false);
-  const [promo, setPromo] = useState(null);
+  // When the server passes settings as a prop, render the correct banner on the
+  // first paint (no flash of the main banner before the promo loads).
+  const [hideMainBanner, setHideMainBanner] = useState(
+    settings?.hideMainBanner === true
+  );
+  const [promo, setPromo] = useState(settings?.promoBanner || null);
 
   useEffect(() => {
+    // Already have server-provided settings — skip the client fetch entirely.
+    if (settings) return;
     (async () => {
       try {
-        const settings = await getSettings();
-        if (settings && settings[0]) {
-          setHideMainBanner(settings[0].hideMainBanner === true);
-          setPromo(settings[0].promoBanner || null);
+        const fetched = await getSettings();
+        if (fetched && fetched[0]) {
+          setHideMainBanner(fetched[0].hideMainBanner === true);
+          setPromo(fetched[0].promoBanner || null);
         }
       } catch (err) {
         // Fall back to the default main banner if settings can't be fetched.
       }
     })();
-  }, []);
+  }, [settings]);
 
   const handler = (e) => {
     e.preventDefault();
